@@ -83,7 +83,7 @@ public class BundleResourceTest {
     /**
      * Test of doInit method, of class BundleResource.
      */
-    @Test(expected = NoSuchMethodError.class)
+    @Test(expected = NullPointerException.class)
     public void testDoInit() throws Exception {
         this.bundleResource.doInit();
     }

@@ -82,7 +82,7 @@ public class MetadataSchemaResourceTest {
     /**
      * Test of doInit method, of class MetadataSchemaResource.
      */
-    @Test(expected = NoSuchMethodError.class)
+    @Test(expected = NullPointerException.class)
     public void testDoInit() throws Exception {
         this.metadataSchemaResource.doInit();
     }

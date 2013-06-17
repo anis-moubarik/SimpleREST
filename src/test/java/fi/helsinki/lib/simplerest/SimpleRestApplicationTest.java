@@ -71,7 +71,7 @@ public class SimpleRestApplicationTest {
     /**
      * Test of createInboundRoot method, of class SimpleRestApplication.
      */
-    @Test(expected = NoSuchMethodError.class)
+    @Test(expected = NullPointerException.class)
     public void testCreateInboundRoot() {
         Restlet createInboundRoot = this.simpleRestApplication.createInboundRoot();
     }

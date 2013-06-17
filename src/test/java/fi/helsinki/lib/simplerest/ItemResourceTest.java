@@ -82,7 +82,7 @@ public class ItemResourceTest {
     /**
      * Test of doInit method, of class ItemResource.
      */
-    @Test(expected = NoSuchMethodError.class)
+    @Test(expected = NullPointerException.class)
     public void testDoInit() throws Exception {
         this.itemResource.doInit();
     }

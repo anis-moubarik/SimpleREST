@@ -82,7 +82,7 @@ public class CommunityResourceTest {
     /**
      * Test of doInit method, of class CommunityResource.
      */
-    @Test(expected = NoSuchMethodError.class)
+    @Test(expected = NullPointerException.class)
     public void testDoInit() throws Exception {
         this.communityResource.doInit();
     }

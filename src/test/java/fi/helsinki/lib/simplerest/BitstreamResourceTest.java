@@ -82,7 +82,7 @@ public class BitstreamResourceTest {
     /**
      * Test of doInit method, of class BitstreamResource.
      */
-    @Test(expected = NoSuchMethodError.class)
+    @Test(expected = NullPointerException.class)
     public void testDoInit() {
         this.bitstreamResource.doInit();
     }

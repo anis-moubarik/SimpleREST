@@ -82,7 +82,7 @@ public class CollectionResourceTest {
     /**
      * Test of doInit method, of class CollectionResource.
      */
-    @Test(expected = NoSuchMethodError.class)
+    @Test(expected = NullPointerException.class)
     public void testDoInit() throws Exception {
         this.collectionResource.doInit();
     }
