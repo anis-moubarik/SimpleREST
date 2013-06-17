@@ -27,7 +27,6 @@ import org.dspace.core.Context;
 import org.dspace.content.Bundle;
 import org.dspace.content.Bitstream;
 import org.dspace.content.BitstreamFormat;
-import org.dspace.authorize.AuthorizeException;
 
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.Representation;
