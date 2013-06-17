@@ -30,7 +30,6 @@ import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Method;
 
-import fi.helsinki.lib.simplerest.LaxMapVerifier;
 
 /**
  * JUnit test.

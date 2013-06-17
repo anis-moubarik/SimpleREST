@@ -25,13 +25,10 @@ import org.dspace.content.Site;
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
-import org.restlet.resource.ResourceException;
 import org.restlet.data.MediaType;
-import org.restlet.data.Status;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 import org.apache.log4j.Logger;
 

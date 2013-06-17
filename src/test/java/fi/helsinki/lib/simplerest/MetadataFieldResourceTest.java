@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.restlet.data.MediaType;
 import org.restlet.representation.StringRepresentation;
 
-import fi.helsinki.lib.simplerest.MetadataFieldResource;
 
 /**
  * JUnit test.

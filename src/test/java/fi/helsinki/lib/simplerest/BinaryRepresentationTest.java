@@ -28,7 +28,6 @@ import org.junit.Test;
 
 import org.restlet.data.MediaType;
 
-import fi.helsinki.lib.simplerest.BinaryRepresentation;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

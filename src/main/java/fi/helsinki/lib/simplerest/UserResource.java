@@ -30,7 +30,6 @@ import org.restlet.data.Status;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 import org.apache.log4j.Logger;
 

@@ -27,7 +27,6 @@ import org.junit.Test;
 
 import org.restlet.Restlet;
 
-import fi.helsinki.lib.simplerest.SimpleRestApplication;
 
 /**
  * JUnit test.

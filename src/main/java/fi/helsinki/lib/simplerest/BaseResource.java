@@ -24,7 +24,6 @@ import org.dspace.core.Context;
 import org.dspace.eperson.EPerson;
 
 import org.restlet.resource.ServerResource;
-import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;

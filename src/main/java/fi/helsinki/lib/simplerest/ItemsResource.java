@@ -19,8 +19,6 @@
 package fi.helsinki.lib.simplerest;
 
 import java.sql.SQLException;
-import java.io.IOException;
-import java.util.LinkedList;
 import java.util.HashSet;
 
 import org.dspace.core.Context;
@@ -30,9 +28,6 @@ import org.dspace.content.ItemIterator;
 
 import org.dspace.content.Collection;
 import org.dspace.content.Item;
-import org.dspace.content.Bundle;
-import org.dspace.content.DCValue;
-import org.dspace.authorize.AuthorizeException;
 
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.ext.fileupload.RestletFileUpload;
@@ -46,13 +41,9 @@ import org.restlet.resource.ResourceException;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.data.Method;
-import org.restlet.data.Form;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.NamedNodeMap;
 
 import org.apache.log4j.Logger;
 import org.apache.commons.fileupload.FileItemIterator;

@@ -20,14 +20,12 @@ package fi.helsinki.lib.simplerest;
 
 import java.sql.SQLException;
 import java.io.InputStream;
-import java.io.IOException;
 import java.util.HashSet;
 
 import org.dspace.core.Context;
 import org.dspace.content.Collection;
 import org.dspace.content.Bitstream;
 import org.dspace.content.BitstreamFormat;
-import org.dspace.authorize.AuthorizeException;
 
 import org.restlet.ext.fileupload.RestletFileUpload;
 import org.restlet.representation.Representation;
@@ -41,7 +39,6 @@ import org.restlet.data.Status;
 import org.restlet.data.Method;
 
 import org.apache.log4j.Logger;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;

@@ -22,7 +22,6 @@ import org.restlet.Application;
 import org.restlet.Restlet;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.routing.Router;
-import org.restlet.security.MapVerifier;
 import org.restlet.security.ChallengeAuthenticator;
 import org.restlet.util.Series;
 import org.restlet.data.Parameter;

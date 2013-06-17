@@ -18,8 +18,6 @@
  */
 package fi.helsinki.lib.simplerest;
 
-import java.sql.SQLException;
-import java.io.IOException;
 import java.util.LinkedList;
 
 import org.dspace.core.Context;
@@ -27,7 +25,6 @@ import org.dspace.content.Collection;
 import org.dspace.content.Item;
 import org.dspace.content.Bundle;
 import org.dspace.content.DCValue;
-import org.dspace.authorize.AuthorizeException;
 
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.Representation;

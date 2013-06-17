@@ -26,10 +26,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.restlet.data.MediaType;
 import org.restlet.representation.StringRepresentation;
 
-import fi.helsinki.lib.simplerest.CollectionResource;
 
 /**
  * JUnit test.

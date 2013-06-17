@@ -25,8 +25,6 @@ import java.util.LinkedList;
 import org.dspace.core.Context;
 import org.dspace.content.MetadataSchema;
 import org.dspace.content.MetadataField;
-import org.dspace.authorize.AuthorizeException;
-import org.dspace.eperson.EPerson;
 import org.dspace.content.NonUniqueMetadataException;
 
 import org.restlet.ext.xml.DomRepresentation;
