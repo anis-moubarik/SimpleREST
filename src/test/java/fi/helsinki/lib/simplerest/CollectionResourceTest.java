@@ -87,18 +87,6 @@ public class CollectionResourceTest {
         this.collectionResource.doInit();
     }
 
-    /**
-     * Test of toXml method, of class CollectionResource.
-     */
-//    @Test
-//    public void testToXml() {
-//        StringRepresentation representation =
-//                             (StringRepresentation) this.collectionResource.toXml();
-//        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-//        assertEquals("java.sql.SQLException: java.lang.RuntimeException: "
-//                     + "Cannot find dspace.cfg",
-//                     representation.getText());
-//    }
 
     /**
      * Test of edit method, of class CollectionResource.

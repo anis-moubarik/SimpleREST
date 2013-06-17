@@ -24,10 +24,8 @@ import java.sql.SQLException;
 import org.dspace.core.Context;
 import org.dspace.content.MetadataSchema;
 import org.dspace.content.MetadataField;
-import org.dspace.authorize.AuthorizeException;
 
 import org.restlet.ext.xml.DomRepresentation;
-import org.restlet.ext.fileupload.RestletFileUpload;
 import org.restlet.representation.Representation;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.resource.Get; 
@@ -41,16 +39,8 @@ import org.restlet.data.Form;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.DOMException;
 
 import org.apache.log4j.Logger;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.io.IOUtils;
 
 public class MetadataFieldsResource extends BaseResource {
 
@@ -77,7 +67,7 @@ public class MetadataFieldsResource extends BaseResource {
             return errorInternal(c, e.toString());
         }
 
-        representation.setIndent(true);
+        representation.setIndenting(true);
 
         Element html = d.createElement("html");  
         d.appendChild(html);

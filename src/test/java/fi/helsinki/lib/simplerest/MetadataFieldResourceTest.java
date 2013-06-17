@@ -88,19 +88,6 @@ public class MetadataFieldResourceTest {
     }
 
     /**
-     * Test of toXml method, of class MetadataFieldResource.
-     */
-//    @Test
-//    public void testToXml() {
-//        StringRepresentation representation =
-//                             (StringRepresentation) this.metadataFieldResource.toXml();
-//        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-//        assertEquals("java.sql.SQLException: java.lang.RuntimeException: "
-//                     + "Cannot find dspace.cfg",
-//                     representation.getText());
-//    }
-
-    /**
      * Test of edit method, of class MetadataFieldResource.
      */
     @Test(expected = NullPointerException.class)

@@ -88,18 +88,6 @@ public class CollectionLogoResourceTest {
     }
 
     /**
-     * Test of get method, of class CollectionLogoResource.
-     */
-//    @Test
-//    public void testGet() {
-//        StringRepresentation representation =
-//                             (StringRepresentation) this.collectionLogoResource.get();
-//        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-//        assertEquals("java.sql.SQLException: java.lang.RuntimeException: "
-//                     + "Cannot find dspace.cfg", representation.getText());
-//    }
-
-    /**
      * Test of put method, of class CollectionLogoResource.
      */
     @Test(expected = NullPointerException.class)

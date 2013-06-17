@@ -88,17 +88,6 @@ public class BitstreamResourceTest {
     }
 
     /**
-     * Test of get method, of class BitstreamResource.
-     */
-//    @Test
-//    public void testGet() {
-//        StringRepresentation representation =
-//                             (StringRepresentation) this.bitstreamResource.get();
-//        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-//        assertEquals("SQLException", representation.getText());
-//    }
-
-    /**
      * Test of put method, of class BitstreamResource.
      */
     @Test(expected = NullPointerException.class)

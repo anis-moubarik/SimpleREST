@@ -80,19 +80,6 @@ public class MetadataSchemasResourceTest {
     }
 
     /**
-     * Test of toXml method, of class MetadataSchemasResource.
-     */
-//    @Test
-//    public void testToXml() {
-//        StringRepresentation representation =
-//                             (StringRepresentation) this.metadataSchemasResource.toXml();
-//        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-//        assertEquals("java.sql.SQLException: java.lang.RuntimeException: "
-//                     + "Cannot find dspace.cfg",
-//                     representation.getText());
-//    }
-
-    /**
      * Test of put method, of class MetadataSchemasResource.
      */
     @Test

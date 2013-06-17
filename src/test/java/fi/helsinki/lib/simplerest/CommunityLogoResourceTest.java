@@ -86,19 +86,7 @@ public class CommunityLogoResourceTest {
     public void testDoInit() throws Exception {
         this.communityLogoResource.doInit();
     }
-
-    /**
-     * Test of get method, of class CommunityLogoResource.
-     */
-//    @Test
-//    public void testGet() {
-//        StringRepresentation representation =
-//                             (StringRepresentation) this.communityLogoResource.get();
-//        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-//        assertEquals("java.sql.SQLException: java.lang.RuntimeException: "
-//                     + "Cannot find dspace.cfg", representation.getText());
-//    }
-
+    
     /**
      * Test of put method, of class CommunityLogoResource.
      */
