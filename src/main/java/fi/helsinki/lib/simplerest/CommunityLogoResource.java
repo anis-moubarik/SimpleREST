@@ -50,7 +50,7 @@ public class CommunityLogoResource extends BaseResource {
     private int communityId;
 
     static public String relativeUrl(int communityId) {
-        return "community/" + Integer.toString(communityId) + "/logo";
+        return "community/" + communityId + "/logo";
     }
     
     @Override

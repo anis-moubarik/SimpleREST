@@ -52,7 +52,7 @@ public class MetadataFieldResource extends BaseResource {
     private int metadataFieldId;
 
     static public String relativeUrl(int metadataFieldId) {
-        return "metadatafield/" + Integer.toString(metadataFieldId);
+        return "metadatafield/" + metadataFieldId;
     }
     
     @Override

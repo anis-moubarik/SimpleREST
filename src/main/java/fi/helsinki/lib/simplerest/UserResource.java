@@ -54,7 +54,7 @@ public class UserResource extends BaseResource {
     }
 
     static public String relativeUrl(int userId) {
-        return "user/" + Integer.toString(userId);
+        return "user/" + userId;
     }
 
     @Get("xml")

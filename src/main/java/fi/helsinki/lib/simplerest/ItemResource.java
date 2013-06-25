@@ -53,7 +53,7 @@ public class ItemResource extends BaseResource {
     private int itemId;
 
     static public String relativeUrl(int itemId) {
-        return "item/" + Integer.toString(itemId);
+        return "item/" + itemId;
     }
 
     

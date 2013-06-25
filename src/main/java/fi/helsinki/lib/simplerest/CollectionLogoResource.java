@@ -50,7 +50,7 @@ public class CollectionLogoResource extends BaseResource {
     private int collectionId;
 
     static public String relativeUrl(int collectionId) {
-        return "collection/" + Integer.toString(collectionId) + "/logo";
+        return "collection/" + collectionId + "/logo";
     }
     
     @Override

@@ -51,7 +51,7 @@ public class MetadataSchemaResource extends BaseResource {
     private int metadataSchemaId;
 
     static public String relativeUrl(int metadataSchemaId) {
-        return "metadataschema/" + Integer.toString(metadataSchemaId);
+        return "metadataschema/" + metadataSchemaId;
     }
     
     @Override
