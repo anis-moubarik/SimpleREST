@@ -1,24 +1,28 @@
 /**
- * A RESTful web service on top of DSpace.
- * Copyright (C) 2010-2011 National Library of Finland
+ * A RESTful web service on top of DSpace. Copyright (C) 2010-2011 National
+ * Library of Finland
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.logging.Level;
 
 import org.dspace.core.Context;
 import org.dspace.content.Community;
@@ -29,7 +33,7 @@ import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.ext.fileupload.RestletFileUpload;
 import org.restlet.representation.Representation;
 import org.restlet.representation.InputRepresentation;
-import org.restlet.resource.Get; 
+import org.restlet.resource.Get;
 import org.restlet.resource.Put;
 import org.restlet.resource.Post;
 import org.restlet.resource.Delete;
@@ -53,7 +57,7 @@ public class RootCommunitiesResource extends BaseResource {
     static public String relativeUrl(int dummy) {
         return "rootcommunities";
     }
-    
+
     @Get("xml")
     public Representation toXml() {
         Context c = null;
@@ -64,16 +68,15 @@ public class RootCommunitiesResource extends BaseResource {
             c = new Context();
             communities = Community.findAllTop(c);
 
-            representation = new DomRepresentation(MediaType.TEXT_HTML);  
-            d = representation.getDocument();  
-        }
-        catch (Exception e) {
+            representation = new DomRepresentation(MediaType.TEXT_HTML);
+            d = representation.getDocument();
+        } catch (Exception e) {
             return errorInternal(c, e.toString());
         }
 
         representation.setIndenting(true);
 
-        Element html = d.createElement("html");  
+        Element html = d.createElement("html");
         d.appendChild(html);
 
         Element head = d.createElement("head");
@@ -117,12 +120,28 @@ public class RootCommunitiesResource extends BaseResource {
         Element submitButton = d.createElement("input");
         submitButton.setAttribute("type", "submit");
         submitButton.setAttribute("value", "Create a new root community.");
-	
+
         form.appendChild(submitButton);
         body.appendChild(form);
 
         c.abort();
         return representation;
+    }
+
+    @Get("json")
+    public String toJson() {
+        Community[] communities;
+        Context c = null;
+        try{
+            c = new Context();
+            communities = Community.findAllTop(c);
+        }catch(Exception e){
+            return errorInternal(c, e.toString()).getText();
+        }
+        
+        Gson gson = new Gson();
+                
+        return gson.toJson(communities);
     }
 
     @Put
@@ -139,7 +158,7 @@ public class RootCommunitiesResource extends BaseResource {
             community = Community.create(null, c);
 
             RestletFileUpload rfu =
-                new RestletFileUpload(new DiskFileItemFactory());
+                    new RestletFileUpload(new DiskFileItemFactory());
             FileItemIterator iter = rfu.getItemIterator(rep);
 
             String name = null;
@@ -154,31 +173,26 @@ public class RootCommunitiesResource extends BaseResource {
                 if (fileItemStream.isFormField()) {
                     String key = fileItemStream.getFieldName();
                     String value =
-                        IOUtils.toString(fileItemStream.openStream(), "UTF-8");
+                            IOUtils.toString(fileItemStream.openStream(), "UTF-8");
 
                     if (key.equals("name")) {
                         name = value;
-                    }
-                    else if (key.equals("short_description")) {
-                        shortDescription= value;
-                    }
-                    else if (key.equals("introductory_text")) {
+                    } else if (key.equals("short_description")) {
+                        shortDescription = value;
+                    } else if (key.equals("introductory_text")) {
                         introductoryText = value;
-                    }
-                    else if (key.equals("copyright_text")) {
+                    } else if (key.equals("copyright_text")) {
                         copyrightText = value;
-                    }
-                    else if (key.equals("side_bar_text")) {
+                    } else if (key.equals("side_bar_text")) {
                         sideBarText = value;
-                    }
-                    else {
+                    } else {
                         return error(c, "Unexpected attribute: " + key,
-                                     Status.CLIENT_ERROR_BAD_REQUEST);
+                                Status.CLIENT_ERROR_BAD_REQUEST);
                     }
                 } else {
                     if (bitstream != null) {
                         return error(c, "The community can have only one logo.",
-                                     Status.CLIENT_ERROR_BAD_REQUEST);
+                                Status.CLIENT_ERROR_BAD_REQUEST);
                     }
 
                     // I did not manage to use FormatIdentifier.guessFormat
@@ -193,20 +207,18 @@ public class RootCommunitiesResource extends BaseResource {
                     if (lastDot != -1) {
                         String extension = fileName.substring(lastDot + 1);
                         extension = extension.toLowerCase();
-                        if (extension.equals("jpg") ||
-                            extension.equals("jpeg")) {
+                        if (extension.equals("jpg")
+                                || extension.equals("jpeg")) {
                             bitstreamMimeType = "image/jpeg";
-                        }
-                        else if (extension.equals("png")) {
+                        } else if (extension.equals("png")) {
                             bitstreamMimeType = "image/png";
-                        }
-                        else if (extension.equals("gif")) {
+                        } else if (extension.equals("gif")) {
                             bitstreamMimeType = "image/gif";
                         }
                     }
                     if (bitstreamMimeType == null) {
                         String err =
-                            "The logo filename extension was not recognised.";
+                                "The logo filename extension was not recognised.";
                         return error(c, err, Status.CLIENT_ERROR_BAD_REQUEST);
                     }
 
@@ -228,22 +240,21 @@ public class RootCommunitiesResource extends BaseResource {
             Bitstream logo = community.getLogo();
             if (logo != null) {
                 BitstreamFormat bf =
-                    BitstreamFormat.findByMIMEType(c, bitstreamMimeType);
+                        BitstreamFormat.findByMIMEType(c, bitstreamMimeType);
                 logo.setFormat(bf);
                 logo.update();
             }
-	    
+
             c.complete();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return errorInternal(c, e.toString());
         }
 
         return successCreated("Community created.",
-                              baseUrl() +
-                              CommunityResource.relativeUrl(community.getID()));
+                baseUrl()
+                + CommunityResource.relativeUrl(community.getID()));
     }
-    
+
     @Delete
     public Representation delete() {
         return errorUnallowedMethod("DELETE");
@@ -254,8 +265,8 @@ public class RootCommunitiesResource extends BaseResource {
         allowed.add(Method.GET);
         allowed.add(Method.POST);
         setAllowedMethods(allowed);
-        return error(null, "Root communities resource does not allow " +
-                     unallowedMethod + " method.",
-                     Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+        return error(null, "Root communities resource does not allow "
+                + unallowedMethod + " method.",
+                Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
     }
 }
