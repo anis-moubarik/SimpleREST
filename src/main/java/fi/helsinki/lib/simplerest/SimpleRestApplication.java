@@ -38,6 +38,7 @@ public class SimpleRestApplication extends Application {
 
         router.attach("", RootResource.class);
         router.attach("/rootcommunities", RootCommunitiesResource.class);
+        router.attach("/rootcommunities/json", RootCommunitiesJson.class);
 
         router.attach("/community/{communityId}", CommunityResource.class);
         router.attach("/community/{communityId}/logo",

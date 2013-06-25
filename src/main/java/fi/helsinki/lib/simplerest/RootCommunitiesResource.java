@@ -18,11 +18,7 @@
  */
 package fi.helsinki.lib.simplerest;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import java.io.IOException;
 import java.util.HashSet;
-import java.util.logging.Level;
 
 import org.dspace.core.Context;
 import org.dspace.content.Community;
@@ -126,22 +122,6 @@ public class RootCommunitiesResource extends BaseResource {
 
         c.abort();
         return representation;
-    }
-
-    @Get("json")
-    public String toJson() {
-        Community[] communities;
-        Context c = null;
-        try{
-            c = new Context();
-            communities = Community.findAllTop(c);
-        }catch(Exception e){
-            return errorInternal(c, e.toString()).getText();
-        }
-        
-        Gson gson = new Gson();
-                
-        return gson.toJson(communities);
     }
 
     @Put
