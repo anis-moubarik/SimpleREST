@@ -57,7 +57,7 @@ public class CommunitiesResource extends BaseResource {
     private int communityId;
 
     static public String relativeUrl(int communityId) {
-        return "community/" + Integer.toString(communityId) + "/communities";
+        return "community/" + communityId + "/communities";
     }
     
     @Override

@@ -58,7 +58,7 @@ public class BundleResource extends BaseResource {
     private int bundleId;
 
     static public String relativeUrl(int bundleId) {
-        return "bundle/" + Integer.toString(bundleId);
+        return "bundle/" + bundleId;
     }
 
     @Override

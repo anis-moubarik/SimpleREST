@@ -58,7 +58,7 @@ public class ItemsResource extends BaseResource {
     private int collectionId;
 
     static public String relativeUrl(int collectionId) {
-        return "collection/" + Integer.toString(collectionId) + "/items";
+        return "collection/" + collectionId + "/items";
     }
     
     @Override

@@ -54,7 +54,7 @@ public class BitstreamResource extends BaseResource {
     private boolean isBinary;
 
     static public String relativeUrl(int bitstreamId) {
-        return "bitstream/" + Integer.toString(bitstreamId);
+        return "bitstream/" + bitstreamId;
     }
     
     @Override
