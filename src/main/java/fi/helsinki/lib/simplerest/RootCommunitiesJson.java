@@ -53,8 +53,8 @@ class StubCommunity implements Serializable{
     private String name;
     
     public StubCommunity(int id, String name){
-        id = this.id;
-        name = this.name;
+        this.id = id;
+        this.name = name;
     }
 
     public int getId() {
