@@ -35,6 +35,6 @@ public class RootCommunitiesJson extends BaseResource{
         
         Gson gson = new Gson();
                 
-        return gson.toJson(communities);
+        return gson.toJson(communities[0]);
     }
 }
