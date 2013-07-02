@@ -18,6 +18,8 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import java.io.Serializable;
 import java.util.HashSet;
 
 import org.dspace.core.Context;
@@ -122,6 +124,29 @@ public class RootCommunitiesResource extends BaseResource {
 
         c.abort();
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson() {
+        Community[] communities;
+        Context c = null;
+        try{
+            c = new Context();
+            communities = Community.findAllTop(c);
+        }catch(Exception e){
+            return errorInternal(c, e.toString()).getText();
+        }
+        
+        /*Community class from DSpace-api won't work for Serialization to json,
+        so we use StubCommunity, and use a slow loop to create new StubCommunity array,
+        which will be Serializable and converted to json. */
+        Gson gson = new Gson();
+        StubCommunity[] toJsonCommunities = new StubCommunity[communities.length];
+        for(int i = 0; i < communities.length; i++){
+            toJsonCommunities[i] = new StubCommunity(communities[i].getID(), communities[i].getName());
+        }
+                
+        return gson.toJson(toJsonCommunities);
     }
 
     @Put
@@ -249,4 +274,32 @@ public class RootCommunitiesResource extends BaseResource {
                 + unallowedMethod + " method.",
                 Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
     }
+}
+
+class StubCommunity implements Serializable{
+    
+    private int id;
+    private String name;
+    
+    public StubCommunity(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
 }
