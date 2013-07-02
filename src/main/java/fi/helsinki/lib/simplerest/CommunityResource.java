@@ -18,6 +18,7 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
 import org.dspace.core.Context;
 import org.dspace.content.Community;
 import org.dspace.content.Bitstream;
@@ -160,6 +161,21 @@ public class CommunityResource extends BaseResource {
 	c.abort(); // Same as c.complete() because we didn't modify the db.
 
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson(){
+        Community co;
+        Context c = null;
+        try{
+            c = new Context();
+            co = Community.find(c, communityId);
+        }catch(Exception e){
+            return errorInternal(c, e.toString()).getText();
+        }
+        
+        Gson gson = new Gson();
+        return gson.toJson(co);
     }
 
     @Put
