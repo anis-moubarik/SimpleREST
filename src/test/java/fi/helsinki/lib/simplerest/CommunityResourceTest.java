@@ -21,10 +21,15 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import java.io.IOException;
+import fi.helsinki.lib.simplerest.TestServlets.CommunityResourceServlet;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.eclipse.jetty.testing.HttpTester;
+import org.eclipse.jetty.testing.ServletTester;
+
 
 import org.restlet.data.MediaType;
 import org.restlet.representation.StringRepresentation;
@@ -47,6 +52,9 @@ public class CommunityResourceTest {
      * @see fi.helsinki.lib.simplerest.CommunityResource
      */
     private CommunityResource communityResource;
+    private HttpTester request;
+    private HttpTester response;
+    private ServletTester tester;
 
     public CommunityResourceTest() {
     }
@@ -56,8 +64,27 @@ public class CommunityResourceTest {
      * Initializing the test resources.
      */
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         this.communityResource = new CommunityResource();
+        this.tester = new ServletTester();
+        this.tester.setContextPath("/");
+        this.tester.addServlet(CommunityResourceServlet.class, "/");
+        this.tester.start();
+        
+        this.request = new HttpTester();
+        this.response = new HttpTester();
+        this.request.setMethod("GET");
+        this.request.setHeader("Host", "tester");
+        this.request.setVersion("HTTP/1.0");
+    }
+    
+    @Test
+    public void testGet() throws IOException, Exception{
+        this.request.setURI("/");
+        this.response.parse(tester.getResponses(request.generate()));
+        assertTrue(this.response.getMethod() == null);
+        assertEquals(200, this.response.getStatus());
+        assertEquals("1 Testi", this.response.getContent());
     }
 
     /**

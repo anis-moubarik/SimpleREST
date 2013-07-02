@@ -13,6 +13,18 @@
  <inceptionYear>2010</inceptionYear>
  <dependencies>
   <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.9.5</version>
+      <scope>test</scope>
+  </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet-tester</artifactId>
+      <version>7.0.0.M2</version>
+      <scope>test</scope>
+  </dependency>
+  <dependency>
    <groupId>junit</groupId>
    <artifactId>junit</artifactId>
    <version>4.11</version>
@@ -89,6 +101,11 @@
    </resource>
   </resources>
   <plugins>
+  <plugin>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-maven-plugin</artifactId>
+  <version>9.0.0.M5</version>
+</plugin>
    <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-compiler-plugin</artifactId>
@@ -260,6 +277,19 @@
    <id>mevorah</id>
    <name>Markos Mevorah</name>
    <email>markos.mevorah@helsinki.fi</email>
+   <url>http://www.kansalliskirjasto.fi/</url>
+   <organization>National Library of Finland</organization>
+   <organizationUrl>http://www.kansalliskirjasto.fi/</organizationUrl>
+   <roles>
+    <role>architect</role>
+    <role>developer</role>
+   </roles>
+   <timezone>+2</timezone>
+  </developer>
+  <developer>
+   <id>moubarik</id>
+   <name>Anis Moubarik</name>
+   <email>anis.moubarik@helsinki.fi</email>
    <url>http://www.kansalliskirjasto.fi/</url>
    <organization>National Library of Finland</organization>
    <organizationUrl>http://www.kansalliskirjasto.fi/</organizationUrl>
