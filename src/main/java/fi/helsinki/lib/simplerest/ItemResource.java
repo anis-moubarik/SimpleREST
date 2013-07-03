@@ -18,7 +18,9 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 import org.dspace.core.Context;
 import org.dspace.content.Collection;
@@ -210,6 +212,20 @@ public class ItemResource extends BaseResource {
 	c.abort(); // Same as c.complete() because we didn't modify the db.
 
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson(){
+        Item i = null;
+        Context c = null;
+        try {
+            c = new Context();
+            i = Item.find(c, this.itemId);
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(ItemResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return "S";
     }
 
     /* Input to this a little bit more complicated than to other PUT methods:

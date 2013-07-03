@@ -143,7 +143,8 @@ public class RootCommunitiesResource extends BaseResource {
         Gson gson = new Gson();
         StubCommunity[] toJsonCommunities = new StubCommunity[communities.length];
         for(int i = 0; i < communities.length; i++){
-            toJsonCommunities[i] = new StubCommunity(communities[i].getID(), communities[i].getName());
+            toJsonCommunities[i] = new StubCommunity(communities[i].getID(), communities[i].getName(), communities[i].getMetadata("short_description"),
+                    communities[i].getMetadata("introductory_text"), communities[i].getMetadata("copyright_text"), communities[i].getMetadata("side_bar_text"));
         }
                 
         return gson.toJson(toJsonCommunities);
@@ -274,32 +275,4 @@ public class RootCommunitiesResource extends BaseResource {
                 + unallowedMethod + " method.",
                 Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
     }
-}
-
-class StubCommunity implements Serializable{
-    
-    private int id;
-    private String name;
-    
-    public StubCommunity(int id, String name){
-        this.id = id;
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    
 }

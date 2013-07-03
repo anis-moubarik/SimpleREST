@@ -19,6 +19,7 @@
 package fi.helsinki.lib.simplerest;
 
 import com.google.gson.Gson;
+import java.io.Serializable;
 import org.dspace.core.Context;
 import org.dspace.content.Community;
 import org.dspace.content.Bitstream;
@@ -175,7 +176,9 @@ public class CommunityResource extends BaseResource {
         }
         
         Gson gson = new Gson();
-        return gson.toJson(co);
+        StubCommunity s = new StubCommunity(co.getID(), co.getName(), co.getMetadata("short_description"),
+                    co.getMetadata("introductory_text"), co.getMetadata("copyright_text"), co.getMetadata("side_bar_text"));
+        return gson.toJson(s);
     }
 
     @Put
