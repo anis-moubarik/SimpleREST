@@ -1,7 +1,9 @@
+package fi.helsinki.lib.simplerest;
+
 
 import java.io.Serializable;
 
-class StubCommunity implements Serializable{
+public class StubCommunity implements Serializable{
     
     private int id;
     private String name;
