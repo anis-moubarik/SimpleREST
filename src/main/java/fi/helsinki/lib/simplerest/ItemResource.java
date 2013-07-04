@@ -18,6 +18,7 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -215,9 +216,10 @@ public class ItemResource extends BaseResource {
     }
     
     @Get("json")
-    public String toJson(){
+    public String toJson() throws SQLException{
         Item i = null;
         Context c = null;
+        StubItem item = null;
         try {
             c = new Context();
             i = Item.find(c, this.itemId);
@@ -225,7 +227,11 @@ public class ItemResource extends BaseResource {
             java.util.logging.Logger.getLogger(ItemResource.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return "S";
+        item = new StubItem(i);
+        Gson gson = new Gson();
+        
+        
+        return gson.toJson(item);
     }
 
     /* Input to this a little bit more complicated than to other PUT methods:
