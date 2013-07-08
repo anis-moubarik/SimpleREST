@@ -18,6 +18,7 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.HashSet;
@@ -157,6 +158,22 @@ public class CollectionResource extends BaseResource {
                       SQLexception). */
 
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson(){
+        Collection co = null;
+        Context c = null;
+        try{
+            c = new Context();
+            co = Collection.find(c, collectionId);
+        }catch(Exception e){
+            return errorInternal(c, e.toString()).getText();
+        }
+        
+        Gson gson = new Gson();
+        
+        return gson.toJson(co);
     }
 
     @Put

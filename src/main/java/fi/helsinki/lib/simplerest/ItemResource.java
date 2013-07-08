@@ -18,6 +18,7 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import fi.helsinki.lib.simplerest.stubs.StubItem;
 import com.google.gson.Gson;
 import java.sql.SQLException;
 import java.util.LinkedList;

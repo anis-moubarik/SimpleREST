@@ -18,6 +18,7 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import fi.helsinki.lib.simplerest.stubs.StubCommunity;
 import com.google.gson.Gson;
 import org.dspace.core.Context;
 import org.dspace.content.Community;

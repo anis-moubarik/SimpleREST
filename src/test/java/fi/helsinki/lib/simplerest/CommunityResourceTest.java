@@ -21,17 +21,19 @@
  */
 package fi.helsinki.lib.simplerest;
 
-import java.io.IOException;
-import fi.helsinki.lib.simplerest.TestServlets.CommunityResourceServlet;
+import fi.helsinki.lib.simplerest.TestServlets.CommunityServlet;
+import org.eclipse.jetty.testing.ServletTester;
+import org.elasticsearch.rest.RestRequest;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.eclipse.jetty.testing.HttpTester;
-import org.eclipse.jetty.testing.ServletTester;
+import org.restlet.Client;
+import org.restlet.Request;
 
 
 import org.restlet.data.MediaType;
+import org.restlet.data.Protocol;
 import org.restlet.representation.StringRepresentation;
 
 
@@ -52,12 +54,8 @@ public class CommunityResourceTest {
      * @see fi.helsinki.lib.simplerest.CommunityResource
      */
     private CommunityResource communityResource;
-    private HttpTester request;
-    private HttpTester response;
+    
     private ServletTester tester;
-
-    public CommunityResourceTest() {
-    }
 
     /**
      * JUnit method annotated with {@link org.junit.Before}.
@@ -66,25 +64,13 @@ public class CommunityResourceTest {
     @Before
     public void setUp() throws Exception {
         this.communityResource = new CommunityResource();
-        this.tester = new ServletTester();
-        this.tester.setContextPath("/");
-        this.tester.addServlet(CommunityResourceServlet.class, "/");
-        this.tester.start();
+        tester = new ServletTester();
+        tester.setContextPath("/");
+        tester.addServlet(CommunityServlet.class, "/community/{id}");
+        tester.addServlet("org.mortaby.jetty.servlet.DefaultServlet", "/");
+        tester.start();
         
-        this.request = new HttpTester();
-        this.response = new HttpTester();
-        this.request.setMethod("GET");
-        this.request.setHeader("Host", "tester");
-        this.request.setVersion("HTTP/1.0");
-    }
-    
-    @Test
-    public void testGet() throws IOException, Exception{
-        this.request.setURI("/");
-        this.response.parse(tester.getResponses(request.generate()));
-        assertTrue(this.response.getMethod() == null);
-        assertEquals(200, this.response.getStatus());
-        assertEquals("1 Testi", this.response.getContent());
+        
     }
 
     /**
