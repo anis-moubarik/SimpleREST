@@ -26,9 +26,10 @@ public class StubCollection implements Serializable{
     private String side_bar_text;
     private Bitstream logo;
 
-    public StubCollection(String collectionName, String short_description, String introductory_text,
+    public StubCollection(int id, String collectionName, String short_description, String introductory_text,
             String provenance_description, String license, String copyright_text, String side_bar_text, 
             Bitstream logo) {
+        this.id = id;
         this.collectionName = collectionName;
         this.short_description = short_description;
         this.introductory_text = introductory_text;

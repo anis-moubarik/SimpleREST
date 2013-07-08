@@ -173,7 +173,7 @@ public class CollectionResource extends BaseResource {
         }
         
         Gson gson = new Gson();
-        StubCollection s = new StubCollection(co.getName(), co.getMetadata("short_description"),
+        StubCollection s = new StubCollection(co.getID(), co.getName(), co.getMetadata("short_description"),
                 co.getMetadata("introductory_text"), co.getMetadata("provenance_description"),
                 co.getMetadata("license"), co.getMetadata("copyright_text"), co.getMetadata("side_bar_text"), co.getLogo());
         return gson.toJson(s);
