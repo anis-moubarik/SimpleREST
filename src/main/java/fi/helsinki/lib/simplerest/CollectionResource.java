@@ -19,6 +19,7 @@
 package fi.helsinki.lib.simplerest;
 
 import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.stubs.StubCollection;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.HashSet;
@@ -172,8 +173,10 @@ public class CollectionResource extends BaseResource {
         }
         
         Gson gson = new Gson();
-        
-        return gson.toJson(co);
+        StubCollection s = new StubCollection(co.getName(), co.getMetadata("short_description"),
+                co.getMetadata("introductory_text"), co.getMetadata("provenance_description"),
+                co.getMetadata("license"), co.getMetadata("copyright_text"), co.getMetadata("side_bar_text"), co.getLogo());
+        return gson.toJson(s);
     }
 
     @Put
