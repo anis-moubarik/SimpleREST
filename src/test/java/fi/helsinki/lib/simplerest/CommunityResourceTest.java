@@ -85,7 +85,7 @@ public class CommunityResourceTest {
     }
     
     @Test
-    public void testGet() throws IOException, Exception{
+    public void testGetXml() throws IOException, Exception{
         HttpTester req = new HttpTester();
         HttpTester resp = new HttpTester();
         
@@ -95,10 +95,17 @@ public class CommunityResourceTest {
         resp.parse(tester.getResponses(req.generate()));
         
         System.out.println(resp.getContent());
-        
-        assertEquals(resp.getContent().contains("side_bar_text"), true);
-        
         assertEquals(200, resp.getStatus());
+        String[] attributes = { "short_description", "introductory_text",
+                                "copyright_text", "side_bar_text" };        
+        for(String attribute : attributes){
+            assertEquals(resp.getContent().contains(attribute), true);
+        }
+    }
+    
+    @Test
+    public void testGetJson(){
+        
     }
 
     /**

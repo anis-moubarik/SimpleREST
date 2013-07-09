@@ -4,7 +4,6 @@
  */
 package fi.helsinki.lib.simplerest.TestServlets;
 
-import fi.helsinki.lib.simplerest.CommunityLogoResource;
 import fi.helsinki.lib.simplerest.CommunityResource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,15 +13,8 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.dspace.content.Bitstream;
 import org.dspace.content.Community;
-import org.dspace.core.Context;
 import static org.mockito.Mockito.*;
-import org.restlet.data.MediaType;
-import org.restlet.ext.xml.DomRepresentation;
-import org.restlet.representation.Representation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  *
