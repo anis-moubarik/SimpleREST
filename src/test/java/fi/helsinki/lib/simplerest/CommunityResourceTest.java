@@ -22,6 +22,8 @@
 package fi.helsinki.lib.simplerest;
 
 import fi.helsinki.lib.simplerest.TestServlets.CommunityServlet;
+import java.io.IOException;
+import org.eclipse.jetty.testing.HttpTester;
 import org.eclipse.jetty.testing.ServletTester;
 import org.elasticsearch.rest.RestRequest;
 import org.junit.After;
@@ -66,7 +68,7 @@ public class CommunityResourceTest {
         this.communityResource = new CommunityResource();
         tester = new ServletTester();
         tester.setContextPath("/");
-        tester.addServlet(CommunityServlet.class, "/community/{id}");
+        tester.addServlet(CommunityServlet.class, "/community/*");
         tester.addServlet("org.mortaby.jetty.servlet.DefaultServlet", "/");
         tester.start();
         
@@ -80,6 +82,23 @@ public class CommunityResourceTest {
     @After
     public void tearDown() {
         this.communityResource = null;
+    }
+    
+    @Test
+    public void testGet() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/community/");
+        resp.parse(tester.getResponses(req.generate()));
+        
+        System.out.println(resp.getContent());
+        
+        assertEquals(resp.getContent().contains("side_bar_text"), true);
+        
+        assertEquals(200, resp.getStatus());
     }
 
     /**

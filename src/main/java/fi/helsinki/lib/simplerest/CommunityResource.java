@@ -20,6 +20,7 @@ package fi.helsinki.lib.simplerest;
 
 import fi.helsinki.lib.simplerest.stubs.StubCommunity;
 import com.google.gson.Gson;
+import java.io.IOException;
 import org.dspace.core.Context;
 import org.dspace.content.Community;
 import org.dspace.content.Bitstream;
@@ -160,6 +161,85 @@ public class CommunityResource extends BaseResource {
         body.appendChild(pSubCollections);
 
 	c.abort(); // Same as c.complete() because we didn't modify the db.
+
+        return representation;
+    }
+    
+    //For testing purposes with Jetty
+    //Basically the same as toXml method, but we pass mocked Community class, and test it
+    public Representation toXmlTest(Community com) throws SQLException, IOException {
+        Community community = com;
+        DomRepresentation representation = new DomRepresentation(MediaType.TEXT_HTML);
+        Document d = representation.getDocument();
+        
+        Element html = d.createElement("html");  
+        d.appendChild(html);
+
+        Element head = d.createElement("head");
+        html.appendChild(head);
+
+        Element title = d.createElement("title");
+        head.appendChild(title);
+        title.appendChild(d.createTextNode("Community " + community.getName()));
+
+        Element body = d.createElement("body");
+        html.appendChild(body);
+	
+        Element dl = d.createElement("dl");
+        setId(dl, "attributes");
+        body.appendChild(dl);
+
+        Element dtName = d.createElement("dt");
+        dtName.appendChild(d.createTextNode("name"));
+        dl.appendChild(dtName);
+        Element ddName = d.createElement("dd");
+        ddName.appendChild(d.createTextNode(community.getName()));
+        dl.appendChild(ddName);
+
+        String[] attributes = { "short_description", "introductory_text",
+                                "copyright_text", "side_bar_text" };
+        for (String attribute : attributes) {
+            Element dt = d.createElement("dt");
+            dt.appendChild(d.createTextNode(attribute));
+            dl.appendChild(dt);
+
+            Element dd = d.createElement("dd");
+            dd.appendChild(d.createTextNode(community.getMetadata(attribute)));
+            dl.appendChild(dd);
+        }
+
+        Bitstream logo = community.getLogo();
+        if (logo != null) {
+            Element aLogo = d.createElement("a");
+            String url = baseUrl() +
+                CommunityLogoResource.relativeUrl(this.communityId);
+            //getRequest().getResourceRef().getIdentifier() + "/logo";
+            setAttribute(aLogo, "href", url);
+            setId(aLogo, "logo");
+            aLogo.appendChild(d.createTextNode("Community logo"));
+            body.appendChild(aLogo);
+        }
+
+        String url = "";
+
+	// A link to sub communities
+        Element pSubCommunities = d.createElement("p");
+        Element aSubCommunities = d.createElement("a");
+	setAttribute(aSubCommunities, "href", url + "/communities");
+        setId(aSubCommunities, "communities");
+	aSubCommunities.appendChild(d.createTextNode("communities"));
+        pSubCommunities.appendChild(aSubCommunities);
+        body.appendChild(pSubCommunities);
+
+	// A link to child collections
+        Element pSubCollections = d.createElement("p");
+        Element aSubCollections = d.createElement("a");
+	setAttribute(aSubCollections, "href", url + "/collections");
+        setId(aSubCollections, "collections");
+	aSubCollections.appendChild(d.createTextNode("collections"));
+        pSubCollections.appendChild(aSubCollections);
+        body.appendChild(pSubCollections);
+
 
         return representation;
     }
