@@ -284,7 +284,6 @@ public class CommunityResource extends BaseResource {
                          Status.CLIENT_ERROR_BAD_REQUEST);
         }
 	
-        // TODO: Comment!
         community.setMetadata("name", null);
         community.setMetadata("short_description", null);
         community.setMetadata("introductory_text", null);

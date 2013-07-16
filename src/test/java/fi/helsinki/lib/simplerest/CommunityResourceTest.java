@@ -23,6 +23,8 @@ package fi.helsinki.lib.simplerest;
 
 import fi.helsinki.lib.simplerest.TestServlets.CommunityServlet;
 import java.io.IOException;
+import org.dspace.content.Community;
+import org.dspace.core.Context;
 import org.eclipse.jetty.testing.HttpTester;
 import org.eclipse.jetty.testing.ServletTester;
 import org.elasticsearch.rest.RestRequest;
@@ -71,7 +73,6 @@ public class CommunityResourceTest {
         tester.addServlet(CommunityServlet.class, "/community/*");
         tester.addServlet("org.mortaby.jetty.servlet.DefaultServlet", "/");
         tester.start();
-        
         
     }
 
