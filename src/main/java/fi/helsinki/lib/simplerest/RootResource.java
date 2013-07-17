@@ -74,9 +74,9 @@ public class RootResource extends BaseResource {
 	ul.setAttribute("id","attributes");
         body.appendChild(ul);
 
-	createItem(d,ul,"Root communities", "/simplerest"+RootCommunitiesResource.relativeUrl(0));
-	createItem(d,ul,"Groups", "/simplerest"+GroupsResource.relativeUrl(0));
-	createItem(d,ul,"Users", "/simplerest"+UsersResource.relativeUrl(0));
+	createItem(d,ul,"Root communities", "simplerest/"+RootCommunitiesResource.relativeUrl(0));
+	createItem(d,ul,"Groups", "simplerest/"+GroupsResource.relativeUrl(0));
+	createItem(d,ul,"Users", "simplerest/"+UsersResource.relativeUrl(0));
 
 	c.abort(); // Same as c.complete() because we didn't modify the db.
 

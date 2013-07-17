@@ -127,29 +127,29 @@ public class RootCommunitiesResource extends BaseResource {
         return representation;
     }
     
-    @Get("json")
-    public String toJson() {
-        Community[] communities;
-        Context c = null;
-        try{
-            c = new Context();
-            communities = Community.findAllTop(c);
-        }catch(Exception e){
-            return errorInternal(c, e.toString()).getText();
-        }
-        
-        /*Community class from DSpace-api won't work for Serialization to json,
-        so we use StubCommunity, and use a slow loop to create new StubCommunity array,
-        which will be Serializable and converted to json. */
-        Gson gson = new Gson();
-        StubCommunity[] toJsonCommunities = new StubCommunity[communities.length];
-        for(int i = 0; i < communities.length; i++){
-            toJsonCommunities[i] = new StubCommunity(communities[i].getID(), communities[i].getName(), communities[i].getMetadata("short_description"),
-                    communities[i].getMetadata("introductory_text"), communities[i].getMetadata("copyright_text"), communities[i].getMetadata("side_bar_text"));
-        }
-                
-        return gson.toJson(toJsonCommunities);
-    }
+//    @Get("json")
+//    public String toJson() {
+//        Community[] communities;
+//        Context c = null;
+//        try{
+//            c = new Context();
+//            communities = Community.findAllTop(c);
+//        }catch(Exception e){
+//            return errorInternal(c, e.toString()).getText();
+//        }
+//        
+//        /*Community class from DSpace-api won't work for Serialization to json,
+//        so we use StubCommunity, and use a slow loop to create new StubCommunity array,
+//        which will be Serializable and converted to json. */
+//        Gson gson = new Gson();
+//        StubCommunity[] toJsonCommunities = new StubCommunity[communities.length];
+//        for(int i = 0; i < communities.length; i++){
+//            toJsonCommunities[i] = new StubCommunity(communities[i].getID(), communities[i].getName(), communities[i].getMetadata("short_description"),
+//                    communities[i].getMetadata("introductory_text"), communities[i].getMetadata("copyright_text"), communities[i].getMetadata("side_bar_text"));
+//        }
+//                
+//        return gson.toJson(toJsonCommunities);
+//    }
 
     @Put
     public Representation put(Representation dummy) {
