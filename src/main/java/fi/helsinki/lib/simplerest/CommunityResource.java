@@ -47,6 +47,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 public class CommunityResource extends BaseResource {
 
@@ -170,6 +171,11 @@ public class CommunityResource extends BaseResource {
         pSubCollections.appendChild(aSubCollections);
         body.appendChild(pSubCollections);
         
+        try{
+            c.abort();
+        }catch(NullPointerException e){
+            Logger.getLogger(Context.class).log(url, Priority.WARN, e.toString(), e);
+        }
 
         return representation;
     }
