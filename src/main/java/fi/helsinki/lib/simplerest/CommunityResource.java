@@ -28,6 +28,7 @@ import org.dspace.content.Bitstream;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.HashSet;
+import java.util.logging.Level;
 
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.Representation;
@@ -89,9 +90,15 @@ public class CommunityResource extends BaseResource {
     public Representation toXml() {
         DomRepresentation representation;
         Document d;
+        try{
+            community = Community.find(c, communityId);
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(CommunityResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         try {
             representation = new DomRepresentation(MediaType.TEXT_HTML);  
-            d = representation.getDocument();  
+            d = representation.getDocument();
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());
@@ -174,7 +181,7 @@ public class CommunityResource extends BaseResource {
         try{
             c.abort();
         }catch(NullPointerException e){
-            Logger.getLogger(Context.class).log(url, Priority.WARN, e.toString(), e);
+            Logger.getLogger(CommunitiesResource.class.getName()).log(url, Priority.WARN, e.toString(), e);
         }
 
         return representation;
