@@ -23,6 +23,7 @@ import static org.mockito.Mockito.*;
 public class CommunityServlet extends HttpServlet{
     
     private Community mockedCommunity;
+    private CommunityResource cr;
     
     /**
      *
@@ -34,7 +35,6 @@ public class CommunityServlet extends HttpServlet{
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException{
         
         mockedCommunity = mock(Community.class);
-        CommunityResource cr = new CommunityResource();
         when(mockedCommunity.getID()).thenReturn(1);
         when(mockedCommunity.getName()).thenReturn("test");
         when(mockedCommunity.getType()).thenReturn(10);
@@ -44,13 +44,16 @@ public class CommunityServlet extends HttpServlet{
         when(mockedCommunity.getMetadata("side_bar_text")).thenReturn("testi sidebar");
         when(mockedCommunity.getLogo()).thenReturn(null);
         
+        cr = new CommunityResource(mockedCommunity, mockedCommunity.getID());
         
         String s = req.getPathInfo();
         PrintWriter out = resp.getWriter();
         try {
-            out.write(cr.toXmlTest(mockedCommunity).getText());
-        } catch (SQLException ex) {
+            out.write(cr.toXml().getText());
+        } catch (Exception ex) {
             Logger.getLogger(CommunityServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    
 }
