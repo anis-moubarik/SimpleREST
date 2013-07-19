@@ -34,7 +34,7 @@ import org.w3c.dom.DOMException;
 
 import java.lang.reflect.Method;
 
-abstract class BaseResource extends ServerResource {
+public abstract class BaseResource extends ServerResource {
 
     protected Context getAuthenticatedContext() throws SQLException {
         int adminId = -1; // just some (invalid) value to keep a compiler happy
