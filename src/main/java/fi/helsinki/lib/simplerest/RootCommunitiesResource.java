@@ -57,7 +57,7 @@ public class RootCommunitiesResource extends BaseResource {
         return "rootcommunities";
     }
 
-    @Get("html|xhtml|xml")
+    @Get("json")
     public Representation toXml() {
         Context c = null;
         Community[] communities;
@@ -127,7 +127,7 @@ public class RootCommunitiesResource extends BaseResource {
         return representation;
     }
     
-    @Get("json")
+    @Get("xml")
     public String toJson() {
         Community[] communities;
         Context c = null;
