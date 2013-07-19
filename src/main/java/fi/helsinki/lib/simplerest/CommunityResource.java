@@ -92,7 +92,7 @@ public class CommunityResource extends BaseResource {
         }
 
         try {
-            representation = new DomRepresentation(MediaType.TEXT_HTML);  
+            representation = new DomRepresentation(MediaType.ALL);  
             d = representation.getDocument();
         }
         catch (Exception e) {
