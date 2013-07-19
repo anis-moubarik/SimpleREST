@@ -18,7 +18,6 @@
  */
 package fi.helsinki.lib.simplerest;
 
-import fi.helsinki.lib.simplerest.json.CommunitiesJson;
 import org.restlet.Application;
 import org.restlet.Restlet;
 import org.restlet.data.ChallengeScheme;
@@ -28,6 +27,7 @@ import org.restlet.util.Series;
 import org.restlet.data.Parameter;
 
 import org.apache.log4j.Logger;
+import org.restlet.data.MediaType;
 
 public class SimpleRestApplication extends Application {
 
@@ -47,7 +47,6 @@ public class SimpleRestApplication extends Application {
                       CommunitiesResource.class);
         router.attach("/community/{communityId}/collections",
                       CollectionsResource.class);
-        router.attach("/community/{communityId}/json", CommunitiesJson.class);
 
         router.attach("/collection/{collectionId}", CollectionResource.class);
         router.attach("/collection/{collectionId}/logo",
@@ -94,6 +93,7 @@ public class SimpleRestApplication extends Application {
                                        "Authentication for SimpleRest");
         guard.setVerifier(verifier);
         guard.setNext(router);
+        getMetadataService().setDefaultMediaType(MediaType.ALL);
 
         return guard;
     }

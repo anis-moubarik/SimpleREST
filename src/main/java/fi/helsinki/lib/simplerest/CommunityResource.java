@@ -20,7 +20,6 @@ package fi.helsinki.lib.simplerest;
 
 import fi.helsinki.lib.simplerest.stubs.StubCommunity;
 import com.google.gson.Gson;
-import java.io.IOException;
 import org.dspace.core.Context;
 import org.dspace.content.Community;
 import org.dspace.content.Bitstream;
