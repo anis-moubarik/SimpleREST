@@ -127,7 +127,7 @@ public class RootCommunitiesResource extends BaseResource {
         return representation;
     }
     
-    @Get("json")
+    //@Get("json")
     public String toJson() {
         Community[] communities;
         Context c = null;
