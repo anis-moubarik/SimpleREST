@@ -89,10 +89,9 @@ public class CommunityResource extends BaseResource {
     public Representation toXml() {
         DomRepresentation representation;
         Document d;
-        Context comeon = null;
         try{
-            comeon = new Context();
-            community = Community.find(comeon, communityId);
+            c = new Context();
+            community = Community.find(c, communityId);
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(CommunityResource.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -180,7 +179,7 @@ public class CommunityResource extends BaseResource {
         body.appendChild(pSubCollections);
         
         try{
-            comeon.abort();
+            c.abort();
         }catch(NullPointerException e){
             Logger.getLogger(CommunitiesResource.class.getName()).log(url, Priority.WARN, e.toString(), e);
         }
