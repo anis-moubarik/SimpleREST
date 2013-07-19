@@ -67,7 +67,7 @@ public class RootCommunitiesResource extends BaseResource {
             c = new Context();
             communities = Community.findAllTop(c);
 
-            representation = new DomRepresentation(MediaType.TEXT_HTML);
+            representation = new DomRepresentation(MediaType.ALL);
             d = representation.getDocument();
         } catch (Exception e) {
             return errorInternal(c, e.toString());
