@@ -197,6 +197,11 @@ public class CommunityResource extends BaseResource {
         }
         StubCommunity s = new StubCommunity(community.getID(), community.getName(), community.getMetadata("short_description"),
                     community.getMetadata("introductory_text"), community.getMetadata("copyright_text"), community.getMetadata("side_bar_text"));
+        try{
+            c.abort();
+        }catch(NullPointerException e){
+            Logger.getLogger(CommunitiesResource.class.getName()).log(null, Priority.INFO, e.toString(), e);
+        }
         return gson.toJson(s);
     }
 
