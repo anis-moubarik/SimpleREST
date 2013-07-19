@@ -86,7 +86,7 @@ public class CommunityResource extends BaseResource {
     }
 
     // TODO: parent?
-    @Get("xml")
+    @Get("xml|html|xhtml")
     public Representation toXml() {
         DomRepresentation representation;
         Document d;
