@@ -57,7 +57,7 @@ public class RootCommunitiesResource extends BaseResource {
         return "rootcommunities";
     }
 
-    @Get
+    @Get("html|xhtml|xml")
     public Representation toXml() {
         Context c = null;
         Community[] communities;
