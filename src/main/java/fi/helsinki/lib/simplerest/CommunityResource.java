@@ -189,18 +189,9 @@ public class CommunityResource extends BaseResource {
     
     @Get("json")
     public String toJson(){
-        Community co = null;
-        Context c = null;
-        try{
-            c = new Context();
-            co = Community.find(c, communityId);
-        }catch(Exception e){
-            return errorInternal(c, e.toString()).getText();
-        }
-        
         Gson gson = new Gson();
-        StubCommunity s = new StubCommunity(co.getID(), co.getName(), co.getMetadata("short_description"),
-                    co.getMetadata("introductory_text"), co.getMetadata("copyright_text"), co.getMetadata("side_bar_text"));
+        StubCommunity s = new StubCommunity(community.getID(), community.getName(), community.getMetadata("short_description"),
+                    community.getMetadata("introductory_text"), community.getMetadata("copyright_text"), community.getMetadata("side_bar_text"));
         return gson.toJson(s);
     }
 

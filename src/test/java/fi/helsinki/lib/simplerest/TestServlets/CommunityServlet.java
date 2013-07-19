@@ -46,14 +46,35 @@ public class CommunityServlet extends HttpServlet{
         
         cr = new CommunityResource(mockedCommunity, mockedCommunity.getID());
         
-        String s = req.getPathInfo();
+        if(req.getPathInfo().equals("/xml")){
+            xmlTest(resp);
+        }else if(req.getPathInfo().equals("/json")){
+            jsonTest(resp);
+        }else if(req.getPathInfo().equals("/edit")){
+            editTest(resp);
+        }
+
+    }
+    
+    public void xmlTest(HttpServletResponse resp) throws IOException{
         PrintWriter out = resp.getWriter();
         try {
             out.write(cr.toXml().getText());
         } catch (Exception ex) {
-            Logger.getLogger(CommunityServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CommunityServlet.class.getName()).log(Level.INFO, null, ex);
+        } 
+    }
+
+    private void jsonTest(HttpServletResponse resp) throws IOException {
+        PrintWriter out = resp.getWriter();
+        try{
+            out.write(cr.toJson());
+        }catch(Exception ex) {
+            Logger.getLogger(CommunityServlet.class.getName()).log(Level.INFO, null, ex);
         }
     }
     
-    
+    private void editTest(HttpServletResponse resp) {
+        
+    }
 }

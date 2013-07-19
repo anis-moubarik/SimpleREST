@@ -21,7 +21,9 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
 import fi.helsinki.lib.simplerest.TestServlets.CommunityServlet;
+import fi.helsinki.lib.simplerest.stubs.StubCommunity;
 import java.io.IOException;
 import org.dspace.content.Community;
 import org.dspace.core.Context;
@@ -91,7 +93,7 @@ public class CommunityResourceTest {
         
         req.setMethod("GET");
         req.setHeader("HOST", "tester");
-        req.setURI("/community/");
+        req.setURI("/community/xml");
         resp.parse(tester.getResponses(req.generate()));
         
         System.out.println(resp.getContent());
@@ -104,8 +106,23 @@ public class CommunityResourceTest {
     }
     
     @Test
-    public void testGetJson(){
+    public void testGetJson() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
         
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/community/json");
+        resp.parse(tester.getResponses(req.generate()));
+        Gson gson = new Gson();
+        StubCommunity sc = gson.fromJson(resp.getContent(), StubCommunity.class);
+        assertEquals(200, resp.getStatus());
+        assertEquals(sc.getId(), 1);
+        assertEquals(sc.getName(), "test");
+        assertEquals(sc.getCopyright_text(), "testi copyright");
+        assertEquals(sc.getIntroductory_text(), "testi intro");
+        assertEquals(sc.getShort_description(), "testi kuvaus");
+        assertEquals(sc.getSide_bar_text(), "testi sidebar");
     }
 
     /**
@@ -120,18 +137,25 @@ public class CommunityResourceTest {
     /**
      * Test of doInit method, of class CommunityResource.
      */
-//    @Test(expected = NullPointerException.class)
-//    public void testDoInit() throws Exception {
-//        this.communityResource.doInit();
-//    }
+    @Test(expected = NullPointerException.class)
+    public void testDoInit() throws Exception {
+        this.communityResource.doInit();
+    }
 
     /**
      * Test of edit method, of class CommunityResource.
      */
-//    @Test(expected = NullPointerException.class)
-//    public void testEdit() {
-//        StringRepresentation representation = (StringRepresentation) this.communityResource.edit(null);
-//    }
+    @Test
+    public void testEdit() throws IOException, Exception {
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/community/edit");
+        resp.parse(tester.getResponses(req.generate()));
+        
+    }
 
     /**
      * Test of delete method, of class CommunityResource.
