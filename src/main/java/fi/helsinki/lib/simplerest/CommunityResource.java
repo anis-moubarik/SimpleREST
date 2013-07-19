@@ -89,15 +89,16 @@ public class CommunityResource extends BaseResource {
     public Representation toXml() {
         DomRepresentation representation;
         Document d;
+        c = null;
         try{
-            c = new Context();
+            //c = new Context();
             community = Community.find(c, communityId);
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(CommunityResource.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         try {
-            representation = new DomRepresentation(MediaType.TEXT_HTML);  
+            representation = new DomRepresentation(MediaType.ALL);  
             d = representation.getDocument();
         }
         catch (Exception e) {
