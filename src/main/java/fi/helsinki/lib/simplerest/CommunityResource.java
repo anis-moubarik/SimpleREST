@@ -55,6 +55,11 @@ public class CommunityResource extends BaseResource {
     private int communityId;
     private Community community;
     private Context c;
+
+    public CommunityResource() throws SQLException{
+        c = new Context();
+        community = Community.find(c, communityId);
+    }
     
     public CommunityResource(Community co, int communityId){
         this.communityId = communityId;
@@ -92,7 +97,7 @@ public class CommunityResource extends BaseResource {
         }
 
         try {
-            representation = new DomRepresentation(MediaType.ALL);  
+            representation = new DomRepresentation(MediaType.TEXT_HTML);  
             d = representation.getDocument();
         }
         catch (Exception e) {
@@ -186,7 +191,6 @@ public class CommunityResource extends BaseResource {
     public String toJson(){
         Gson gson = new Gson();
         try{
-            c = new Context();
             community = Community.find(c, communityId);
         }catch(Exception e){
             Logger.getLogger(CommunityResource.class).log(null, Priority.INFO, e, e);
