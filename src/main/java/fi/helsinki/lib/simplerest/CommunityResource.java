@@ -54,6 +54,7 @@ public class CommunityResource extends BaseResource {
     private static Logger log = Logger.getLogger(CommunityResource.class);
     private int communityId;
     private Community comm;
+    private Context context;
     
     public CommunityResource(Community co, int communityId){
         this.communityId = communityId;
@@ -63,6 +64,11 @@ public class CommunityResource extends BaseResource {
     public CommunityResource(){
         this.communityId = 0;
         this.comm = null;
+        try {
+            this.context = new Context();
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(CommunityResource.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     static public String relativeUrl(int communityId) {
@@ -88,11 +94,8 @@ public class CommunityResource extends BaseResource {
     public Representation toXml() {
         DomRepresentation representation;
         Document d;
-        Context context = null;
-        Community community = null;
         try{
-            context = new Context();
-            community = Community.find(context, communityId);
+            comm = Community.find(context, communityId);
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(CommunityResource.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -113,7 +116,7 @@ public class CommunityResource extends BaseResource {
 
         Element title = d.createElement("title");
         head.appendChild(title);
-        title.appendChild(d.createTextNode("Community " + community.getName()));
+        title.appendChild(d.createTextNode("Community " + comm.getName()));
 
         Element body = d.createElement("body");
         html.appendChild(body);
@@ -126,7 +129,7 @@ public class CommunityResource extends BaseResource {
         dtName.appendChild(d.createTextNode("name"));
         dl.appendChild(dtName);
         Element ddName = d.createElement("dd");
-        ddName.appendChild(d.createTextNode(community.getName()));
+        ddName.appendChild(d.createTextNode(comm.getName()));
         dl.appendChild(ddName);
 
         String[] attributes = { "short_description", "introductory_text",
@@ -137,11 +140,11 @@ public class CommunityResource extends BaseResource {
             dl.appendChild(dt);
 
             Element dd = d.createElement("dd");
-            dd.appendChild(d.createTextNode(community.getMetadata(attribute)));
+            dd.appendChild(d.createTextNode(comm.getMetadata(attribute)));
             dl.appendChild(dd);
         }
 
-        Bitstream logo = community.getLogo();
+        Bitstream logo = comm.getLogo();
         if (logo != null) {
             Element aLogo = d.createElement("a");
             String url = baseUrl() +
@@ -191,9 +194,7 @@ public class CommunityResource extends BaseResource {
     @Get("json")
     public String toJson(){
         Gson gson = new Gson();
-        Context context = null;
         try{
-            context = new Context();
             comm = Community.find(context, communityId);
         }catch(Exception e){
             Logger.getLogger(CommunityResource.class).log(null, Priority.INFO, e, e);
