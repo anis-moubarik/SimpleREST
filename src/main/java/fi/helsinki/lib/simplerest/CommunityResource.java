@@ -53,11 +53,11 @@ public class CommunityResource extends BaseResource {
 
     private static Logger log = Logger.getLogger(CommunityResource.class);
     private int communityId;
-    private Community community;
+    private Community comm;
     
     public CommunityResource(Community co, int communityId){
         this.communityId = communityId;
-        this.community = co;
+        this.comm = co;
     }
     
     static public String relativeUrl(int communityId) {
@@ -189,12 +189,12 @@ public class CommunityResource extends BaseResource {
         Context context = null;
         try{
             context = new Context();
-            community = Community.find(context, communityId);
+            comm = Community.find(context, communityId);
         }catch(Exception e){
             Logger.getLogger(CommunityResource.class).log(null, Priority.INFO, e, e);
         }
-        StubCommunity s = new StubCommunity(community.getID(), community.getName(), community.getMetadata("short_description"),
-                    community.getMetadata("introductory_text"), community.getMetadata("copyright_text"), community.getMetadata("side_bar_text"));
+        StubCommunity s = new StubCommunity(comm.getID(), comm.getName(), comm.getMetadata("short_description"),
+                    comm.getMetadata("introductory_text"), comm.getMetadata("copyright_text"), comm.getMetadata("side_bar_text"));
         try{
             context.abort();
         }catch(NullPointerException e){
@@ -215,7 +215,7 @@ public class CommunityResource extends BaseResource {
             }
         }
         catch (SQLException e) {
-            return errorInternal(c, "SQLException");
+            return errorInternal(c, "SQLException "+e.getMessage());
         }
 
         DomRepresentation dom = new DomRepresentation(rep);
