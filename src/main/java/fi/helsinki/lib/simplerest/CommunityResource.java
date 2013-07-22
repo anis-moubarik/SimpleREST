@@ -61,6 +61,7 @@ public class CommunityResource extends BaseResource {
     }
     
     public CommunityResource(){
+        this.communityId = 0;
         this.comm = null;
     }
     
