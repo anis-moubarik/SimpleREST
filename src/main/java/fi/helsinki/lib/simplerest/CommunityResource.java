@@ -60,6 +60,10 @@ public class CommunityResource extends BaseResource {
         this.comm = co;
     }
     
+    public CommunityResource(){
+        this.comm = null;
+    }
+    
     static public String relativeUrl(int communityId) {
         return "community/" + communityId;
     }
