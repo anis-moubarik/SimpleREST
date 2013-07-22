@@ -90,7 +90,6 @@ public class CommunityResource extends BaseResource {
         DomRepresentation representation;
         Document d;
         try{
-            c = new Context();
             community = Community.find(c, communityId);
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(CommunityResource.class.getName()).log(Level.SEVERE, null, ex);

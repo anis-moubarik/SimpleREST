@@ -136,7 +136,7 @@ public class ItemsResource extends BaseResource {
         }
         catch (SQLException e) {
             String errMsg =
-                "SQLException while trying to items of the collection.";
+                "SQLException while trying to items of the collection. "+e.getMessage();
             return errorInternal(c, errMsg);
         }
 
