@@ -54,12 +54,6 @@ public class CommunityResource extends BaseResource {
     private static Logger log = Logger.getLogger(CommunityResource.class);
     private int communityId;
     private Community community;
-    private Context c;
-
-    public CommunityResource() throws SQLException{
-        c = new Context();
-        community = Community.find(c, communityId);
-    }
     
     public CommunityResource(Community co, int communityId){
         this.communityId = communityId;
@@ -89,8 +83,11 @@ public class CommunityResource extends BaseResource {
     public Representation toXml() {
         DomRepresentation representation;
         Document d;
+        Context context = null;
+        Community community = null;
         try{
-            community = Community.find(c, communityId);
+            context = new Context();
+            community = Community.find(context, communityId);
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(CommunityResource.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -100,7 +97,7 @@ public class CommunityResource extends BaseResource {
             d = representation.getDocument();
         }
         catch (Exception e) {
-            return errorInternal(c, e.toString());
+            return errorInternal(context, e.toString());
         }
 
         Element html = d.createElement("html");  
@@ -178,7 +175,7 @@ public class CommunityResource extends BaseResource {
         body.appendChild(pSubCollections);
         
         try{
-            c.abort();
+            context.abort();
         }catch(NullPointerException e){
             Logger.getLogger(CommunitiesResource.class.getName()).log(url, Priority.WARN, e.toString(), e);
         }
@@ -189,15 +186,17 @@ public class CommunityResource extends BaseResource {
     @Get("json")
     public String toJson(){
         Gson gson = new Gson();
+        Context context = null;
         try{
-            community = Community.find(c, communityId);
+            context = new Context();
+            community = Community.find(context, communityId);
         }catch(Exception e){
             Logger.getLogger(CommunityResource.class).log(null, Priority.INFO, e, e);
         }
         StubCommunity s = new StubCommunity(community.getID(), community.getName(), community.getMetadata("short_description"),
                     community.getMetadata("introductory_text"), community.getMetadata("copyright_text"), community.getMetadata("side_bar_text"));
         try{
-            c.abort();
+            context.abort();
         }catch(NullPointerException e){
             Logger.getLogger(CommunitiesResource.class.getName()).log(null, Priority.INFO, e.toString(), e);
         }
