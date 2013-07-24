@@ -7,7 +7,6 @@ package fi.helsinki.lib.simplerest.TestServlets;
 import fi.helsinki.lib.simplerest.CommunityResource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServlet;
@@ -50,10 +49,27 @@ public class CommunityServlet extends HttpServlet{
             xmlTest(resp);
         }else if(req.getPathInfo().equals("/json")){
             jsonTest(resp);
-        }else if(req.getPathInfo().equals("/edit")){
-            editTest(resp);
         }
-
+    }
+    
+    @Override
+    public void doPut(HttpServletRequest req, HttpServletResponse resp){
+        mockedCommunity = mock(Community.class);
+        when(mockedCommunity.getID()).thenReturn(1);
+        when(mockedCommunity.getName()).thenReturn("test");
+        when(mockedCommunity.getType()).thenReturn(10);
+        when(mockedCommunity.getMetadata("short_description")).thenReturn("testi kuvaus");
+        when(mockedCommunity.getMetadata("introductory_text")).thenReturn("testi intro");
+        when(mockedCommunity.getMetadata("copyright_text")).thenReturn("testi copyright");
+        when(mockedCommunity.getMetadata("side_bar_text")).thenReturn("testi sidebar");
+        when(mockedCommunity.getLogo()).thenReturn(null);
+        
+        cr = new CommunityResource(mockedCommunity, mockedCommunity.getID());
+        
+        if(req.getPathInfo().equals("/edit")){
+            //Stuff here
+            
+        }
     }
     
     public void xmlTest(HttpServletResponse resp) throws IOException{
@@ -72,9 +88,5 @@ public class CommunityServlet extends HttpServlet{
         }catch(Exception ex) {
             Logger.getLogger(CommunityServlet.class.getName()).log(Level.INFO, null, ex);
         }
-    }
-    
-    private void editTest(HttpServletResponse resp) {
-        
     }
 }
