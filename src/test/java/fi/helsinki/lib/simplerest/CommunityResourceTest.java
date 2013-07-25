@@ -25,22 +25,12 @@ import com.google.gson.Gson;
 import fi.helsinki.lib.simplerest.TestServlets.CommunityServlet;
 import fi.helsinki.lib.simplerest.stubs.StubCommunity;
 import java.io.IOException;
-import org.dspace.content.Community;
-import org.dspace.core.Context;
 import org.eclipse.jetty.testing.HttpTester;
 import org.eclipse.jetty.testing.ServletTester;
-import org.elasticsearch.rest.RestRequest;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.restlet.Client;
-import org.restlet.Request;
-
-
-import org.restlet.data.MediaType;
-import org.restlet.data.Protocol;
-import org.restlet.representation.StringRepresentation;
 
 
 /**
@@ -150,11 +140,17 @@ public class CommunityResourceTest {
         HttpTester req = new HttpTester();
         HttpTester resp = new HttpTester();
         
-        req.setMethod("GET");
+        req.setMethod("PUT");
         req.setHeader("HOST", "tester");
         req.setURI("/community/edit");
         resp.parse(tester.getResponses(req.generate()));
-        
+        System.out.println(resp.getContent());
+        assertEquals(200, resp.getStatus());
+        String[] attributes = { "short_description", "introductory_text",
+                                "copyright_text", "side_bar_text" };        
+        for(String attribute : attributes){
+            assertEquals(resp.getContent().contains(attribute), true);
+        }
     }
 
     /**

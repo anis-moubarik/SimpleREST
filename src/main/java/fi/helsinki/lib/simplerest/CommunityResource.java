@@ -54,6 +54,7 @@ public class CommunityResource extends BaseResource {
     private static Logger log = Logger.getLogger(CommunityResource.class);
     private int communityId;
     private Community comm;
+    private Context context;
     
     public CommunityResource(Community co, int communityId){
         this.communityId = communityId;
@@ -63,6 +64,11 @@ public class CommunityResource extends BaseResource {
     public CommunityResource(){
         this.communityId = 0;
         this.comm = null;
+        try {
+            this.context = new Context();
+        } catch (SQLException ex) {
+            log.log(Priority.INFO, ex);
+        }
     }
     
     static public String relativeUrl(int communityId) {
@@ -88,11 +94,8 @@ public class CommunityResource extends BaseResource {
     public Representation toXml() {
         DomRepresentation representation;
         Document d;
-        Context context = null;
-        Community community = null;
         try{
-            context = new Context();
-            community = Community.find(context, communityId);
+            comm = Community.find(context, communityId);
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(CommunityResource.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -113,7 +116,7 @@ public class CommunityResource extends BaseResource {
 
         Element title = d.createElement("title");
         head.appendChild(title);
-        title.appendChild(d.createTextNode("Community " + community.getName()));
+        title.appendChild(d.createTextNode("Community " + comm.getName()));
 
         Element body = d.createElement("body");
         html.appendChild(body);
@@ -126,7 +129,7 @@ public class CommunityResource extends BaseResource {
         dtName.appendChild(d.createTextNode("name"));
         dl.appendChild(dtName);
         Element ddName = d.createElement("dd");
-        ddName.appendChild(d.createTextNode(community.getName()));
+        ddName.appendChild(d.createTextNode(comm.getName()));
         dl.appendChild(ddName);
 
         String[] attributes = { "short_description", "introductory_text",
@@ -137,11 +140,11 @@ public class CommunityResource extends BaseResource {
             dl.appendChild(dt);
 
             Element dd = d.createElement("dd");
-            dd.appendChild(d.createTextNode(community.getMetadata(attribute)));
+            dd.appendChild(d.createTextNode(comm.getMetadata(attribute)));
             dl.appendChild(dd);
         }
 
-        Bitstream logo = community.getLogo();
+        Bitstream logo = comm.getLogo();
         if (logo != null) {
             Element aLogo = d.createElement("a");
             String url = baseUrl() +
@@ -191,10 +194,8 @@ public class CommunityResource extends BaseResource {
     @Get("json")
     public String toJson(){
         Gson gson = new Gson();
-        Context context = null;
         try{
-            context = new Context();
-            comm = Community.find(context, communityId);
+            comm = Community.find(context, this.communityId);
         }catch(Exception e){
             Logger.getLogger(CommunityResource.class).log(null, Priority.INFO, e, e);
         }
@@ -210,32 +211,33 @@ public class CommunityResource extends BaseResource {
 
     @Put
     public Representation edit(InputRepresentation rep) {
-        Context c = null;
-        Community community;
         try {
-            c = getAuthenticatedContext();
-            community = Community.find(c, this.communityId);
-            if (community == null) {
-                return errorNotFound(c, "Could not find the community.");
+            context = getAuthenticatedContext();
+            comm = Community.find(context, this.communityId);
+            if (comm == null) {
+                return errorNotFound(context, "Could not find the community.");
             }
         }
         catch (SQLException e) {
-            return errorInternal(c, "SQLException "+e.getMessage());
+            return errorInternal(context, "SQLException "+e.getMessage());
+        }
+        catch(NullPointerException e){
+            log.log(Priority.INFO, e);
         }
 
         DomRepresentation dom = new DomRepresentation(rep);
 
         Node attributesNode = dom.getNode("//dl[@id='attributes']");
         if (attributesNode == null) {
-            return error(c, "Did not find dl tag with an id 'attributes'.",
+            return error(context, "Did not find dl tag with an id 'attributes'.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
         }
 	
-        community.setMetadata("name", null);
-        community.setMetadata("short_description", null);
-        community.setMetadata("introductory_text", null);
-        community.setMetadata("copyright_text", null);
-        community.setMetadata("side_bar_text", null);
+        comm.setMetadata("name", null);
+        comm.setMetadata("short_description", null);
+        comm.setMetadata("introductory_text", null);
+        comm.setMetadata("copyright_text", null);
+        comm.setMetadata("side_bar_text", null);
 
         NodeList nodes = attributesNode.getChildNodes();
 	LinkedList<String> dtList = new LinkedList();
@@ -252,7 +254,7 @@ public class CommunityResource extends BaseResource {
 	    }
 	}
 	if (dtList.size() != ddList.size()) {
-	    return error(c, "The number of <dt> and <dd> elements do not match.",
+	    return error(context, "The number of <dt> and <dd> elements do not match.",
 			 Status.CLIENT_ERROR_BAD_REQUEST);
 	}
         int size = dtList.size();
@@ -264,20 +266,23 @@ public class CommunityResource extends BaseResource {
                 dt.equals("introductory_text") ||
                 dt.equals("copyright_text") ||
                 dt.equals("side_bar_text")) {
-                community.setMetadata(dt, dd);
+                comm.setMetadata(dt, dd);
             }
             else {
-                return error(c, "Unexpected data in attributes: " + dt,
+                return error(context, "Unexpected data in attributes: " + dt,
                              Status.CLIENT_ERROR_BAD_REQUEST);
 	    }
 	}
 
         try {
-            community.update();
-            c.complete();
+            comm.update();
+            context.complete();
+        }
+        catch(NullPointerException e){
+            log.log(Priority.INFO, e);
         }
         catch (Exception e) {
-            return errorInternal(c, e.toString());
+            return errorInternal(context, e.toString());
         }
 
         return successOk("Community updated.");
