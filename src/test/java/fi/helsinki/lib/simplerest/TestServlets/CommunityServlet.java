@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,15 +31,8 @@ public class CommunityServlet extends HttpServlet{
     private Community mockedCommunity;
     private CommunityResource cr;
     
-    /**
-     *
-     * @param req
-     * @param resp
-     * @throws IOException
-     */
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException{
-        
+    public void init(ServletConfig config) throws ServletException{
         mockedCommunity = mock(Community.class);
         when(mockedCommunity.getID()).thenReturn(1);
         when(mockedCommunity.getName()).thenReturn("test");
@@ -49,7 +44,16 @@ public class CommunityServlet extends HttpServlet{
         when(mockedCommunity.getLogo()).thenReturn(null);
         
         cr = new CommunityResource(mockedCommunity, mockedCommunity.getID());
-        
+    }
+    
+    /**
+     *
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
+    @Override
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException{
         if(req.getPathInfo().equals("/xml")){
             xmlTest(resp);
         }else if(req.getPathInfo().equals("/json")){
@@ -59,17 +63,6 @@ public class CommunityServlet extends HttpServlet{
     
     @Override
     public void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException{
-        mockedCommunity = mock(Community.class);
-        when(mockedCommunity.getID()).thenReturn(1);
-        when(mockedCommunity.getName()).thenReturn("test");
-        when(mockedCommunity.getType()).thenReturn(10);
-        when(mockedCommunity.getMetadata("short_description")).thenReturn("testi kuvaus");
-        when(mockedCommunity.getMetadata("introductory_text")).thenReturn("testi intro");
-        when(mockedCommunity.getMetadata("copyright_text")).thenReturn("testi copyright");
-        when(mockedCommunity.getMetadata("side_bar_text")).thenReturn("testi sidebar");
-        when(mockedCommunity.getLogo()).thenReturn(null);
-        
-        cr = new CommunityResource(mockedCommunity, mockedCommunity.getID());
         Representation rep = cr.toXml();
         
         //Empty Community with new CommunityResource
