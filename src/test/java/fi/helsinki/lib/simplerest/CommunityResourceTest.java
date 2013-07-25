@@ -144,7 +144,13 @@ public class CommunityResourceTest {
         req.setHeader("HOST", "tester");
         req.setURI("/community/edit");
         resp.parse(tester.getResponses(req.generate()));
-        
+        System.out.println(resp.getContent());
+        assertEquals(200, resp.getStatus());
+        String[] attributes = { "short_description", "introductory_text",
+                                "copyright_text", "side_bar_text" };        
+        for(String attribute : attributes){
+            assertEquals(resp.getContent().contains(attribute), true);
+        }
     }
 
     /**
