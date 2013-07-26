@@ -87,7 +87,7 @@ public class UserResource extends BaseResource {
             this.eperson = EPerson.find(this.context, this.userId);
         }catch(Exception e){
             if(this.eperson == null){
-                return errorInternal(this.context, e.toString());
+                return errorNotFound(this.context, "Could not find the community");
             }
             log.log(Priority.INFO, e);
         }
