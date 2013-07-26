@@ -86,6 +86,9 @@ public class UserResource extends BaseResource {
         try{
             this.eperson = EPerson.find(this.context, this.userId);
         }catch(Exception e){
+            if(this.eperson == null){
+                return errorInternal(this.context, e.toString());
+            }
             log.log(Priority.INFO, e);
         }
 	
