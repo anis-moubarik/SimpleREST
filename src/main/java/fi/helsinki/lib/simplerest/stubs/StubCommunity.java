@@ -7,8 +7,6 @@ public class StubCommunity implements Serializable{
     
     private int id;
     private String name;
-    private final String[] attributes = { "short_description", "introductory_text",
-                                "copyright_text", "side_bar_text" };
     private String short_description;
     private String introductory_text;
     private String copyright_text;

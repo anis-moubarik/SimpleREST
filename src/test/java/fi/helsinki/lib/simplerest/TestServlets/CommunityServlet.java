@@ -5,10 +5,7 @@
 package fi.helsinki.lib.simplerest.TestServlets;
 
 import fi.helsinki.lib.simplerest.CommunityResource;
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +27,7 @@ public class CommunityServlet extends HttpServlet{
     
     private Community mockedCommunity;
     private CommunityResource cr;
+    private final Logger log = Logger.getLogger(CommunityServlet.class.getName());
     
     @Override
     public void init(ServletConfig config) throws ServletException{
@@ -92,7 +90,7 @@ public class CommunityServlet extends HttpServlet{
         try {
             out.write(cr.toXml().getText());
         } catch (Exception ex) {
-            Logger.getLogger(CommunityServlet.class.getName()).log(Level.INFO, null, ex);
+            log.log(Level.INFO, null, ex);
         } 
     }
 
@@ -101,7 +99,7 @@ public class CommunityServlet extends HttpServlet{
         try{
             out.write(cr.toJson());
         }catch(Exception ex) {
-            Logger.getLogger(CommunityServlet.class.getName()).log(Level.INFO, null, ex);
+            log.log(Level.INFO, null, ex);
         }
     }
 }

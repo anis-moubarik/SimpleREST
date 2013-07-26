@@ -18,6 +18,9 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.stubs.StubUser;
+import java.sql.SQLException;
 import org.dspace.core.Context;
 import org.dspace.eperson.EPerson;
 
@@ -32,12 +35,30 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 public class UserResource extends BaseResource {
 
     private static Logger log = Logger.getLogger(UserResource.class);
 
     private int userId;
+    private EPerson eperson;
+    private Context context;
+    
+    public UserResource(EPerson p, int userId){
+        this.eperson = p;
+        this.userId = userId;
+    }
+    
+    public UserResource(){
+        this.userId = 0;
+        this.eperson = null;
+        try{
+            this.context = new Context();
+        }catch(SQLException e){
+            log.log(Priority.FATAL, e);
+        }
+    }
 
     @Override
     protected void doInit() throws ResourceException {
@@ -57,21 +78,23 @@ public class UserResource extends BaseResource {
         return "user/" + userId;
     }
 
-    @Get("xml")
+    @Get("html|xhtml|xml")
     public Representation toXml() {
-        Context c = null;
-        DomRepresentation representation = null;
+        DomRepresentation representation;
         Document d = null;
-	EPerson eperson = null;
+        
+        try{
+            this.eperson = EPerson.find(this.context, this.userId);
+        }catch(Exception e){
+            log.log(Priority.INFO, e);
+        }
 	
         try {
-            c = new Context();
             representation = new DomRepresentation(MediaType.TEXT_HTML);  
             d = representation.getDocument();  
-	    eperson = EPerson.find(c,userId);
         }
         catch (Exception e) {
-            return errorInternal(c, e.toString());
+            return errorInternal(this.context, e.toString());
         }
 
         Element html = d.createElement("html");  
@@ -91,7 +114,7 @@ public class UserResource extends BaseResource {
 	dl.setAttribute("id","attributes");
         body.appendChild(dl);
 
-	createAttribute(d,dl,"email",eperson.getEmail());
+	createAttribute(d,dl,"email",eperson.getEmail().replace("@", "(a)")); //Against those pesky bots
 	createAttribute(d,dl,"id",Integer.toString(eperson.getID()));
 	createAttribute(d,dl,"language",eperson.getLanguage());
 	createAttribute(d,dl,"netid",eperson.getNetid());
@@ -102,9 +125,35 @@ public class UserResource extends BaseResource {
 	createAttribute(d,dl,"require certificate",Boolean.toString(eperson.getRequireCertificate()));
 	createAttribute(d,dl,"self registered",Boolean.toString(eperson.getSelfRegistered()));
 	createAttribute(d,dl,"password",eperson.getMetadata("password"));
-	c.abort(); // Same as c.complete() because we didn't modify the db.
-
+	
+        try{
+        this.context.abort(); // Same as c.complete() because we didn't modify the db.
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson(){
+        Gson gson = new Gson();
+        try{
+            this.eperson = EPerson.find(context, userId);
+        }catch(Exception e){
+            log.log(Priority.INFO, e);
+        }
+        
+        StubUser su = new StubUser(eperson.getID(), eperson.getEmail(), eperson.getLanguage(),
+                eperson.getNetid(), eperson.getFullName(), eperson.getFirstName(), eperson.getLastName(),
+                eperson.canLogIn(), eperson.getRequireCertificate(), eperson.getSelfRegistered(), eperson.getMetadata("password"));
+        
+        try{
+            context.abort();
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
+        
+        return gson.toJson(su);
     }
 
     private void createAttribute(Document d, Element parent, String name,

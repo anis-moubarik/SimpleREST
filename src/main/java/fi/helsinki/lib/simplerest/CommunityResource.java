@@ -67,7 +67,7 @@ public class CommunityResource extends BaseResource {
         try {
             this.context = new Context();
         } catch (SQLException ex) {
-            log.log(Priority.INFO, ex);
+            log.log(Priority.FATAL, ex);
         }
     }
     
