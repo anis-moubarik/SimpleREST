@@ -57,7 +57,6 @@ public class CommunitiesResource extends BaseResource {
     private static Logger log = Logger.getLogger(CommunitiesResource.class);
     
     private int communityId;
-    private Community community;
 
     static public String relativeUrl(int communityId) {
         return "community/" + communityId + "/communities";
@@ -81,7 +80,7 @@ public class CommunitiesResource extends BaseResource {
     @Get("xml")
     public Representation toXml() {
         Context c = null;
-        community = null;
+        Community community = null;
         DomRepresentation representation = null;
         Document d = null;
         try {
@@ -159,8 +158,10 @@ public class CommunitiesResource extends BaseResource {
     public String toJson() {
         Community[] communities;
         Context c = null;
+        Community community = null;
         try{
             c = new Context();
+            community = Community.find(c, communityId);
             communities = community.getSubcommunities();
         }catch(Exception e){
             return errorInternal(c, e.toString()).getText();
