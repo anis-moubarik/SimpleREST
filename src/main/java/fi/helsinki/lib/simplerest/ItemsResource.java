@@ -18,6 +18,8 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.stubs.StubItem;
 import java.sql.SQLException;
 import java.util.HashSet;
 
@@ -158,6 +160,36 @@ public class ItemsResource extends BaseResource {
                       SQLexception). */
 
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson() throws SQLException{
+        ItemIterator items;
+        Context c = null;
+        Collection collection = null;
+        try{
+            c = new Context();
+            collection = Collection.find(c, collectionId);
+            items = collection.getAllItems();
+        }catch(Exception e){
+            return errorInternal(c, e.toString()).getText();
+        }
+        
+        Gson gson = new Gson();
+        int itemSize = 0;
+        while(items.hasNext()){
+            itemSize++;
+        }
+        
+        StubItem[] toJsonItems = new StubItem[itemSize];
+        
+        int i = 0;
+        while(items.hasNext()){
+            toJsonItems[i] = new StubItem(items.next());
+            i++;
+        }
+        
+        return gson.toJson(toJsonItems);   
     }
 
     @Put
