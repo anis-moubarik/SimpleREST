@@ -18,6 +18,8 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.stubs.StubUser;
 import org.dspace.core.Context;
 import org.dspace.eperson.EPerson;
 
@@ -89,6 +91,30 @@ public class UsersResource extends BaseResource {
 	c.abort(); // Same as c.complete() because we didn't modify the db.
 
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson(){
+        EPerson[] users;
+        Context c = null;
+        try{
+            c = new Context();
+            users = EPerson.findAll(c, 0);
+        }catch(Exception e){
+            return errorInternal(c, e.toString()).getText();
+        }
+        
+        Gson gson = new Gson();
+        StubUser[] toJsonUsers = new StubUser[users.length];
+        
+        for (int i = 0; i < users.length; i++) {
+            toJsonUsers[i] = new StubUser(users[i].getID(), users[i].getEmail(), users[i].getLanguage(),
+                    users[i].getNetid(), users[i].getFullName(), users[i].getFirstName(), users[i].getLastName(),
+                    users[i].canLogIn(), users[i].getRequireCertificate(), users[i].getSelfRegistered(),
+                    users[i].getMetadata("password"));
+        }
+        
+        return gson.toJson(toJsonUsers);
     }
 
 }
