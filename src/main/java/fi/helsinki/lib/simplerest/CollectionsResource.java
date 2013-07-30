@@ -18,6 +18,8 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.stubs.StubCollection;
 import org.dspace.core.Context;
 import org.dspace.content.Community;
 import org.dspace.content.Collection;
@@ -157,6 +159,31 @@ public class CollectionsResource extends BaseResource {
 	c.abort(); // Same as c.complete() because we didn't modify the db.
 
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson(){
+        Collection[] collections;
+        Context c = null;
+        Community community = null;
+        try{
+            c = new Context();
+            community = Community.find(c, communityId);
+            collections = community.getCollections();
+        }catch(Exception e){
+            return errorInternal(c, e.toString()).getText();
+        }
+        
+        Gson gson = new Gson();
+        StubCollection[] toJsonCollections = new StubCollection[collections.length];
+        
+        for(int i = 0; i < toJsonCollections.length; i++){
+            toJsonCollections[i] = new StubCollection(collections[i].getID(), collections[i].getName(), collections[i].getMetadata("short_description"),
+                    collections[i].getMetadata("introductory_text"), collections[i].getMetadata("provenance_description"), collections[i].getLicense(),
+                    collections[i].getMetadata("copyright_text"), collections[i].getMetadata("side_bar_text"), collections[i].getLogo());
+        }
+        
+        return gson.toJson(toJsonCollections);
     }
 
     @Put

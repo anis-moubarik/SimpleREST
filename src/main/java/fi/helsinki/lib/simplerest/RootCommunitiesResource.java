@@ -20,8 +20,11 @@ package fi.helsinki.lib.simplerest;
 
 import fi.helsinki.lib.simplerest.stubs.StubCommunity;
 import com.google.gson.Gson;
+import java.io.IOException;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.logging.Level;
 
 import org.dspace.core.Context;
 import org.dspace.content.Community;
@@ -48,10 +51,28 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Priority;
 
 public class RootCommunitiesResource extends BaseResource {
 
     private static Logger log = Logger.getLogger(RootCommunitiesResource.class);
+    
+    private Community[] communities;
+    private Context context;
+    
+    public RootCommunitiesResource(Community[] communities){
+        this.communities = communities;
+    }
+    
+    public RootCommunitiesResource(){
+        this.communities = null;
+        try{
+            this.context = new Context();
+            this.communities = Community.findAllTop(context);
+        }catch(SQLException e){
+            log.log(Priority.FATAL, e);
+        }
+    }
 
     static public String relativeUrl(int dummy) {
         return "rootcommunities";
@@ -59,18 +80,13 @@ public class RootCommunitiesResource extends BaseResource {
 
     @Get("html|xhtml|xml")
     public Representation toXml() {
-        Context c = null;
-        Community[] communities;
-        DomRepresentation representation;
-        Document d;
+        DomRepresentation representation = null;
+        Document d = null;
         try {
-            c = new Context();
-            communities = Community.findAllTop(c);
-
             representation = new DomRepresentation(MediaType.ALL);
             d = representation.getDocument();
-        } catch (Exception e) {
-            return errorInternal(c, e.toString());
+        } catch (IOException ex) {
+            log.log(Priority.INFO, ex);
         }
 
         representation.setIndenting(true);
@@ -92,7 +108,12 @@ public class RootCommunitiesResource extends BaseResource {
         setId(ul, "rootcommunities");
         body.appendChild(ul);
 
-        String url = getRequest().getResourceRef().getIdentifier();
+        String url = "";
+        try{
+            url = getRequest().getResourceRef().getIdentifier();
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
         url = url.substring(0, url.lastIndexOf('/') + 1);
         url += "community/";
         for (Community community : communities) {
@@ -123,21 +144,16 @@ public class RootCommunitiesResource extends BaseResource {
         form.appendChild(submitButton);
         body.appendChild(form);
 
-        c.abort();
+        try{
+            context.abort();
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
         return representation;
     }
     
     @Get("json")
     public String toJson() {
-        Community[] communities;
-        Context c = null;
-        try{
-            c = new Context();
-            communities = Community.findAllTop(c);
-        }catch(Exception e){
-            return errorInternal(c, e.toString()).getText();
-        }
-        
         /*Community class from DSpace-api won't work for Serialization to json,
         so we use StubCommunity, and use a slow loop to create new StubCommunity array,
         which will be Serializable and converted to json. */

@@ -21,6 +21,12 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.TestServlets.RootCommunitiesServlet;
+import fi.helsinki.lib.simplerest.stubs.StubCommunity;
+import java.io.IOException;
+import org.eclipse.jetty.testing.HttpTester;
+import org.eclipse.jetty.testing.ServletTester;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -47,6 +53,8 @@ public class RootCommunitiesResourceTest {
      * @see fi.helsinki.lib.simplerest.RootCommunitiesResource
      */
     private RootCommunitiesResource rootCommunitiesResource;
+    
+    private ServletTester tester;
 
     public RootCommunitiesResourceTest() {
     }
@@ -56,8 +64,50 @@ public class RootCommunitiesResourceTest {
      * Initializing the test resources.
      */
     @Before
-    public void setUp() {
-        this.rootCommunitiesResource = new RootCommunitiesResource();
+    public void setUp() throws Exception {
+        tester = new ServletTester();
+        tester.setContextPath("/");
+        tester.addServlet(RootCommunitiesServlet.class, "/rootcommunities/*");
+        tester.start();
+    }
+    
+    @Test
+    public void testGetXml() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/rootcommunities/xml");
+        resp.parse(tester.getResponses(req.generate()));
+        
+        System.out.println(resp.getContent());
+        
+        assertEquals(200, resp.getStatus());
+        assertEquals(resp.getContent().contains("test"), true);
+        assertEquals(resp.getContent().contains("Root"), true);
+        assertEquals(resp.getContent().contains("community/1"), true);
+    }
+    
+    @Test
+    public void testGetJson() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/rootcommunities/json");
+        resp.parse(tester.getResponses(req.generate()));
+        
+        System.out.println(resp.getContent());
+        
+        assertEquals(200, resp.getStatus());
+        Gson gson = new Gson();
+        
+        StubCommunity[] communities = gson.fromJson(resp.getContent(), StubCommunity[].class);
+        
+        assertEquals(communities.length, 2);
+        assertEquals(communities[0].getId(), 1);
     }
 
     /**
@@ -76,40 +126,5 @@ public class RootCommunitiesResourceTest {
     public void testRelativeUrl() {
         String actualUrl = RootCommunitiesResource.relativeUrl(1543);
         assertEquals("rootcommunities", actualUrl);
-    }
-
-    /**
-     * Test of put method, of class RootCommunitiesResource.
-     */
-    @Test
-    public void testPut() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.rootCommunitiesResource.put(null);
-        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-        assertEquals("Root communities resource does not allow PUT method.",
-                     representation.getText());
-    }
-
-    /**
-     * Test of addCommunity method, of class RootCommunitiesResource.
-     */
-    @Test
-    public void testAddCommunity() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.rootCommunitiesResource.addCommunity(null);
-        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-        assertEquals("java.lang.NullPointerException", representation.getText());
-    }
-
-    /**
-     * Test of delete method, of class RootCommunitiesResource.
-     */
-    @Test
-    public void testDelete() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.rootCommunitiesResource.delete();
-        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-        assertEquals("Root communities resource does not allow DELETE method.",
-                     representation.getText());
     }
 }
