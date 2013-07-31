@@ -10,7 +10,6 @@ import fi.helsinki.lib.simplerest.stubs.StubUser;
 import java.io.IOException;
 import org.eclipse.jetty.testing.HttpTester;
 import org.eclipse.jetty.testing.ServletTester;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -20,9 +19,7 @@ import static org.junit.Assert.*;
  * @author moubarik
  */
 public class UserResourceTest {
-    
-    private UserResource userResource;
-    
+        
     private ServletTester tester;
     
     @Before
@@ -31,11 +28,6 @@ public class UserResourceTest {
         tester.setContextPath("/");
         tester.addServlet(UserServlet.class, "/user/*");
         tester.start();
-    }
-    
-    @After
-    public void tearDown(){
-        this.userResource = null;
     }
     
     @Test

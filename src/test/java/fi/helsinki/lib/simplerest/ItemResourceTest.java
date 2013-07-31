@@ -21,6 +21,10 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import fi.helsinki.lib.simplerest.TestServlets.ItemServlet;
+import java.io.IOException;
+import org.eclipse.jetty.testing.HttpTester;
+import org.eclipse.jetty.testing.ServletTester;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -37,7 +41,7 @@ import org.restlet.representation.StringRepresentation;
  * <li>http://junit.sourceforge.net/doc/faq/faq.htm</li>
  * </ul>
  * Testing the methods of <code>ItemResource</code> class.
- * @author Markos Mevorah
+ * @author Anis Moubarik
  * @version %I%, %G%
  * @see fi.helsinki.lib.simplerest.ItemResource
  */
@@ -46,28 +50,20 @@ public class ItemResourceTest {
     /**
      * @see fi.helsinki.lib.simplerest.ItemResource
      */
-    private ItemResource itemResource;
-
-    public ItemResourceTest() {
-    }
+    private ServletTester tester;
 
     /**
      * JUnit method annotated with {@link org.junit.Before}.
      * Initializing the test resources.
      */
     @Before
-    public void setUp() {
-        this.itemResource = new ItemResource();
+    public void setUp() throws Exception {
+        tester = new ServletTester();
+        tester.setContextPath("/");
+        tester.addServlet(ItemServlet.class, "/item/*");
+        tester.start();
     }
 
-    /**
-     * JUnit method annotated with {@link org.junit.After}.
-     * Releasing the test resources.
-     */
-    @After
-    public void tearDown() {
-        this.itemResource = null;
-    }
 
     /**
      * Test of relativeUrl method, of class ItemResource.
@@ -77,45 +73,20 @@ public class ItemResourceTest {
         String actualUrl = ItemResource.relativeUrl(11);
         assertEquals("item/11", actualUrl);
     }
-
-    /**
-     * Test of doInit method, of class ItemResource.
-     */
-    @Test(expected = NullPointerException.class)
-    public void testDoInit() throws Exception {
-        this.itemResource.doInit();
-    }
-
-    /**
-     * Test of editItem method, of class ItemResource.
-     */
+    
     @Test
-    public void testEditItem() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.itemResource.editItem(null);
-        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-        assertEquals("java.lang.NullPointerException", representation.getText());
-    }
-
-    /**
-     * Test of addBundle method, of class ItemResource.
-     */
-    @Test
-    public void testAddBundle() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.itemResource.addBundle(null);
-        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-        assertEquals("java.lang.NullPointerException", representation.getText());
-    }
-
-    /**
-     * Test of deleteItem method, of class ItemResource.
-     */
-    @Test
-    public void testDeleteItem() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.itemResource.deleteItem();
-        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-        assertEquals("java.lang.NullPointerException", representation.getText());
+    public void testGetXml() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/item/xml");
+        resp.parse(tester.getResponses(req.generate()));
+        System.out.println(resp.getContent());
+        
+        assertEquals(200, resp.getStatus());
+        assertEquals(resp.getContent().contains("dc.contributor.author"), true);
+        assertEquals(resp.getContent().contains("dc.date.issued"), true);
     }
 }

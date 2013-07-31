@@ -32,18 +32,16 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.restlet.data.MediaType;
-import org.restlet.representation.StringRepresentation;
 
 
 /**
- * JUnit test.
+ * JUnit tests.
  * <ul>
  * <li>http://www.junit.org/</li>
  * <li>http://junit.sourceforge.net/doc/faq/faq.htm</li>
  * </ul>
  * Testing the methods of <code>RootCommunitiesResource</code> class.
- * @author Markos Mevorah
+ * @author Anis Moubarik
  * @version %I%, %G%
  * @see fi.helsinki.lib.simplerest.RootCommunitiesResource
  */

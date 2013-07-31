@@ -22,7 +22,6 @@ import fi.helsinki.lib.simplerest.stubs.StubItem;
 import com.google.gson.Gson;
 import java.sql.SQLException;
 import java.util.LinkedList;
-import java.util.logging.Level;
 
 import org.dspace.core.Context;
 import org.dspace.content.Collection;
@@ -49,12 +48,30 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 public class ItemResource extends BaseResource {
 
     private static Logger log = Logger.getLogger(ItemResource.class);
     
     private int itemId;
+    private Item item;
+    private Context context;
+    
+    public ItemResource(Item i, int itemId){
+        this.item = i;
+        this.itemId = itemId;
+    }
+    
+    public ItemResource(){
+        this.itemId = 0;
+        this.item = null;
+        try{
+            this.context = new Context();
+        }catch(SQLException e){
+            log.log(Priority.FATAL, e);
+        }
+    }
 
     static public String relativeUrl(int itemId) {
         return "item/" + itemId;
@@ -75,33 +92,33 @@ public class ItemResource extends BaseResource {
         }
     }
 
-    @Get("xml")
+    @Get("html|xhtml|xml")
     public Representation toXml() {
-
-        Context c = null;
-        Item item = null;
         Bundle[] bundles = null;
-	int owningCollectionID;
+	int owningCollectionID = 0;
 	Collection[] collections = null;
         DomRepresentation representation = null;
         Document d = null;
         try {
-            c = new Context();
-            item = Item.find(c, this.itemId);
+            representation = new DomRepresentation(MediaType.TEXT_HTML);  
+            d = representation.getDocument();
+            item = Item.find(context, this.itemId);
             if (item == null) {
-                return errorNotFound(c,
+                return errorNotFound(context,
                                      "Could not find the item with given ID.");
             }
-            bundles = item.getBundles();
-	    collections = item.getCollections();
-	    owningCollectionID = item.getOwningCollection().getID();
-
-            representation = new DomRepresentation(MediaType.TEXT_HTML);  
-            d = representation.getDocument();  
         }
         catch (Exception e) {
-            return errorInternal(c, e.toString());
+            log.log(Priority.FATAL, e);
         }
+        try {
+            bundles = item.getBundles();
+            collections = item.getCollections();
+            owningCollectionID = item.getOwningCollection().getID();
+        } catch (Exception ex) {
+            log.log(Priority.FATAL, ex);
+        }
+
 
         Element html = d.createElement("html");  
         d.appendChild(html);
@@ -149,34 +166,43 @@ public class ItemResource extends BaseResource {
         }
 
 	//Collections the item belongs to
-        String base = baseUrl();
+        String base = "";
+        try{
+            base = baseUrl();
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
         Element ulCollections = d.createElement("ul");
         setId(ulCollections, "collections");
         body.appendChild(ulCollections);
-        for (Collection collection : collections) {
-            Element li = d.createElement("li");
-            Element a = d.createElement("a");
-            String href = base + CollectionResource.relativeUrl(collection.getID());
-            setAttribute(a, "href", href);
-            if (collection.getID() == owningCollectionID)
-		setAttribute(a, "id", "owning");
-            a.appendChild(d.createTextNode(collection.getName()));
-            li.appendChild(a);
-            ulCollections.appendChild(li);
+        if(collections != null){
+            for (Collection collection : collections) {
+                Element li = d.createElement("li");
+                Element a = d.createElement("a");
+                String href = base + CollectionResource.relativeUrl(collection.getID());
+                setAttribute(a, "href", href);
+                if (collection.getID() == owningCollectionID)
+                    setAttribute(a, "id", "owning");
+                a.appendChild(d.createTextNode(collection.getName()));
+                li.appendChild(a);
+                ulCollections.appendChild(li);
+            }
         }
 
         // bundles
         Element ulBundles = d.createElement("ul");
         setId(ulBundles, "bundles");
         body.appendChild(ulBundles);
-        for (Bundle bundle : bundles) {
-            Element li = d.createElement("li");
-            Element a = d.createElement("a");
-            String href = base + BundleResource.relativeUrl(bundle.getID());
-            setAttribute(a, "href", href);
-            a.appendChild(d.createTextNode(bundle.getName()));
-            li.appendChild(a);
-            ulBundles.appendChild(li);
+        if(bundles != null){
+            for (Bundle bundle : bundles) {
+                Element li = d.createElement("li");
+                Element a = d.createElement("a");
+                String href = base + BundleResource.relativeUrl(bundle.getID());
+                setAttribute(a, "href", href);
+                a.appendChild(d.createTextNode(bundle.getName()));
+                li.appendChild(a);
+                ulBundles.appendChild(li);
+            }
         }
 
         // form
@@ -210,29 +236,33 @@ public class ItemResource extends BaseResource {
         form.appendChild(submitButton);
         
         body.appendChild(form);
-
-	c.abort(); // Same as c.complete() because we didn't modify the db.
+        
+        try{
+	context.abort(); // Same as c.complete() because we didn't modify the db.
+        }catch(Exception e){
+            log.log(Priority.INFO, e);
+        }
 
         return representation;
     }
     
     @Get("json")
-    public String toJson() throws SQLException{
-        Item i = null;
-        Context c = null;
-        StubItem item = null;
+    public String toJson(){
+        StubItem stub = null;
         try {
-            c = new Context();
-            i = Item.find(c, this.itemId);
+            this.item = Item.find(context, this.itemId);
         } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(ItemResource.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Priority.INFO, ex);
         }
-        
-        item = new StubItem(i);
+        try {
+            stub = new StubItem(this.item);
+        } catch (SQLException ex) {
+            log.log(Priority.INFO, ex);
+        }
         Gson gson = new Gson();
         
         
-        return gson.toJson(item);
+        return gson.toJson(stub);
     }
 
     /* Input to this a little bit more complicated than to other PUT methods:
@@ -241,18 +271,16 @@ public class ItemResource extends BaseResource {
      */
     @Put
     public Representation editItem(InputRepresentation rep) {
-        Context c = null;
-        Item item;
         try {
-            c = getAuthenticatedContext();
-            item = Item.find(c, this.itemId);
+            context = getAuthenticatedContext();
+            item = Item.find(context, this.itemId);
             if (item == null) {
-                return error(c, "Could not find the item.",
+                return error(context, "Could not find the item.",
                              Status.CLIENT_ERROR_NOT_FOUND);
             }
         }
         catch (Exception e) {
-            return errorInternal(c, e.toString());
+            return errorInternal(context, e.toString());
         }
 	
         DomRepresentation dom = new DomRepresentation(rep);
@@ -284,7 +312,7 @@ public class ItemResource extends BaseResource {
 
         Node attributesNode = dom.getNode("//dl[@id='attributes']");
         if (attributesNode == null) {
-            return error(c, "Did not find dl tag with an id 'attributes'.",
+            return error(context, "Did not find dl tag with an id 'attributes'.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
         }
 
@@ -312,7 +340,7 @@ public class ItemResource extends BaseResource {
             }
         }
         if (dtList.size() != ddList.size()) {
-            return error(c, "The number of <dt> and <dd> elements do not match.",
+            return error(context, "The number of <dt> and <dd> elements do not match.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
 	}
 	
@@ -330,7 +358,7 @@ public class ItemResource extends BaseResource {
                     item.setArchived(false);
                 }
                 else {
-                    return error(c, "in_archive should be 1 or 0",
+                    return error(context, "in_archive should be 1 or 0",
                                  Status.CLIENT_ERROR_BAD_REQUEST);
                 }
             }
@@ -344,16 +372,16 @@ public class ItemResource extends BaseResource {
                         item.reinstate();
                     }
                     else {
-                        return error(c, "withdrawn should be 1 or 0",
+                        return error(context, "withdrawn should be 1 or 0",
                                      Status.CLIENT_ERROR_BAD_REQUEST);
                     }
                 }
                 catch (Exception e) {
-                    return errorInternal(c, e.toString());
+                    return errorInternal(context, e.toString());
                 }
             }
             else {
-                return error(c, "Unexpected data in attributes: " + dt,
+                return error(context, "Unexpected data in attributes: " + dt,
                              Status.CLIENT_ERROR_BAD_REQUEST);
             }
         }
@@ -363,7 +391,7 @@ public class ItemResource extends BaseResource {
                              "'withdrawn'", ""};
         String problem = problems[withdrawnFound + 2*inArchiveFound];
         if (!problem.equals("")) {
-            return error(c, problem + " was not found from the request.",
+            return error(context, problem + " was not found from the request.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
         }
 
@@ -371,7 +399,7 @@ public class ItemResource extends BaseResource {
 
         Node metadataNode = dom.getNode("//dl[@id='metadata']");
         if (metadataNode == null) {
-            return error(c, "Did not find dl tag with an id 'metadata'.",
+            return error(context, "Did not find dl tag with an id 'metadata'.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
         }
         NodeList nodes = metadataNode.getChildNodes();
@@ -393,7 +421,7 @@ public class ItemResource extends BaseResource {
             }
         }
         if (dtNodeList.size() != ddNodeList.size()) {
-            return error(c, "The number of <dt> and <dd> elements do not match.",
+            return error(context, "The number of <dt> and <dd> elements do not match.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
         }
         size = dtNodeList.size();
@@ -422,10 +450,13 @@ public class ItemResource extends BaseResource {
 
         try {
             item.update();
-            c.complete();
+            context.complete();
         }
         catch (Exception e) {
-            return errorInternal(c, e.toString());
+            log.log(Priority.FATAL, e);
+            if(context != null){
+                return errorInternal(context, e.toString());
+            }
         }
 	
         return successOk("Item updated.");
@@ -433,14 +464,12 @@ public class ItemResource extends BaseResource {
 
     @Post
     public Representation addBundle(Representation rep) {
-        Context c = null;
-        Item item;
         Bundle bundle = null;
         try {
-            c = getAuthenticatedContext();
-            item = Item.find(c, this.itemId);
+            context = getAuthenticatedContext();
+            item = Item.find(context, this.itemId);
             if (item == null) {
-                return error(c, "Could not find the item.",
+                return error(context, "Could not find the item.",
                              Status.CLIENT_ERROR_NOT_FOUND);
             }
 
@@ -448,15 +477,18 @@ public class ItemResource extends BaseResource {
             String name = form.getFirstValue("name");
         
             if (name == null) {
-                return error(c, "There was no name given.",
+                return error(context, "There was no name given.",
                              Status.CLIENT_ERROR_BAD_REQUEST);
             }
 
             bundle = item.createBundle(name);
-            c.complete();
+            context.complete();
         }
         catch (Exception e) {
-            return errorInternal(c, e.toString());
+            log.log(Priority.INFO, e);
+            if(context != null){
+                return errorInternal(context, e.toString());
+            }
         }
 
         return successCreated("Created a new bundle.",
@@ -468,13 +500,11 @@ public class ItemResource extends BaseResource {
     // NOTE: it's a real delete!!!
     @Delete
     public Representation deleteItem() {
-        Context c = null;
-        Item item;
         try {
-            c = getAuthenticatedContext();
-            item = Item.find(c, this.itemId);
+            context = getAuthenticatedContext();
+            item = Item.find(context, this.itemId);
             if (item == null) {
-                return error(c, "Could not find the item.",
+                return error(context, "Could not find the item.",
                              Status.CLIENT_ERROR_NOT_FOUND);
             }
 
@@ -488,10 +518,13 @@ public class ItemResource extends BaseResource {
             for (Collection collection : collections) {
                 collection.removeItem(item);
             }
-            c.complete();
+            context.complete();
         }
         catch (Exception e) {
-            return errorInternal(c, e.toString());
+            log.log(Priority.INFO, e);
+            if(context != null){
+                return errorInternal(context, e.toString());
+            }
         }
 
         return successOk("Item deleted.");

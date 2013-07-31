@@ -21,10 +21,8 @@ package fi.helsinki.lib.simplerest;
 import fi.helsinki.lib.simplerest.stubs.StubCommunity;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.logging.Level;
 
 import org.dspace.core.Context;
 import org.dspace.content.Community;
