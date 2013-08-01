@@ -22,7 +22,6 @@ import fi.helsinki.lib.simplerest.stubs.StubItem;
 import com.google.gson.Gson;
 import java.sql.SQLException;
 import java.util.LinkedList;
-import java.util.logging.Level;
 
 import org.dspace.core.Context;
 import org.dspace.content.Collection;
@@ -282,14 +281,15 @@ public class ItemResource extends BaseResource {
         try {
             context = getAuthenticatedContext();
             item = Item.find(context, this.itemId);
-            if (item == null) {
-                return error(context, "Could not find the item.",
-                             Status.CLIENT_ERROR_NOT_FOUND);
-            }
         }
         catch (Exception e) {
-            return errorInternal(context, e.toString());
+            log.log(Priority.INFO, e);
         }
+        
+       if (item == null) {
+           return error(context, "Could not find the item.",
+                   Status.CLIENT_ERROR_NOT_FOUND);
+       }
 	
         DomRepresentation dom = new DomRepresentation(rep);
         

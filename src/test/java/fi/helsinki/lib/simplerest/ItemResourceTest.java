@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.restlet.data.MediaType;
+import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 
 
@@ -110,6 +111,8 @@ public class ItemResourceTest {
         assertEquals(si.in_archive(), true);
         assertEquals(si.getOwningCollectionID(), 0);
         assertEquals(si.withdrawn(), false);
+        assertEquals(si.getId(), 1);
+        
         DCValue[] metadata = si.getMetadata();
         assertEquals(metadata[0].schema, "dc");
         assertEquals(metadata[0].element, "contributor");
@@ -120,5 +123,20 @@ public class ItemResourceTest {
         assertEquals(metadata[1].element, "date");
         assertEquals(metadata[1].qualifier, "issued");
         assertEquals(metadata[1].value, "2013");
+    }
+    
+    @Test
+    public void testEdit() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("PUT");
+        req.setHeader("HOST", "tester");
+        req.setURI("/item/edit");
+        resp.parse(tester.getResponses(req.generate()));
+        System.out.println(resp.getContent());
+        assertEquals(200, resp.getStatus());
+        assertEquals(resp.getContent().contains("dc.contributor.author"), true);
+        assertEquals(resp.getContent().contains("dc.date.issued"), true);
     }
 }

@@ -13,9 +13,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.dspace.content.DCValue;
 import org.dspace.content.Item;
 import static org.mockito.Mockito.*;
+import org.restlet.representation.InputRepresentation;
+import org.restlet.representation.Representation;
 
 /**
  *
@@ -25,6 +29,7 @@ public class ItemServlet extends HttpServlet{
     
     private Item mockedItem;
     private ItemResource ir;
+    private static Logger log = Logger.getLogger(ItemServlet.class);
     
     @Override
     public void init(ServletConfig config) throws ServletException{
@@ -64,5 +69,38 @@ public class ItemServlet extends HttpServlet{
     private void jsonTest(HttpServletResponse resp) throws IOException {
         PrintWriter out = resp.getWriter();
         out.write(ir.toJson());
+    }
+    
+    @Override
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+        Representation rep = ir.toXml();
+        
+        Item origItem = mock(Item.class);
+        when(origItem.getID()).thenReturn(2);
+        try {
+            when(origItem.getBundles()).thenReturn(null);
+            when(origItem.getCollections()).thenReturn(null);
+        } catch (SQLException ex) {
+            log.log(Priority.INFO, ex);
+        }
+        DCValue[] value = new DCValue[2];
+        value[0] = new DCValue(); value[1] = new DCValue();
+        value[0].schema = "dc"; value[0].element = "contributor"; value[0].qualifier = "author";
+        value[0].value = "Testi Testaaja2";
+        value[1].schema = "dc"; value[1].element = "date"; value[1].qualifier = "issued";
+        value[1].value = "2012";
+        
+        when(origItem.getMetadata(Item.ANY, Item.ANY, Item.ANY, Item.ANY)).thenReturn(value);
+        
+        ItemResource originalIr = new ItemResource(origItem, 2);
+        
+        InputRepresentation ir = new InputRepresentation(rep.getStream());
+        
+        PrintWriter out = resp.getWriter();
+        if(req.getPathInfo().equals("/edit")){
+            out.write(originalIr.editItem(ir).getText());
+            out.write(originalIr.toXml().getText());
+        }
+        
     }
 }
