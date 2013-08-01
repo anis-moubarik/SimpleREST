@@ -22,6 +22,7 @@ import fi.helsinki.lib.simplerest.stubs.StubItem;
 import com.google.gson.Gson;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 import org.dspace.core.Context;
 import org.dspace.content.Collection;
@@ -248,18 +249,25 @@ public class ItemResource extends BaseResource {
     
     @Get("json")
     public String toJson(){
-        StubItem stub = null;
         try {
             this.item = Item.find(context, this.itemId);
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             log.log(Priority.INFO, ex);
         }
+        
+        StubItem stub = null;
         try {
             stub = new StubItem(this.item);
         } catch (SQLException ex) {
             log.log(Priority.INFO, ex);
         }
         Gson gson = new Gson();
+        
+        try{
+            context.abort();
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
         
         
         return gson.toJson(stub);

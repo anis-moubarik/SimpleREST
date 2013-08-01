@@ -21,8 +21,11 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
 import fi.helsinki.lib.simplerest.TestServlets.ItemServlet;
+import fi.helsinki.lib.simplerest.stubs.StubItem;
 import java.io.IOException;
+import org.dspace.content.DCValue;
 import org.eclipse.jetty.testing.HttpTester;
 import org.eclipse.jetty.testing.ServletTester;
 import org.junit.After;
@@ -88,5 +91,34 @@ public class ItemResourceTest {
         assertEquals(200, resp.getStatus());
         assertEquals(resp.getContent().contains("dc.contributor.author"), true);
         assertEquals(resp.getContent().contains("dc.date.issued"), true);
+    }
+    
+    @Test
+    public void testGetJson() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/item/json");
+        resp.parse(tester.getResponses(req.generate()));
+        System.out.println(resp.getContent());
+        Gson gson = new Gson();
+        StubItem si = gson.fromJson(resp.getContent(), StubItem.class);
+        
+        assertEquals(200, resp.getStatus());
+        assertEquals(si.in_archive(), true);
+        assertEquals(si.getOwningCollectionID(), 0);
+        assertEquals(si.withdrawn(), false);
+        DCValue[] metadata = si.getMetadata();
+        assertEquals(metadata[0].schema, "dc");
+        assertEquals(metadata[0].element, "contributor");
+        assertEquals(metadata[0].qualifier, "author");
+        assertEquals(metadata[0].value, "Testi Testaaja");
+        
+        assertEquals(metadata[1].schema, "dc");
+        assertEquals(metadata[1].element, "date");
+        assertEquals(metadata[1].qualifier, "issued");
+        assertEquals(metadata[1].value, "2013");
     }
 }

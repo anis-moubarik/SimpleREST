@@ -4,7 +4,6 @@
  */
 package fi.helsinki.lib.simplerest.TestServlets;
 
-import fi.helsinki.lib.simplerest.CommunityResource;
 import fi.helsinki.lib.simplerest.RootCommunitiesResource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,8 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.dspace.content.Community;
 import static org.mockito.Mockito.*;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.representation.Representation;
 
 /**
  *

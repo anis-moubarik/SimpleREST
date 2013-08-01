@@ -7,6 +7,7 @@ package fi.helsinki.lib.simplerest.TestServlets;
 import fi.helsinki.lib.simplerest.ItemResource;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
