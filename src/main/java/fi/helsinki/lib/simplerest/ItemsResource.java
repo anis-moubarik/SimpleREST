@@ -177,7 +177,7 @@ public class ItemsResource extends BaseResource {
         try{
             context = new Context();
         }catch(Exception ex){
-            log.log(Priority.INFO, ex);
+            log.log(Priority.FATAL, ex);
         }
         try{
             collection = Collection.find(context, collectionId);
