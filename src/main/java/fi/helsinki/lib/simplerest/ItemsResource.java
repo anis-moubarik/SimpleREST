@@ -282,7 +282,8 @@ public class ItemsResource extends BaseResource {
 	    context.complete();
 	}
 	catch (Exception e) {
-	    return errorInternal(context, e.toString());
+            log.log(Priority.FATAL, e);
+	    return errorInternal(context, e.getMessage());
 	}
 
 	return successCreated("Created a new item.",
