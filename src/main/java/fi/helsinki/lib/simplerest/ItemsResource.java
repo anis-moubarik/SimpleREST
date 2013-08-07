@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashSet;
 
-import org.dspace.core.Context;
 import org.dspace.content.WorkspaceItem;
 import org.dspace.content.InstallItem;
 import org.dspace.content.ItemIterator;
@@ -55,6 +54,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Priority;
+import org.dspace.core.Context;
 
 public class ItemsResource extends BaseResource {
 
@@ -295,7 +295,7 @@ public class ItemsResource extends BaseResource {
 	    item = InstallItem.installItem(c, wsi);
 	    item.addMetadata("dc", "title", null, lang, title);
 	    item.update();
-	    c.complete();
+	    //c.complete();
 	}
 	catch (Exception e) {
             log.log(Priority.FATAL, e);
