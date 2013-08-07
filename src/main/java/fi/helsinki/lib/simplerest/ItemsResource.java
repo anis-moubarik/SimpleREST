@@ -282,7 +282,7 @@ public class ItemsResource extends BaseResource {
 	    context.complete();
 	}
 	catch (Exception e) {
-            log.log(Priority.FATAL, e);
+            log.log(Priority.FATAL, e.getStackTrace());
 	    return errorInternal(context, e.getMessage());
 	}
 
