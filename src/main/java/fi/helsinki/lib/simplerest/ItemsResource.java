@@ -63,22 +63,6 @@ public class ItemsResource extends BaseResource {
     private Item[] items;
     private Context context;
     private int collectionId;
-    
-    public ItemsResource(Item[] items){
-        this.items = items;
-        this.collectionId = 0;
-    }
-    
-    public ItemsResource(){
-        this.items = null;
-        this.doInit();
-        try{
-            this.context = new Context();
-        }catch(SQLException e){
-            log.log(Priority.FATAL, e);
-        }
-    }
-
 
     static public String relativeUrl(int collectionId) {
         return "collection/" + collectionId + "/items";
@@ -103,6 +87,11 @@ public class ItemsResource extends BaseResource {
         Collection collection = null;
         DomRepresentation representation = null;
         Document d = null;
+        try{
+            context = new Context();
+        }catch(Exception ex){
+            log.log(Priority.INFO, ex);
+        }
         try {
             collection = Collection.find(context, this.collectionId);
             if (collection == null) {
@@ -185,6 +174,11 @@ public class ItemsResource extends BaseResource {
     public String toJson() throws SQLException{
         ItemIterator items;
         Collection collection = null;
+        try{
+            context = new Context();
+        }catch(Exception ex){
+            log.log(Priority.INFO, ex);
+        }
         try{
             collection = Collection.find(context, collectionId);
             items = collection.getItems();
