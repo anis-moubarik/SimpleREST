@@ -225,7 +225,7 @@ public class ItemsResource extends BaseResource {
 
     @Post
 	public Representation addItem(InputRepresentation rep) {
-	Collection collection;
+	Collection collection = null;
 	try {
 	    context = getAuthenticatedContext();
 	    collection = Collection.find(context, this.collectionId);
