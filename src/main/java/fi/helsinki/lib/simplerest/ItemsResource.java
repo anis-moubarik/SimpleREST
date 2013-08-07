@@ -102,7 +102,6 @@ public class ItemsResource extends BaseResource {
         DomRepresentation representation = null;
         Document d = null;
         try {
-            context = new Context();
             collection = Collection.find(context, this.collectionId);
             if (collection == null) {
                 return errorNotFound(context, "Could not find the collection.");

@@ -238,7 +238,7 @@ public class ItemResource extends BaseResource {
         body.appendChild(form);
         
         try{
-	context.abort(); // Same as c.complete() because we didn't modify the db.
+            context.abort(); // Same as c.complete() because we didn't modify the db.
         }catch(Exception e){
             log.log(Priority.INFO, e);
         }
