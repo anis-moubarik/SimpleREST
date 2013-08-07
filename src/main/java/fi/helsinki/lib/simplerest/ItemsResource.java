@@ -285,8 +285,8 @@ public class ItemsResource extends BaseResource {
         }
 
 	if (title == null) {
-	    //return error(context, "There was no title given.",
-		//	 Status.CLIENT_ERROR_BAD_REQUEST);
+	    return error(c, "There was no title given.",
+			 Status.CLIENT_ERROR_BAD_REQUEST);
 	}
 
 	Item item = null;
@@ -299,7 +299,7 @@ public class ItemsResource extends BaseResource {
 	}
 	catch (Exception e) {
             log.log(Priority.FATAL, e);
-	    return errorInternal(context, e.toString());
+	    return errorInternal(c, e.toString());
 	}
 
 	return successCreated("Created a new item.",
