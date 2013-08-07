@@ -203,6 +203,12 @@ public class ItemsResource extends BaseResource {
             i++;
         }
         
+        try{
+            context.abort();
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
+        
         return gson.toJson(toJsonItems);   
     }
 
@@ -282,8 +288,8 @@ public class ItemsResource extends BaseResource {
 	    context.complete();
 	}
 	catch (Exception e) {
-            log.log(Priority.FATAL, e.getStackTrace());
-	    return errorInternal(context, e.getMessage());
+            log.log(Priority.FATAL, e);
+	    return errorInternal(context, e.toString()+"rofl");
 	}
 
 	return successCreated("Created a new item.",
