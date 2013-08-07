@@ -52,12 +52,29 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Priority;
 
 public class ItemsResource extends BaseResource {
 
     private static Logger log = Logger.getLogger(ItemResource.class);
     
+    private Item[] items;
+    private Context context;
     private int collectionId;
+    
+    public ItemsResource(Item[] items){
+        this.items = items;
+    }
+    
+    public ItemsResource(){
+        this.items = null;
+        try{
+            this.context = new Context();
+        }catch(SQLException e){
+            log.log(Priority.FATAL, e);
+        }
+    }
+
 
     static public String relativeUrl(int collectionId) {
         return "collection/" + collectionId + "/items";
@@ -77,24 +94,23 @@ public class ItemsResource extends BaseResource {
         }
     }
 
-    @Get("xml")
+    @Get("html|xhtml|xml")
     public Representation toXml() {
-        Context c = null;
         Collection collection = null;
         DomRepresentation representation = null;
         Document d = null;
         try {
-            c = new Context();
-            collection = Collection.find(c, this.collectionId);
+            context = new Context();
+            collection = Collection.find(context, this.collectionId);
             if (collection == null) {
-                return errorNotFound(c, "Could not find the collection.");
+                return errorNotFound(context, "Could not find the collection.");
             }
 
             representation = new DomRepresentation(MediaType.TEXT_HTML);  
             d = representation.getDocument();  
         }
         catch (Exception e) {
-            return errorInternal(c, e.toString());
+            return errorInternal(context, e.toString());
         }
         
         Element html = d.createElement("html");  
@@ -139,7 +155,7 @@ public class ItemsResource extends BaseResource {
         catch (SQLException e) {
             String errMsg =
                 "SQLException while trying to items of the collection. "+e.getMessage();
-            return errorInternal(c, errMsg);
+            return errorInternal(context, errMsg);
         }
 
         Element form = d.createElement("form");
@@ -155,7 +171,7 @@ public class ItemsResource extends BaseResource {
         
         body.appendChild(form);
 
-        c.abort(); /* We did not make any changes to the database, so we could
+        context.abort(); /* We did not make any changes to the database, so we could
                       call c.complete() instead (only it can potentially raise
                       SQLexception). */
 
@@ -165,14 +181,12 @@ public class ItemsResource extends BaseResource {
     @Get("json")
     public String toJson() throws SQLException{
         ItemIterator items;
-        Context c = null;
         Collection collection = null;
         try{
-            c = new Context();
-            collection = Collection.find(c, collectionId);
+            collection = Collection.find(context, collectionId);
             items = collection.getAllItems();
         }catch(Exception e){
-            return errorInternal(c, e.toString()).getText();
+            return errorInternal(context, e.toString()).getText();
         }
         
         Gson gson = new Gson();
@@ -205,17 +219,16 @@ public class ItemsResource extends BaseResource {
 
     @Post
 	public Representation addItem(InputRepresentation rep) {
-	Context c = null;
 	Collection collection;
 	try {
-	    c = getAuthenticatedContext();
-	    collection = Collection.find(c, this.collectionId);
+	    context = getAuthenticatedContext();
+	    collection = Collection.find(context, this.collectionId);
 	    if (collection == null) {
-		return errorNotFound(c, "Could not find the collection.");
+		return errorNotFound(context, "Could not find the collection.");
 	    }
 	}
 	catch (SQLException e) {
-	    return errorInternal(c, "SQLException");
+	    return errorInternal(context, "SQLException");
 	}
 	String title = null;
 	String lang = null;
@@ -245,31 +258,31 @@ public class ItemsResource extends BaseResource {
 			;
 		    }
 		    else {
-			return error(c, "Unexpected attribute: " + key,
+			return error(context, "Unexpected attribute: " + key,
 				     Status.CLIENT_ERROR_BAD_REQUEST);
 		    }
 		}
 	    }
 	}
 	catch (Exception e) {
-	    return errorInternal(c, e.toString());
+	    return errorInternal(context, e.toString());
 	}
 
 	if (title == null) {
-	    return error(c, "There was no title given.",
+	    return error(context, "There was no title given.",
 			 Status.CLIENT_ERROR_BAD_REQUEST);
 	}
 
 	Item item = null;
 	try {
-	    WorkspaceItem wsi = WorkspaceItem.create(c, collection, false);
-	    item = InstallItem.installItem(c, wsi);
+	    WorkspaceItem wsi = WorkspaceItem.create(context, collection, false);
+	    item = InstallItem.installItem(context, wsi);
 	    item.addMetadata("dc", "title", null, lang, title);
 	    item.update();
-	    c.complete();
+	    context.complete();
 	}
 	catch (Exception e) {
-	    return errorInternal(c, e.toString());
+	    return errorInternal(context, e.toString());
 	}
 
 	return successCreated("Created a new item.",
