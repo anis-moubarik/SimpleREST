@@ -294,7 +294,7 @@ public class ItemsResource extends BaseResource {
 	    c.complete();
 	}
 	catch (Exception e) {
-            log.log(Priority.FATAL, e);
+            log.log(Priority.FATAL, e, e);
 	    return errorInternal(c, e.toString());
 	}
 
