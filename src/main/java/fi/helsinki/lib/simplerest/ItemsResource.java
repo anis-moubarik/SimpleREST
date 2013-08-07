@@ -185,7 +185,7 @@ public class ItemsResource extends BaseResource {
         Collection collection = null;
         try{
             collection = Collection.find(context, collectionId);
-            items = collection.getAllItems();
+            items = collection.getItems();
         }catch(Exception e){
             return errorInternal(context, e.toString()).getText();
         }
