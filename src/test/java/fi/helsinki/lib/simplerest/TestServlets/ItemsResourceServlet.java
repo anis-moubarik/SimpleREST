@@ -66,7 +66,7 @@ public class ItemsResourceServlet extends HttpServlet{
     public void jsonTest(HttpServletResponse resp) throws IOException{
         PrintWriter out = resp.getWriter();
         try{
-            out.write(ir.toJson());
+            //out.write(ir.toJson());
         }catch(Exception ex){
             log.log(Priority.INFO, ex);
         }
