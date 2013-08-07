@@ -66,10 +66,12 @@ public class ItemsResource extends BaseResource {
     
     public ItemsResource(Item[] items){
         this.items = items;
+        this.collectionId = 0;
     }
     
     public ItemsResource(){
         this.items = null;
+        this.doInit();
         try{
             this.context = new Context();
         }catch(SQLException e){
@@ -83,7 +85,7 @@ public class ItemsResource extends BaseResource {
     }
     
     @Override
-    protected void doInit() throws ResourceException {
+    protected final void doInit() throws ResourceException {
         try {
             String s = (String)getRequest().getAttributes().get("collectionId");
             this.collectionId = Integer.parseInt(s);
