@@ -20,6 +20,7 @@ package fi.helsinki.lib.simplerest;
 
 import com.google.gson.Gson;
 import fi.helsinki.lib.simplerest.stubs.StubItem;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashSet;
 
@@ -50,6 +51,7 @@ import org.w3c.dom.Element;
 import org.apache.log4j.Logger;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Priority;
@@ -225,6 +227,7 @@ public class ItemsResource extends BaseResource {
 
     @Post
 	public Representation addItem(InputRepresentation rep) {
+        Context context = null;
 	Collection collection = null;
 	try {
 	    context = getAuthenticatedContext();
@@ -273,13 +276,17 @@ public class ItemsResource extends BaseResource {
 		}
 	    }
 	}
-	catch (Exception e) {
+	catch (FileUploadException e) {
 	    return errorInternal(context, e.toString());
-	}
+	}catch(IOException e){
+            return errorInternal(context, e.toString());
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
 
 	if (title == null) {
-	    return error(context, "There was no title given.",
-			 Status.CLIENT_ERROR_BAD_REQUEST);
+	    //return error(context, "There was no title given.",
+		//	 Status.CLIENT_ERROR_BAD_REQUEST);
 	}
 
 	Item item = null;

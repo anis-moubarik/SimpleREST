@@ -54,11 +54,6 @@ public class ItemsResourceServlet extends HttpServlet{
         }
     }
     
-    @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException{
-        Representation r = ir.addItem(null);
-    }
-    
     public void xmlTest(HttpServletResponse resp) throws IOException{
         PrintWriter out = resp.getWriter();
         try{

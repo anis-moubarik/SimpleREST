@@ -34,17 +34,4 @@ public class ItemsResourceTest {
     public void testGetXml(){
         
     }
-    
-    @Test
-    public void testCreateItem() throws IOException, Exception{
-        HttpTester req = new HttpTester();
-        HttpTester resp = new HttpTester();
-        
-        req.setMethod("POST");
-        req.setHeader("HOST", "tester");
-        req.setURI("/items/add");
-        resp.parse(tester.getResponses(req.generate()));
-        assertEquals(200, resp.getStatus());
-    }
-    
 }
