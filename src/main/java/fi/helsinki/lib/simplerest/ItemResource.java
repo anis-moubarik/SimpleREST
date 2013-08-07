@@ -62,6 +62,16 @@ public class ItemResource extends BaseResource {
         this.item = i;
         this.itemId = itemId;
     }
+    
+    public ItemResource(){
+        this.itemId = 0;
+        this.item = null;
+        try{
+            this.context = new Context();
+        }catch(SQLException e){
+            log.log(Priority.FATAL, e);
+        }
+    }
 
     static public String relativeUrl(int itemId) {
         return "item/" + itemId;
