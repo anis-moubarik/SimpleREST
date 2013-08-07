@@ -42,7 +42,7 @@ public class ItemsResourceServlet extends HttpServlet{
         Item[] items = new Item[2];
         items[0] = mockedItem; items[1] = mockedItem2;
         
-        ir = new ItemsResource(items);
+        ir = new ItemsResource();
     }
     
     @Override
