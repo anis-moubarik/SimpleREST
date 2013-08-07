@@ -226,18 +226,18 @@ public class ItemsResource extends BaseResource {
     }
 
     @Post
-	public Representation addItem(InputRepresentation rep) {
-        Context context = null;
+    public Representation addItem(InputRepresentation rep) {
+        Context c = null;
 	Collection collection = null;
 	try {
-	    context = getAuthenticatedContext();
-	    collection = Collection.find(context, this.collectionId);
+	    c = getAuthenticatedContext();
+	    collection = Collection.find(c, this.collectionId);
 	    if (collection == null) {
-		return errorNotFound(context, "Could not find the collection.");
+		return errorNotFound(c, "Could not find the collection.");
 	    }
 	}
 	catch (SQLException e) {
-	    return errorInternal(context, "SQLException");
+	    return errorInternal(c, "SQLException");
 	}
         catch(NullPointerException e){
             log.log(Priority.INFO, e);
@@ -270,16 +270,16 @@ public class ItemsResource extends BaseResource {
 			;
 		    }
 		    else {
-			return error(context, "Unexpected attribute: " + key,
+			return error(c, "Unexpected attribute: " + key,
 				     Status.CLIENT_ERROR_BAD_REQUEST);
 		    }
 		}
 	    }
 	}
 	catch (FileUploadException e) {
-	    return errorInternal(context, e.toString());
+	    return errorInternal(c, e.toString());
 	}catch(IOException e){
-            return errorInternal(context, e.toString());
+            return errorInternal(c, e.toString());
         }catch(NullPointerException e){
             log.log(Priority.INFO, e);
         }
@@ -291,11 +291,11 @@ public class ItemsResource extends BaseResource {
 
 	Item item = null;
 	try {
-	    WorkspaceItem wsi = WorkspaceItem.create(context, collection, false);
-	    item = InstallItem.installItem(context, wsi);
+	    WorkspaceItem wsi = WorkspaceItem.create(c, collection, false);
+	    item = InstallItem.installItem(c, wsi);
 	    item.addMetadata("dc", "title", null, lang, title);
 	    item.update();
-	    context.complete();
+	    c.complete();
 	}
 	catch (Exception e) {
             log.log(Priority.FATAL, e);
