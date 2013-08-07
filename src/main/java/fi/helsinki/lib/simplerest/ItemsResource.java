@@ -294,7 +294,7 @@ public class ItemsResource extends BaseResource {
 	    item = InstallItem.installItem(c, wsi);
 	    item.addMetadata("dc", "title", null, lang, title);
 	    item.update();
-	    //c.complete();
+	    c.complete();
 	}
 	catch (Exception e) {
             log.log(Priority.FATAL, e);
