@@ -179,39 +179,40 @@ public class ItemsResource extends BaseResource {
         return representation;
     }
     
-//    @Get("json")
-//    public String toJson() throws SQLException{
-//        ItemIterator items;
-//        Collection collection = null;
-//        try{
-//            collection = Collection.find(context, collectionId);
-//            items = collection.getAllItems();
-//        }catch(Exception e){
-//            return errorInternal(context, e.toString()).getText();
-//        }
-//        
-//        Gson gson = new Gson();
-//        int itemSize = 0;
-//        while(items.hasNext()){
-//            itemSize++;
-//        }
-//        
-//        StubItem[] toJsonItems = new StubItem[itemSize];
-//        
-//        int i = 0;
-//        while(items.hasNext()){
-//            toJsonItems[i] = new StubItem(items.next());
-//            i++;
-//        }
-//        
-//        try{
-//            context.abort();
-//        }catch(NullPointerException e){
-//            log.log(Priority.INFO, e);
-//        }
-//        
-//        return gson.toJson(toJsonItems);   
-//    }
+    @Get("json")
+    public String toJson() throws SQLException{
+        ItemIterator items;
+        Collection collection = null;
+        try{
+            collection = Collection.find(context, collectionId);
+            items = collection.getAllItems();
+        }catch(Exception e){
+            return errorInternal(context, e.toString()).getText();
+        }
+        
+        Gson gson = new Gson();
+        int itemSize = 0;
+        while(items.hasNext()){
+            itemSize++;
+        }
+        
+        StubItem[] toJsonItems = new StubItem[itemSize];
+        
+        int i = 0;
+        while(items.hasNext()){
+            toJsonItems[i] = new StubItem(items.next());
+            i++;
+        }
+        
+        try{
+            items.close();
+            context.abort();
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
+        
+        return gson.toJson(toJsonItems);   
+    }
 
     @Put
     public Representation put(Representation dummy) {
