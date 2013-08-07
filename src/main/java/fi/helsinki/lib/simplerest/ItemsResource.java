@@ -236,6 +236,9 @@ public class ItemsResource extends BaseResource {
 	catch (SQLException e) {
 	    return errorInternal(context, "SQLException");
 	}
+        catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
 	String title = null;
 	String lang = null;
 
@@ -289,7 +292,7 @@ public class ItemsResource extends BaseResource {
 	}
 	catch (Exception e) {
             log.log(Priority.FATAL, e);
-	    return errorInternal(context, e.toString()+"rofl");
+	    return errorInternal(context, e.toString());
 	}
 
 	return successCreated("Created a new item.",
