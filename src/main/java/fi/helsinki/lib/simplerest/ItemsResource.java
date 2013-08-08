@@ -80,6 +80,12 @@ public class ItemsResource extends BaseResource {
                                       "Collection ID must be a number.");
             throw resourceException;
         }
+        
+        try{
+            context = new Context();
+        }catch(Exception ex){
+            log.log(Priority.FATAL, ex, ex);
+        }
     }
 
     @Get("html|xhtml|xml")
