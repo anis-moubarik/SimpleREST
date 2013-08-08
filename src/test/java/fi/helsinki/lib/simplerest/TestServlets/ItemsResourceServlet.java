@@ -15,8 +15,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.dspace.content.Item;
 import static org.mockito.Mockito.*;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.representation.Representation;
 
 /**
  *

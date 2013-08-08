@@ -223,17 +223,16 @@ public class ItemsResource extends BaseResource {
 
     @Post
     public Representation addItem(InputRepresentation rep) {
-        Context c = null;
 	Collection collection = null;
 	try {
-	    c = getAuthenticatedContext();
-	    collection = Collection.find(c, this.collectionId);
+	    this.context = getAuthenticatedContext();
+	    collection = Collection.find(this.context, this.collectionId);
 	    if (collection == null) {
-		return errorNotFound(c, "Could not find the collection.");
+		return errorNotFound(this.context, "Could not find the collection.");
 	    }
 	}
 	catch (SQLException e) {
-	    return errorInternal(c, "SQLException");
+	    return errorInternal(this.context, "SQLException");
 	}
         catch(NullPointerException e){
             log.log(Priority.INFO, e);
@@ -266,37 +265,43 @@ public class ItemsResource extends BaseResource {
 			;
 		    }
 		    else {
-			return error(c, "Unexpected attribute: " + key,
+			return error(this.context, "Unexpected attribute: " + key,
 				     Status.CLIENT_ERROR_BAD_REQUEST);
 		    }
 		}
 	    }
 	}
 	catch (FileUploadException e) {
-	    return errorInternal(c, e.toString());
+	    return errorInternal(this.context, e.toString());
 	}catch(IOException e){
-            return errorInternal(c, e.toString());
+            return errorInternal(this.context, e.toString());
         }catch(NullPointerException e){
             log.log(Priority.INFO, e);
         }
 
 	if (title == null) {
-	    return error(c, "There was no title given.",
+	    return error(this.context, "There was no title given.",
 			 Status.CLIENT_ERROR_BAD_REQUEST);
 	}
 
 	Item item = null;
 	try {
-	    WorkspaceItem wsi = WorkspaceItem.create(c, collection, false);
-	    item = InstallItem.installItem(c, wsi);
+	    WorkspaceItem wsi = WorkspaceItem.create(this.context, collection, false);
+	    item = InstallItem.installItem(this.context, wsi);
 	    item.addMetadata("dc", "title", null, lang, title);
 	    item.update();
-	    c.complete();
+	    this.context.complete();
 	}
 	catch (Exception e) {
             log.log(Priority.FATAL, e, e);
-	    return errorInternal(c, e.toString());
+	    return errorInternal(this.context, e.toString());
 	}
+        
+        try{
+            this.context.abort();
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e, e);
+        }
 
 	return successCreated("Created a new item.",
 			      baseUrl() +
