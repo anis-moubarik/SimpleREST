@@ -11,6 +11,11 @@
  <url>http://www.kansalliskirjasto.fi/</url>
  <description>A RESTful web service on top of DSpace.</description>
  <inceptionYear>2010</inceptionYear>
+ <parent>
+     <artifactId>dspace-parent</artifactId>
+     <groupId>org.dspace</groupId>
+     <version>3.2</version>
+ </parent>
  <dependencies>
   <dependency>
     <groupId>javax.servlet</groupId>

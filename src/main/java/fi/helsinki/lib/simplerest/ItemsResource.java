@@ -73,6 +73,7 @@ public class ItemsResource extends BaseResource {
         try {
             String s = (String)getRequest().getAttributes().get("collectionId");
             this.collectionId = Integer.parseInt(s);
+            
         }
         catch (NumberFormatException e) {
             ResourceException resourceException =
