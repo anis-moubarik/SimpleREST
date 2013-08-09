@@ -293,7 +293,7 @@ public class ItemsResource extends BaseResource {
 	Item item = null;
 	try {
 	    WorkspaceItem wsi = WorkspaceItem.create(this.context, collection, false);
-	    item = wsi.getItem();
+	    item = InstallItem.installItem(context, wsi, null);
 	    item.addMetadata("dc", "title", null, lang, title);
 	    item.update();
 	    this.context.complete();
