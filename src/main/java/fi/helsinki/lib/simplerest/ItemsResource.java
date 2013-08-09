@@ -54,7 +54,9 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Priority;
+import org.dspace.authorize.AuthorizeException;
 import org.dspace.core.Context;
+import org.dspace.handle.HandleManager;
 
 public class ItemsResource extends BaseResource {
 
@@ -278,11 +280,9 @@ public class ItemsResource extends BaseResource {
 		}
 	    }
 	}
-	catch (FileUploadException e) {
+	catch (FileUploadException | IOException e) {
 	    return errorInternal(this.context, e.toString());
-	}catch(IOException e){
-            return errorInternal(this.context, e.toString());
-        }catch(NullPointerException e){
+	}catch(NullPointerException e){
             log.log(Priority.INFO, e);
         }
 
@@ -294,12 +294,16 @@ public class ItemsResource extends BaseResource {
 	Item item = null;
 	try {
 	    WorkspaceItem wsi = WorkspaceItem.create(this.context, collection, false);
-	    item = InstallItem.installItem(context, wsi, null);
+            item = wsi.getItem();
 	    item.addMetadata("dc", "title", null, lang, title);
 	    item.update();
+            
+            collection.addItem(item);
+            collection.update();
+            HandleManager.createHandle(context, item);
 	    this.context.complete();
 	}
-	catch (Exception e) {
+	catch (AuthorizeException | SQLException | IOException e) {
             log.log(Priority.FATAL, e, e);
 	    return errorInternal(this.context, e.toString());
 	}
