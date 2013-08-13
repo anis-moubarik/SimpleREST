@@ -306,6 +306,7 @@ public class ItemsResource extends BaseResource {
 	    item.addMetadata("dc", "title", null, lang, title);
 	    item.setOwningCollection(collection);
             item.update();
+            wsi.deleteAll();
             collection.addItem(item);
             collection.update();
             HandleManager.createHandle(context, item);
