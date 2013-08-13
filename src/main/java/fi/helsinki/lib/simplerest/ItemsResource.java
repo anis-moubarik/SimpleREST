@@ -70,6 +70,21 @@ public class ItemsResource extends BaseResource {
         return "collection/" + collectionId + "/items";
     }
     
+    public ItemsResource(Item[] i, int colelctionId){
+        this.items = i;
+        this.collectionId = colelctionId;
+    }
+    
+    public ItemsResource(){
+        this.collectionId = 0;
+        this.items = null;
+        try{
+            this.context = new Context();
+        }catch(SQLException e){
+            log.log(Priority.FATAL, e);
+        }
+    }
+    
     @Override
     protected final void doInit() throws ResourceException {
         try {
@@ -83,12 +98,6 @@ public class ItemsResource extends BaseResource {
                                       "Collection ID must be a number.");
             throw resourceException;
         }
-        
-        try{
-            context = new Context();
-        }catch(Exception ex){
-            log.log(Priority.FATAL, ex, ex);
-        }
     }
 
     @Get("html|xhtml|xml")
@@ -96,11 +105,6 @@ public class ItemsResource extends BaseResource {
         Collection collection = null;
         DomRepresentation representation = null;
         Document d = null;
-        try{
-            context = new Context();
-        }catch(Exception ex){
-            log.log(Priority.INFO, ex);
-        }
         try {
             collection = Collection.find(context, this.collectionId);
             if (collection == null) {
@@ -110,7 +114,7 @@ public class ItemsResource extends BaseResource {
             representation = new DomRepresentation(MediaType.TEXT_HTML);  
             d = representation.getDocument();  
         }
-        catch (Exception e) {
+        catch (SQLException | IOException e) {
             return errorInternal(context, e.toString());
         }
         
@@ -172,9 +176,13 @@ public class ItemsResource extends BaseResource {
         
         body.appendChild(form);
 
+        try{
         context.abort(); /* We did not make any changes to the database, so we could
                       call c.complete() instead (only it can potentially raise
                       SQLexception). */
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
 
         return representation;
     }
@@ -297,6 +305,7 @@ public class ItemsResource extends BaseResource {
             item = wsi.getItem();
 	    item.addMetadata("dc", "title", null, lang, title);
 	    item.update();
+            item.setOwningCollection(collection);
             
             collection.addItem(item);
             collection.update();

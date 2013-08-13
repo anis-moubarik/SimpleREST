@@ -31,7 +31,16 @@ public class ItemsResourceTest {
     }
     
     @Test
-    public void testGetXml(){
+    public void testGetXml() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
         
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/items/xml");
+        resp.parse(tester.getResponses(req.generate()));
+        System.out.println(resp.getContent());
+        
+        assertEquals(200, resp.getStatus());
     }
 }
