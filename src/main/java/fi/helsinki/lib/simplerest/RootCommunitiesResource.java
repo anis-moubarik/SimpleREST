@@ -68,7 +68,7 @@ public class RootCommunitiesResource extends BaseResource {
             this.context = new Context();
             this.communities = Community.findAllTop(context);
         }catch(SQLException e){
-            log.log(Priority.FATAL, e);
+            log.log(Priority.FATAL, e, e);
         }
     }
 
@@ -84,7 +84,7 @@ public class RootCommunitiesResource extends BaseResource {
             representation = new DomRepresentation(MediaType.ALL);
             d = representation.getDocument();
         } catch (IOException ex) {
-            log.log(Priority.INFO, ex);
+            log.log(Priority.INFO, ex, ex);
         }
 
         representation.setIndenting(true);
@@ -110,7 +110,7 @@ public class RootCommunitiesResource extends BaseResource {
         try{
             url = getRequest().getResourceRef().getIdentifier();
         }catch(NullPointerException e){
-            log.log(Priority.INFO, e);
+            log.log(Priority.INFO, e, e);
         }
         url = url.substring(0, url.lastIndexOf('/') + 1);
         url += "community/";
@@ -145,7 +145,7 @@ public class RootCommunitiesResource extends BaseResource {
         try{
             context.abort();
         }catch(NullPointerException e){
-            log.log(Priority.INFO, e);
+            log.log(Priority.INFO, e, e);
         }
         return representation;
     }
