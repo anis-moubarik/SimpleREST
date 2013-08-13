@@ -304,9 +304,8 @@ public class ItemsResource extends BaseResource {
 	    WorkspaceItem wsi = WorkspaceItem.create(this.context, collection, false);
             item = wsi.getItem();
 	    item.addMetadata("dc", "title", null, lang, title);
-	    item.update();
-            item.setOwningCollection(collection);
-            
+	    item.setOwningCollection(collection);
+            item.update();
             collection.addItem(item);
             collection.update();
             HandleManager.createHandle(context, item);
