@@ -105,6 +105,7 @@ public class CommunityResourceTest {
         req.setURI("/community/json");
         resp.parse(tester.getResponses(req.generate()));
         Gson gson = new Gson();
+        System.out.println(resp.getContent());
         StubCommunity sc = gson.fromJson(resp.getContent(), StubCommunity.class);
         assertEquals(200, resp.getStatus());
         assertEquals(sc.getId(), 1);

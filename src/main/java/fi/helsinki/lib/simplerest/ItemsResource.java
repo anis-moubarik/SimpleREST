@@ -25,7 +25,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 
 import org.dspace.content.WorkspaceItem;
-import org.dspace.content.InstallItem;
 import org.dspace.content.ItemIterator;
 
 import org.dspace.content.Collection;
@@ -306,10 +305,10 @@ public class ItemsResource extends BaseResource {
 	    item.addMetadata("dc", "title", null, lang, title);
 	    item.setOwningCollection(collection);
             item.update();
-            wsi.deleteAll();
             collection.addItem(item);
             collection.update();
             HandleManager.createHandle(context, item);
+            //wsi.deleteAll();
 	    this.context.complete();
 	}
 	catch (AuthorizeException | SQLException | IOException e) {
