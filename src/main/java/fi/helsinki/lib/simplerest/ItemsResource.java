@@ -54,10 +54,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Priority;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.core.Context;
-import org.dspace.handle.HandleManager;
 import org.dspace.identifier.IdentifierException;
-import org.dspace.identifier.IdentifierService;
-import org.dspace.utils.DSpace;
 
 public class ItemsResource extends BaseResource {
 
@@ -304,16 +301,13 @@ public class ItemsResource extends BaseResource {
 	Item item = null;
 	try {
 	    WorkspaceItem wsi = WorkspaceItem.create(addItemContext, collection, false);
-            item = wsi.getItem();
-            IdentifierService identifierService = new DSpace().getSingletonService(IdentifierService.class);
-            identifierService.register(context, item);
+            item = InstallItem.installItem(addItemContext, wsi);
 	    item.addMetadata("dc", "title", null, lang, title);
-	    item.setOwningCollection(collection);
+	    //item.setOwningCollection(collection);
             item.update();
-            collection.addItem(item);
-            collection.update();
-            HandleManager.createHandle(context, item);
-            wsi.deleteWrapper();
+            //collection.addItem(item);
+            //collection.update();
+            //HandleManager.createHandle(context, item);
 	    addItemContext.complete();
 	}
 	catch (AuthorizeException | SQLException | IOException e) {
