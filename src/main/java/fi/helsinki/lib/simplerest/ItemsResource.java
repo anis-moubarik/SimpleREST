@@ -309,6 +309,7 @@ public class ItemsResource extends BaseResource {
             collection.update();
             HandleManager.createHandle(context, item);
             wsi.deleteWrapper();
+            wsi.deleteAll();
 	    this.context.complete();
 	}
 	catch (AuthorizeException | SQLException | IOException e) {
