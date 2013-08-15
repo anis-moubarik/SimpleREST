@@ -27,8 +27,7 @@ import java.util.HashSet;
 import org.dspace.content.WorkspaceItem;
 import org.dspace.content.ItemIterator;
 
-import org.dspace.content.Collection;
-import org.dspace.content.Item;
+import org.dspace.content.*;
 
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.ext.fileupload.RestletFileUpload;
@@ -56,6 +55,9 @@ import org.apache.log4j.Priority;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.core.Context;
 import org.dspace.handle.HandleManager;
+import org.dspace.identifier.IdentifierException;
+import org.dspace.identifier.IdentifierService;
+import org.dspace.utils.DSpace;
 
 public class ItemsResource extends BaseResource {
 
@@ -238,7 +240,7 @@ public class ItemsResource extends BaseResource {
     }
 
     @Post
-    public Representation addItem(InputRepresentation rep) {
+    public Representation addItem(InputRepresentation rep) throws AuthorizeException, SQLException, IdentifierException {
 	Collection collection = null;
 	try {
 	    this.context = getAuthenticatedContext();
@@ -302,6 +304,8 @@ public class ItemsResource extends BaseResource {
 	try {
 	    WorkspaceItem wsi = WorkspaceItem.create(this.context, collection, false);
             item = wsi.getItem();
+            IdentifierService identifierService = new DSpace().getSingletonService(IdentifierService.class);
+            identifierService.register(context, item);
 	    item.addMetadata("dc", "title", null, lang, title);
 	    item.setOwningCollection(collection);
             item.update();
@@ -309,7 +313,6 @@ public class ItemsResource extends BaseResource {
             collection.update();
             HandleManager.createHandle(context, item);
             wsi.deleteWrapper();
-            wsi.deleteAll();
 	    this.context.complete();
 	}
 	catch (AuthorizeException | SQLException | IOException e) {
