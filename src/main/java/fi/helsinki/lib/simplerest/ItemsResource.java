@@ -242,15 +242,16 @@ public class ItemsResource extends BaseResource {
     @Post
     public Representation addItem(InputRepresentation rep) throws AuthorizeException, SQLException, IdentifierException {
 	Collection collection = null;
+        Context addItemContext = null;
 	try {
-	    this.context = getAuthenticatedContext();
-	    collection = Collection.find(this.context, this.collectionId);
+	    addItemContext = getAuthenticatedContext();
+	    collection = Collection.find(addItemContext, this.collectionId);
 	    if (collection == null) {
-		return errorNotFound(this.context, "Could not find the collection.");
+		return errorNotFound(addItemContext, "Could not find the collection.");
 	    }
 	}
 	catch (SQLException e) {
-	    return errorInternal(this.context, "SQLException");
+	    return errorInternal(addItemContext, "SQLException");
 	}
         catch(NullPointerException e){
             log.log(Priority.INFO, e);
@@ -283,26 +284,26 @@ public class ItemsResource extends BaseResource {
 			;
 		    }
 		    else {
-			return error(this.context, "Unexpected attribute: " + key,
+			return error(addItemContext, "Unexpected attribute: " + key,
 				     Status.CLIENT_ERROR_BAD_REQUEST);
 		    }
 		}
 	    }
 	}
 	catch (FileUploadException | IOException e) {
-	    return errorInternal(this.context, e.toString());
+	    return errorInternal(addItemContext, e.toString());
 	}catch(NullPointerException e){
             log.log(Priority.INFO, e);
         }
 
 	if (title == null) {
-	    return error(this.context, "There was no title given.",
+	    return error(addItemContext, "There was no title given.",
 			 Status.CLIENT_ERROR_BAD_REQUEST);
 	}
 
 	Item item = null;
 	try {
-	    WorkspaceItem wsi = WorkspaceItem.create(this.context, collection, false);
+	    WorkspaceItem wsi = WorkspaceItem.create(addItemContext, collection, false);
             item = wsi.getItem();
             IdentifierService identifierService = new DSpace().getSingletonService(IdentifierService.class);
             identifierService.register(context, item);
@@ -313,15 +314,15 @@ public class ItemsResource extends BaseResource {
             collection.update();
             HandleManager.createHandle(context, item);
             wsi.deleteWrapper();
-	    this.context.complete();
+	    addItemContext.complete();
 	}
 	catch (AuthorizeException | SQLException | IOException e) {
             log.log(Priority.FATAL, e, e);
-	    return errorInternal(this.context, e.toString());
+	    return errorInternal(addItemContext, e.toString());
 	}
         
         try{
-            this.context.abort();
+            addItemContext.abort();
         }catch(NullPointerException e){
             log.log(Priority.INFO, e, e);
         }
