@@ -301,7 +301,9 @@ public class ItemsResource extends BaseResource {
 	Item item = null;
 	try {
 	    WorkspaceItem wsi = WorkspaceItem.create(addItemContext, collection, false);
-            item = InstallItem.installItem(addItemContext, wsi);
+            item = InstallItem.installItem(addItemContext, wsi); /*This gives a DSpace kernel cannot be
+             * null error with the new DSpace 3.0 instance, under investigation.
+             */
 	    item.addMetadata("dc", "title", null, lang, title);
             item.update();
 	    addItemContext.complete();
