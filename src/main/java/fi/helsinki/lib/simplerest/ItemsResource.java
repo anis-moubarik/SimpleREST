@@ -176,7 +176,7 @@ public class ItemsResource extends BaseResource {
 
         try{
         context.abort(); /* We did not make any changes to the database, so we could
-                      call c.complete() instead (only it can potentially raise
+                      call context.complete() instead (only it can potentially raise
                       SQLexception). */
         }catch(NullPointerException e){
             log.log(Priority.INFO, e);
@@ -303,11 +303,7 @@ public class ItemsResource extends BaseResource {
 	    WorkspaceItem wsi = WorkspaceItem.create(addItemContext, collection, false);
             item = InstallItem.installItem(addItemContext, wsi);
 	    item.addMetadata("dc", "title", null, lang, title);
-	    //item.setOwningCollection(collection);
             item.update();
-            //collection.addItem(item);
-            //collection.update();
-            //HandleManager.createHandle(context, item);
 	    addItemContext.complete();
 	}
 	catch (AuthorizeException | SQLException | IOException e) {
