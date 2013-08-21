@@ -40,6 +40,9 @@
  <listener>
   <listener-class>org.dspace.servicemanager.servlet.DSpaceKernelServletContextListener</listener-class>
  </listener>
+ <listener>
+     <listener-class>org.dspace.app.util.DSpaceContextListener</listener-class>
+ </listener>
  <servlet>
   <servlet-name>RestletServlet</servlet-name>
   <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
