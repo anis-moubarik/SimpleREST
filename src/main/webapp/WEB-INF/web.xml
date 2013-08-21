@@ -38,7 +38,7 @@
      <param-value>/data/dspace</param-value>
  </context-param>
  <listener>
-  <listener-class>org.dspace.app.util.DSpaceContextListener</listener-class>
+  <listener-class>org.dspace.servicemanager.servlet.DSpaceKernelServletContextListener</listener-class>
  </listener>
  <servlet>
   <servlet-name>RestletServlet</servlet-name>
