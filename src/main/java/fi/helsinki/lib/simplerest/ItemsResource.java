@@ -55,6 +55,7 @@ import org.apache.log4j.Priority;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.core.Context;
 import org.dspace.identifier.IdentifierException;
+import org.dspace.utils.DSpace;
 
 public class ItemsResource extends BaseResource {
 
@@ -85,6 +86,8 @@ public class ItemsResource extends BaseResource {
     
     @Override
     protected final void doInit() throws ResourceException {
+        
+        DSpace ds = new DSpace();
         try {
             String s = (String)getRequest().getAttributes().get("collectionId");
             this.collectionId = Integer.parseInt(s);
