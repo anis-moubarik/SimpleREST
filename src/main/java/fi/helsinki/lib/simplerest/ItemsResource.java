@@ -55,6 +55,7 @@ import org.apache.log4j.Priority;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.core.Context;
 import org.dspace.identifier.IdentifierException;
+import org.dspace.identifier.IdentifierService;
 import org.dspace.utils.DSpace;
 
 public class ItemsResource extends BaseResource {
@@ -86,8 +87,6 @@ public class ItemsResource extends BaseResource {
     
     @Override
     protected final void doInit() throws ResourceException {
-        
-        DSpace ds = new DSpace();
         try {
             String s = (String)getRequest().getAttributes().get("collectionId");
             this.collectionId = Integer.parseInt(s);
@@ -303,12 +302,12 @@ public class ItemsResource extends BaseResource {
 
 	Item item = null;
 	try {
-            DSpace ds = new DSpace();
-            ds.getKernel();
 	    WorkspaceItem wsi = WorkspaceItem.create(addItemContext, collection, false);
-            item = InstallItem.installItem(addItemContext, wsi); /*This gives a DSpace kernel cannot be
+            /*item = InstallItem.installItem(addItemContext, wsi); /*This gives a DSpace kernel cannot be
              * null error with the new DSpace 3.0 instance, under investigation.
              */
+            DSpace ds = new DSpace();
+            ds.getSingletonService(IdentifierService.class);
 	    item.addMetadata("dc", "title", null, lang, title);
             item.update();
 	    addItemContext.complete();
