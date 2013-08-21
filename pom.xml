@@ -11,6 +11,13 @@
  <url>http://www.kansalliskirjasto.fi/</url>
  <description>A RESTful web service on top of DSpace.</description>
  <inceptionYear>2010</inceptionYear>
+ 
+   <parent>
+        <artifactId>dspace-parent</artifactId>
+        <groupId>org.dspace</groupId>
+        <version>3.2</version>
+        <relativePath>..</relativePath>
+    </parent>
  <dependencies>
   <dependency>
     <groupId>javax.servlet</groupId>
@@ -39,7 +46,6 @@
   <dependency>
    <groupId>org.dspace</groupId>
    <artifactId>dspace-api</artifactId>
-   <version>3.0</version>
   </dependency>
   <dependency>
    <groupId>log4j</groupId>
@@ -111,6 +117,7 @@
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   <jdk.version>1.7</jdk.version>
+  <root.basedir>${basedir}/..</root.basedir>
  </properties>
  <build>
   <defaultGoal>package</defaultGoal>
@@ -122,6 +129,30 @@
    </resource>
   </resources>
   <plugins>
+      <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                    <!-- In version 2.1-alpha-1, this was incorrectly named warSourceExcludes -->
+                    <!--<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+                    <warSourceExcludes>WEB-INF/lib/*.jar</warSourceExcludes>-->
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>${basedir}/src/main/webapp</directory>
+                            <includes>
+                                <include>WEB-INF/web.xml</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
   <plugin>
   <groupId>org.eclipse.jetty</groupId>
   <artifactId>jetty-maven-plugin</artifactId>
