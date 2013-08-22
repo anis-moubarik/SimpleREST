@@ -66,9 +66,13 @@ public class RootCommunitiesResource extends BaseResource {
         this.communities = null;
         try{
             this.context = new Context();
-            this.communities = Community.findAllTop(context);
         }catch(SQLException e){
-            log.log(Priority.FATAL, e, e);
+            log.log(Priority.INFO, e, e);
+        }
+        try{
+            this.communities = Community.findAllTop(context);
+        }catch(Exception e){
+            log.log(Priority.INFO, e, e);
         }
     }
 
