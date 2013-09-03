@@ -173,8 +173,8 @@
           <version>1.2.1</version>
           <executions>
               <execution>
-                  <id>Sources to right dir</id>
-                <phase>generate-sources</phase>
+                <id>Sources to right dir</id>
+                <phase>package</phase>
                 <goals>
                     <goal>exec</goal>
                 </goals>
