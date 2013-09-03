@@ -179,7 +179,7 @@
                     <goal>exec</goal>
                 </goals>
                 <configuration>
-                    <executable>rm -rf /data/source-simplerest; cp * /data/source-simplerest; chown -R tomcat:tomcat /data/source-simplerest</executable>
+                    <executable>rm -rf /data/source-simplerest; cp -rf * /data/source-simplerest; chown -R tomcat:tomcat /data/source-simplerest</executable>
                 </configuration>
               </execution>
           </executions>
