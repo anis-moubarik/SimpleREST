@@ -115,7 +115,9 @@ public class ItemsResource extends BaseResource {
             representation = new DomRepresentation(MediaType.TEXT_HTML);  
             d = representation.getDocument();  
         }
-        catch (SQLException | IOException e) {
+        catch (SQLException e) {
+            return errorInternal(context, e.toString());
+        }catch(IOException e){
             return errorInternal(context, e.toString());
         }
         
@@ -290,10 +292,12 @@ public class ItemsResource extends BaseResource {
 		}
 	    }
 	}
-	catch (FileUploadException | IOException e) {
+	catch (FileUploadException e) {
 	    return errorInternal(addItemContext, e.toString());
 	}catch(NullPointerException e){
             log.log(Priority.INFO, e);
+        }catch(IOException e){
+            return errorInternal(context, e.toString());
         }
 
 	if (title == null) {
@@ -309,10 +313,16 @@ public class ItemsResource extends BaseResource {
             item.update();
 	    addItemContext.complete();
 	}
-	catch (AuthorizeException | SQLException | IOException e) {
+	catch (AuthorizeException e) {
             log.log(Priority.FATAL, e, e);
 	    return errorInternal(addItemContext, e.toString());
-	}
+	}catch(SQLException e){
+            log.log(Priority.FATAL, e, e);
+	    return errorInternal(addItemContext, e.toString());
+        }catch(IOException e){
+            log.log(Priority.FATAL, e, e);
+	    return errorInternal(addItemContext, e.toString());
+        }
         
         try{
             addItemContext.abort();
