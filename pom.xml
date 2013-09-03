@@ -115,7 +115,7 @@
  </dependencies>
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  <jdk.version>1.7</jdk.version>
+  <jdk.version>1.6</jdk.version>
   <root.basedir>${basedir}/..</root.basedir>
  </properties>
  <build>
