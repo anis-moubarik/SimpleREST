@@ -30,6 +30,15 @@ REQUIREMENTS
 [D:\...\${project.artifactId}.log] [/var/.../${project.artifactId}.log]
 [D:\...\dspace.cfg] [/data/dspace/.../dspace.cfg]
 
+INSTALLATION TO DSPACE INSTANCES
+--------------------------------
+1. yum install git
+2. git clone https://github.com/anis-moubarik/SimpleREST.git
+3. cd SimpleREST; mvn package
+4. cp target/simplerest.war [dspace]/webapps/
+
+If you've already cloned SimpleREST, you can pull new changes from github git repo with the following command: git pull origin master
+
 USAGE
 -----
 
