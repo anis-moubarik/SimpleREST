@@ -37,7 +37,9 @@ USAGE
 -----
 
 A. Install the RESTful web service on top of your DSpace
---------------------------------------------------------
+========================================================
+ATTENTION! OBS! HUOM!
+Check your exec.sh before doing any installation
 
 1. Install git on to your system.
 
@@ -64,7 +66,7 @@ http://<dspace-hostname>/simplerest/rootcommunities
 9. The log file(s) written where you said above.
 
 B. Uninstall the RESTful web service on top of your DSpace
-----------------------------------------------------------
+==========================================================
 
 1. Delete the <WAR> file AND the folder with the same name from your DSpace 
 webapps folder.
