@@ -110,8 +110,7 @@ public class UsersResource extends BaseResource {
         for (int i = 0; i < users.length; i++) {
             toJsonUsers[i] = new StubUser(users[i].getID(), users[i].getEmail(), users[i].getLanguage(),
                     users[i].getNetid(), users[i].getFullName(), users[i].getFirstName(), users[i].getLastName(),
-                    users[i].canLogIn(), users[i].getRequireCertificate(), users[i].getSelfRegistered(),
-                    users[i].getMetadata("password"));
+                    users[i].canLogIn(), users[i].getRequireCertificate(), users[i].getSelfRegistered());
         }
         
         return gson.toJson(toJsonUsers);

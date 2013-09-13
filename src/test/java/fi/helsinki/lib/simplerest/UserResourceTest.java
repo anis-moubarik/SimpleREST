@@ -43,12 +43,12 @@ public class UserResourceTest {
         
         assertEquals(200, resp.getStatus());
         String[] attributes = {"email", "id", "language", "netid", "fullname", "firstname",
-        "lastname", "can login", "require certificate", "self registered", "password"};
+        "lastname", "can login", "require certificate", "self registered"};
         for(String attribute : attributes){
             assertEquals(resp.getContent().contains(attribute), true);
         }
         
-        String[] values = {"test(a)test.com", "fi", "1", "testi testaaja", "testi", "testaaja", "false", "true", "password1"};
+        String[] values = {"test(a)test.com", "fi", "1", "testi testaaja", "testi", "testaaja", "false", "true"};
         
         for(String value : values){
             assertEquals(resp.getContent().contains(value), true);
@@ -81,7 +81,6 @@ public class UserResourceTest {
         assertEquals(su.isCan_login(), true);
         assertEquals(su.isRequire_certificate(), false);
         assertEquals(su.isSelf_registered(), true);
-        assertEquals(su.getPassword(), "password1");
     }
     
 }

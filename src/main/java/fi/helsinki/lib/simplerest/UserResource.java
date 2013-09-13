@@ -126,9 +126,7 @@ public class UserResource extends BaseResource {
 	createAttribute(d,dl,"lastname",eperson.getLastName());
 	createAttribute(d,dl,"can login",Boolean.toString(eperson.canLogIn()));
 	createAttribute(d,dl,"require certificate",Boolean.toString(eperson.getRequireCertificate()));
-	createAttribute(d,dl,"self registered",Boolean.toString(eperson.getSelfRegistered()));
-	createAttribute(d,dl,"password",eperson.getMetadata("password"));
-	
+	createAttribute(d,dl,"self registered",Boolean.toString(eperson.getSelfRegistered()));	
         try{
         this.context.abort(); // Same as c.complete() because we didn't modify the db.
         }catch(NullPointerException e){
@@ -148,7 +146,7 @@ public class UserResource extends BaseResource {
         
         StubUser su = new StubUser(eperson.getID(), eperson.getEmail(), eperson.getLanguage(),
                 eperson.getNetid(), eperson.getFullName(), eperson.getFirstName(), eperson.getLastName(),
-                eperson.canLogIn(), eperson.getRequireCertificate(), eperson.getSelfRegistered(), eperson.getMetadata("password"));
+                eperson.canLogIn(), eperson.getRequireCertificate(), eperson.getSelfRegistered());
         
         try{
             context.abort();

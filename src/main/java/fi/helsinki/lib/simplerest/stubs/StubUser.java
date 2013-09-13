@@ -21,9 +21,8 @@ public class StubUser implements Serializable{
     private boolean can_login;
     private boolean require_certificate;
     private boolean self_registered;
-    private String password;
 
-    public StubUser(int id, String email, String language, String netid, String fullname, String firstname, String lastname, boolean can_login, boolean require_certificate, boolean self_registered, String password) {
+    public StubUser(int id, String email, String language, String netid, String fullname, String firstname, String lastname, boolean can_login, boolean require_certificate, boolean self_registered) {
         this.id = id;
         this.email = email;
         this.language = language;
@@ -34,7 +33,6 @@ public class StubUser implements Serializable{
         this.can_login = can_login;
         this.require_certificate = require_certificate;
         this.self_registered = self_registered;
-        this.password = password;
     }
 
     public int getId() {
@@ -116,14 +114,4 @@ public class StubUser implements Serializable{
     public void setSelf_registered(boolean self_registered) {
         this.self_registered = self_registered;
     }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    
-    
 }
