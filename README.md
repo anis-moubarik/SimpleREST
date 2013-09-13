@@ -30,12 +30,6 @@ REQUIREMENTS
 [D:\...\${project.artifactId}.log] [/var/.../${project.artifactId}.log]
 [D:\...\dspace.cfg] [/data/dspace/.../dspace.cfg]
 
-INSTALLATION TO DSPACE INSTANCES
---------------------------------
-1. yum install git
-2. git clone https://github.com/anis-moubarik/SimpleREST.git
-3. cd SimpleREST; mvn package
-4. cp target/simplerest.war [dspace]/webapps/
 
 If you've already cloned SimpleREST, you can pull new changes from github git repo with the following command: git pull origin master
 
@@ -43,29 +37,36 @@ USAGE
 -----
 
 A. Install the RESTful web service on top of your DSpace
---------------------------------------------------------
+========================================================
+ATTENTION! OBS! HUOM!
+Check your exec.sh before doing any installation
 
-1. In the console, position in the project base directory, where the pom.xml 
+1. Install git on to your system.
+
+2. Clone updated code from the repo: git clone
+https://github.com/anis-moubarik/SimpleREST.git
+
+3. In the console, position in the project base directory, where the pom.xml 
 file is:
  
-2. mvn clean package -P(your-profile) [from above section on settings.xml]
+4. mvn clean package -P(your-profile) [from above section on settings.xml]
 
-3. Check in the console that all completed successfully. [BUILD SUCCESS]
+5. Check in the console that all completed successfully. [BUILD SUCCESS]
 
-4. The <WAR> file is generated in /target/.
+6. The <WAR> file is generated in /target/.
 
-5. Copy the <WAR> file to your DSpace webapps folder.
+7. Copy the <WAR> file to your DSpace webapps folder.
 [In our UNIX setups it is: /data/dspace/webapps]
 
 [5.0 You might need to restart the Tomcat]
 
-6. You can test the RESTful web service at:
+8. You can test the RESTful web service at:
 http://<dspace-hostname>/simplerest/rootcommunities
 
-7. The log file(s) written where you said above.
+9. The log file(s) written where you said above.
 
 B. Uninstall the RESTful web service on top of your DSpace
-----------------------------------------------------------
+==========================================================
 
 1. Delete the <WAR> file AND the folder with the same name from your DSpace 
 webapps folder.
@@ -80,6 +81,12 @@ file is:
 2. mvn clean site -P(your-profile) [from above section on settings.xml]
 
 3. The site is generated in /target/site/. [index.html]
+
+SimpleREST and json
+--------------------
+Add media query to your urls to retrieve data in json format, for example.
+www.dspaceinstance.com/simplerest/rootcommunities?media=json
+json is supported with communities, users, groups, collections and items
 
 AUTOMATIC LICENSING HEADERS
 ---------------------------
