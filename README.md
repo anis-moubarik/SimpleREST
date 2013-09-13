@@ -88,6 +88,10 @@ Add media query to your urls to retrieve data in json format, for example.
 www.dspaceinstance.com/simplerest/rootcommunities?media=json
 json is supported with communities, users, groups, collections and items
 
+SimpleREST testing philosophy (not srs)
+---------------------------------------
+![TestingPhilosophy](https://raw.github.com/anis-moubarik/SimpleREST/master/testing.jpg)
+
 AUTOMATIC LICENSING HEADERS
 ---------------------------
 
