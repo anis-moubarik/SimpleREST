@@ -18,6 +18,8 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.stubs.StubBitstream;
 import java.sql.SQLException;
 import java.io.InputStream;
 import java.io.IOException;
@@ -77,7 +79,7 @@ public class BitstreamResource extends BaseResource {
         }
     }
     
-    @Get
+    @Get("xml")
     public Representation get() {
         Context c = null;
         Bitstream bitstream = null;
@@ -99,6 +101,7 @@ public class BitstreamResource extends BaseResource {
         // if that fails, we assume that bitstream does not exist anymore.
         // FIXME: *Maybe* we should do a similar check in other
         // FIXME: methods beside GET.
+        
         InputStream inputStream = null;
         try {
             inputStream = bitstream.retrieve();
@@ -170,6 +173,24 @@ public class BitstreamResource extends BaseResource {
                 Long.toString(bitstream.getSize()));
         
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson(){
+        Bitstream bs = null;
+        Context c = null;
+        try{
+            c = new Context();
+            bs = Bitstream.find(c, bitstreamId);
+        }catch(Exception e){
+            return errorInternal(c, e.toString()).getText();
+        }
+        
+        Gson gson = new Gson();
+        StubBitstream s = new StubBitstream(bitstreamId, bs.getName(), bs.getFormat().getMIMEType(), bs.getDescription(),
+                bs.getUserFormatDescription(), bs.getSequenceID(), bs.getSize());
+        
+        return gson.toJson(s);
     }
 
     @Put
