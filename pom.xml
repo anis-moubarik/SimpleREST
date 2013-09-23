@@ -371,7 +371,7 @@
  </developers>
  <issueManagement>
   <system>JIRA</system>
-  <url>https://jira-kk.lib.helsinki.fi/</url>
+  <url>https://jira-kk.lib.helsinki.fi/browse/SIMPLEREST</url>
  </issueManagement>
  <repositories>
   <repository>
