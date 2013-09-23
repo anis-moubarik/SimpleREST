@@ -15,9 +15,6 @@ import org.dspace.content.DCValue;
 public class StubCollection implements Serializable{
     private int id;
     private String collectionName;
-    private String[] attributes = {"short_description", "introductory_text",
-                                "provenance_description", "license",
-                                "copyright_text", "side_bar_text"};
     private String short_description;
     private String introductory_text;
     private String provenance_description;

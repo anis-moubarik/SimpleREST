@@ -18,6 +18,8 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.stubs.StubBundle;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
@@ -76,7 +78,7 @@ public class BundleResource extends BaseResource {
         }
     }
 
-    @Get
+    @Get("xml")
     public Representation get() {
         Context c = null;
         Bundle bundle = null;
@@ -136,6 +138,23 @@ public class BundleResource extends BaseResource {
 
         c.abort(); // Same as c.complete() because we didn't modify the db.
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson(){
+        Bundle bu = null;
+        Context c = null;
+        try{
+            c = new Context();
+            bu = Bundle.find(c, bundleId);
+        }catch(Exception e){
+            return errorInternal(c, e.toString()).getText();
+        }
+        
+        Gson gson = new Gson();
+        StubBundle s = new StubBundle(bu.getID(), bu.getName(), bu.getPrimaryBitstreamID(), bu.getBitstreams());
+        
+        return gson.toJson(s);
     }
 
     @Put
