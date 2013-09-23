@@ -104,6 +104,8 @@ public class BitstreamResource extends BaseResource {
         // FIXME: methods beside GET.
         
         log.log(Priority.INFO, bitstream.getType());
+        log.log(Priority.INFO, bitstream.getSource());
+        log.log(Priority.INFO, bitstream.isRegisteredBitstream());
         
         InputStream inputStream = null;
         try {
