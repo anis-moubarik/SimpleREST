@@ -47,6 +47,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 public class BitstreamResource extends BaseResource {
 
@@ -101,6 +102,8 @@ public class BitstreamResource extends BaseResource {
         // if that fails, we assume that bitstream does not exist anymore.
         // FIXME: *Maybe* we should do a similar check in other
         // FIXME: methods beside GET.
+        
+        log.log(Priority.INFO, bitstream.getType());
         
         InputStream inputStream = null;
         try {
@@ -189,7 +192,6 @@ public class BitstreamResource extends BaseResource {
         Gson gson = new Gson();
         StubBitstream s = new StubBitstream(bitstreamId, bs.getName(), bs.getFormat().getMIMEType(), bs.getDescription(),
                 bs.getUserFormatDescription(), bs.getSequenceID(), bs.getSize());
-        
         return gson.toJson(s);
     }
 
