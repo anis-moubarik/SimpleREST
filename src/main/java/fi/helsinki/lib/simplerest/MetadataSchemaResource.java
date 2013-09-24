@@ -18,6 +18,8 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.stubs.StubSchema;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -44,11 +46,29 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 public class MetadataSchemaResource extends BaseResource {
 
     private static Logger log = Logger.getLogger(MetadataSchemaResource.class);
     private int metadataSchemaId;
+    private MetadataSchema mschema;
+    private Context context;
+    
+    public MetadataSchemaResource(MetadataSchema mschema, int id){
+        this.mschema = mschema;
+        this.metadataSchemaId = id;
+    }
+    
+    public MetadataSchemaResource(){
+        this.mschema = null;
+        this.metadataSchemaId = 0;
+        try{
+            this.context = new Context();
+        }catch(SQLException e){
+            log.log(Priority.INFO, e);
+        }
+    } 
 
     static public String relativeUrl(int metadataSchemaId) {
         return "metadataschema/" + metadataSchemaId;
@@ -71,34 +91,39 @@ public class MetadataSchemaResource extends BaseResource {
 
     @Get("xml")
     public Representation toXml() {
-        Context c = null;
-        MetadataSchema metadataSchema = null;
         DomRepresentation representation = null;
         Document d = null;
-        try {
-            c = new Context();
-
-            // IMHO there is a bug in DSpace, because after calling
-            // MetadataSchema.delete() the method MetadataSchema.find() will
-            // still return the deleted metadata schema. (Because delete()
-            // does not call decache() method...)
-            // So as a workaround, we call findAll() instead of find().
-            MetadataSchema[] metadataSchemas = MetadataSchema.findAll(c);
-            for (MetadataSchema mds : metadataSchemas) {
-                if (mds.getSchemaID() == this.metadataSchemaId) {
-                    metadataSchema = mds;
-                    break;
+        
+        //For testing purposes we check if mschema is null, try to find it through DSpace api,
+        //and if even after that it isn't found we return a error.
+        if(mschema == null){
+            try {
+                // IMHO there is a bug in DSpace, because after calling
+                // MetadataSchema.delete() the method MetadataSchema.find() will
+                // still return the deleted metadata schema. (Because delete()
+                // does not call decache() method...)
+                // So as a workaround, we call findAll() instead of find().
+                MetadataSchema[] metadataSchemas = MetadataSchema.findAll(context);
+                for (MetadataSchema mds : metadataSchemas) {
+                    if (mds.getSchemaID() == this.metadataSchemaId) {
+                        mschema = mds;
+                        break;
+                    }
                 }
             }
-            if (metadataSchema == null) {
-                return errorNotFound(c, "Could not find the metadata schema.");
+            catch (Exception e) {
+                if (mschema == null) {
+                    return errorNotFound(context, "Could not find the metadata schema.");
+                }
+                log.log(Priority.INFO, e);
             }
-
+        }
+        
+        try{
             representation = new DomRepresentation(MediaType.TEXT_HTML);  
             d = representation.getDocument();  
-        }
-        catch (Exception e) {
-            return errorInternal(c, e.toString());
+        }catch(Exception e){
+            return errorInternal(context, e.toString());
         }
 
         Element html = d.createElement("html");  
@@ -110,7 +135,7 @@ public class MetadataSchemaResource extends BaseResource {
         Element title = d.createElement("title");
         head.appendChild(title);
         title.appendChild(d.createTextNode("MetadataSchema " +
-                                           metadataSchema.getName()));
+                                           mschema.getName()));
 
         Element body = d.createElement("body");
         html.appendChild(body);
@@ -119,12 +144,47 @@ public class MetadataSchemaResource extends BaseResource {
         setId(dl, "attributes");
         body.appendChild(dl);
 
-        addDtDd(d, dl, "name", metadataSchema.getName());
-        addDtDd(d, dl, "namespace", metadataSchema.getNamespace());
-
-        c.abort(); // Same as c.complete() because we didn't modify the db.
+        addDtDd(d, dl, "name", mschema.getName());
+        addDtDd(d, dl, "namespace", mschema.getNamespace());
+        
+        try{
+            context.abort(); // Same as c.complete() because we didn't modify the db.
+        }catch(NullPointerException e){
+            log.log(Priority.FATAL, e);
+        }
 
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson() throws SQLException{
+        Gson gson = new Gson();
+        if(mschema == null){
+            try{
+                MetadataSchema[] metadataSchemas = MetadataSchema.findAll(context);
+                for (MetadataSchema mds : metadataSchemas) {
+                    if (mds.getSchemaID() == this.metadataSchemaId) {
+                        mschema = mds;
+                        break;
+                    }
+            }
+        }catch(Exception e){
+            if(mschema == null){
+                return errorNotFound(context, "Could not find the schema").getText();
+            }
+            log.log(Priority.INFO, e);
+        }
+        }
+        
+        StubSchema ss = new StubSchema(mschema.getSchemaID(), mschema.getName(), mschema.getNamespace());
+        
+        try{
+            context.abort();
+        }catch(NullPointerException e){
+            log.log(Priority.INFO, e);
+        }
+        
+        return gson.toJson(ss);
     }
 
     @Put

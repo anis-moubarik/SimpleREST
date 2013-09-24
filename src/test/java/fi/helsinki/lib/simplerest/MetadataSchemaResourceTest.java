@@ -21,6 +21,12 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.TestServlets.SchemaServlet;
+import fi.helsinki.lib.simplerest.stubs.StubSchema;
+import java.io.IOException;
+import org.eclipse.jetty.testing.HttpTester;
+import org.eclipse.jetty.testing.ServletTester;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -46,7 +52,7 @@ public class MetadataSchemaResourceTest {
     /**
      * @see fi.helsinki.lib.simplerest.MetadataSchemaResource
      */
-    private MetadataSchemaResource metadataSchemaResource;
+    private ServletTester tester;
 
     public MetadataSchemaResourceTest() {
     }
@@ -56,8 +62,54 @@ public class MetadataSchemaResourceTest {
      * Initializing the test resources.
      */
     @Before
-    public void setUp() {
-        this.metadataSchemaResource = new MetadataSchemaResource();
+    public void setUp() throws Exception {
+        tester = new ServletTester();
+        tester.setContextPath("/");
+        tester.addServlet(SchemaServlet.class, "/metadataschema/*");
+        tester.start();
+    }
+    
+    @Test
+    public void testGetXml() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/metadataschema/xml");
+        resp.parse(tester.getResponses(req.generate()));
+        
+        String content = resp.getContent();
+        
+        assertEquals(200, resp.getStatus());
+        String[] attributes = {"name", "namespace"};
+        for(String attribute : attributes){
+            assertEquals(content.contains(attribute), true);
+        }
+        
+        String[] values = {"dckk", "http://kk.fi/dckk/"};
+        for(String value : values){
+            assertEquals(content.contains(value), true);
+        }
+    }
+    
+    @Test
+    public void testJson() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/metadataschema/json");
+        resp.parse(tester.getResponses(req.generate()));
+        Gson gson = new Gson();
+        
+        StubSchema ss = gson.fromJson(resp.getContent(), StubSchema.class);
+        
+        assertEquals(200, resp.getStatus());
+        assertEquals(ss.getId(), 1);
+        assertEquals(ss.getName(), "dckk");
+        assertEquals(ss.getNamespace(), "http://kk.fi/dckk/");
     }
 
     /**
@@ -65,8 +117,8 @@ public class MetadataSchemaResourceTest {
      * Releasing the test resources.
      */
     @After
-    public void tearDown() {
-        this.metadataSchemaResource = null;
+    public void tearDown() throws Exception {
+        tester.stop();
     }
 
     /**
@@ -76,45 +128,5 @@ public class MetadataSchemaResourceTest {
     public void testRelativeUrl() {
         String actualUrl = MetadataSchemaResource.relativeUrl(89);
         assertEquals("metadataschema/89", actualUrl);
-    }
-
-    /**
-     * Test of doInit method, of class MetadataSchemaResource.
-     */
-    @Test(expected = NullPointerException.class)
-    public void testDoInit() throws Exception {
-        this.metadataSchemaResource.doInit();
-    }
-
-    /**
-     * Test of edit method, of class MetadataSchemaResource.
-     */
-    @Test(expected = NullPointerException.class)
-    public void testEdit() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.metadataSchemaResource.edit(null);
-    }
-
-    /**
-     * Test of post method, of class MetadataSchemaResource.
-     */
-    @Test
-    public void testPost() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.metadataSchemaResource.post(null);
-        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-        assertEquals("Metadata schema resource does not allow POST method.",
-                     representation.getText());
-    }
-
-    /**
-     * Test of delete method, of class MetadataSchemaResource.
-     */
-    @Test
-    public void testDelete() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.metadataSchemaResource.delete();
-        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-        assertEquals("java.lang.NullPointerException", representation.getText());
     }
 }
