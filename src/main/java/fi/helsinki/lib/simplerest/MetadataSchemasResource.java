@@ -18,6 +18,8 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.stubs.StubSchema;
 import java.util.HashSet;
 import java.sql.SQLException;
 
@@ -114,6 +116,27 @@ public class MetadataSchemasResource extends BaseResource {
 
         c.abort();
         return representation;
+    }
+    
+    @Get("json")
+    public String toJson() throws SQLException{
+        MetadataSchema[] schemas;
+        Context c = null;
+        try{
+            c = new Context();
+            schemas = MetadataSchema.findAll(c);
+        }catch(Exception e){
+            return errorInternal(c, e.toString()).getText();
+        }
+        
+        Gson gson = new Gson();
+        
+        StubSchema[] toJsonSchemas = new StubSchema[schemas.length];
+        for(int i = 0; i < schemas.length; i++){
+            toJsonSchemas[i] = new StubSchema(schemas[i].getSchemaID(), schemas[i].getName(), schemas[i].getNamespace());
+        }
+        
+        return gson.toJson(toJsonSchemas);
     }
 
     @Put
