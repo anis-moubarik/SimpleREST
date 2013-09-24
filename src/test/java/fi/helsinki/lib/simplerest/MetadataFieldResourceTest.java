@@ -21,6 +21,12 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.TestServlets.MetadataServlet;
+import fi.helsinki.lib.simplerest.stubs.StubMetadata;
+import java.io.IOException;
+import org.eclipse.jetty.testing.HttpTester;
+import org.eclipse.jetty.testing.ServletTester;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -46,18 +52,64 @@ public class MetadataFieldResourceTest {
     /**
      * @see fi.helsinki.lib.simplerest.MetadataFieldResource
      */
-    private MetadataFieldResource metadataFieldResource;
-
-    public MetadataFieldResourceTest() {
-    }
+    private ServletTester tester;
 
     /**
      * JUnit method annotated with {@link org.junit.Before}.
      * Initializing the test resources.
      */
     @Before
-    public void setUp() {
-        this.metadataFieldResource = new MetadataFieldResource();
+    public void setUp() throws Exception {
+        tester = new ServletTester();
+        tester.setContextPath("/");
+        tester.addServlet(MetadataServlet.class, "/metadatafield/*");
+        tester.start();
+    }
+    
+    @Test
+    public void testGetXml() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/metadatafield/xml");
+        resp.parse(tester.getResponses(req.generate()));
+        
+        String content = resp.getContent();
+        
+        assertEquals(200, resp.getStatus());
+        String[] attributes = {"schema", "element", "qualifier", "scopenote"};
+        for(String attribute : attributes){
+            assertEquals(content.contains(attribute), true);
+        }
+        
+        String[] values = {"dckk", "testElement", "testQualifier", "Description"};
+        for(String value : values){
+            assertEquals(content.contains(value), true);
+        }
+    }
+    
+    @Test
+    public void testJson() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/metadatafield/json");
+        resp.parse(tester.getResponses(req.generate()));
+        System.out.println(resp.getContent());
+        Gson gson = new Gson();
+        
+        StubMetadata sm = gson.fromJson(resp.getContent(), StubMetadata.class);
+        
+        assertEquals(200, resp.getStatus());
+        assertEquals(sm.getElement(), "testElement");
+        assertEquals(sm.getId(), 1);
+        assertEquals(sm.getSchema(), "dckk");
+        assertEquals(sm.getQualifier(), "testQualifier");
+        assertEquals(sm.getScopeNote(), "Description");
     }
 
     /**
@@ -65,8 +117,8 @@ public class MetadataFieldResourceTest {
      * Releasing the test resources.
      */
     @After
-    public void tearDown() {
-        this.metadataFieldResource = null;
+    public void tearDown() throws Exception {
+        tester.stop();
     }
 
     /**
@@ -76,45 +128,5 @@ public class MetadataFieldResourceTest {
     public void testRelativeUrl() {
         String actualUrl = MetadataFieldResource.relativeUrl(73);
         assertEquals("metadatafield/73", actualUrl);
-    }
-
-    /**
-     * Test of doInit method, of class MetadataFieldResource.
-     */
-    @Test(expected = NullPointerException.class)
-    public void testDoInit() throws Exception {
-        this.metadataFieldResource.doInit();
-    }
-
-    /**
-     * Test of edit method, of class MetadataFieldResource.
-     */
-    @Test(expected = NullPointerException.class)
-    public void testEdit() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.metadataFieldResource.edit(null);
-    }
-
-    /**
-     * Test of post method, of class MetadataFieldResource.
-     */
-    @Test
-    public void testPost() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.metadataFieldResource.post(null);
-        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-        assertEquals("Metadata field resource does not allow POST method.",
-                     representation.getText());
-    }
-
-    /**
-     * Test of delete method, of class MetadataFieldResource.
-     */
-    @Test
-    public void testDelete() {
-        StringRepresentation representation =
-                             (StringRepresentation) this.metadataFieldResource.delete();
-        assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
-        assertEquals("java.lang.NullPointerException", representation.getText());
     }
 }
