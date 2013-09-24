@@ -167,11 +167,18 @@ public class MetadataFieldResource extends BaseResource {
     public String toJson() throws SQLException{
         Gson gson = new Gson();
         //For testing purposes we check if the mfield or mschema variables are null
-        if(mfield == null || mschema == null){
+        if(mfield == null){
             try{
                 mfield = MetadataField.find(context, metadataFieldId);
-                mschema = MetadataSchema.find(context, mfield.getFieldID());
             }catch(Exception e){
+                log.log(Priority.INFO, e);
+            }
+        }
+        
+        if(mschema == null){
+            try{
+                mschema = MetadataSchema.find(context, mfield.getSchemaID());
+            }catch(SQLException e){
                 log.log(Priority.INFO, e);
             }
         }
