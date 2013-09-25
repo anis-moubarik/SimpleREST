@@ -201,15 +201,15 @@ public class ItemsResource extends BaseResource {
         }
         try{
             collection = Collection.find(context, collectionId);
-            items = collection.getItems();
         }catch(Exception e){
             return errorInternal(context, e.toString()).getText();
         }
-        
+        items = collection.getItems();
         Gson gson = new Gson();
         int itemSize = 0;
         while(items.hasNext()){
             itemSize++;
+            items.next();
         }
         
         StubItem[] toJsonItems = new StubItem[itemSize];
