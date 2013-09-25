@@ -210,12 +210,10 @@ public class ItemsResource extends BaseResource {
         
         ArrayList<StubItem> al = new ArrayList<StubItem>(10);
         
-//        while(items.hasNext()){
-//            al.add(new StubItem(items.next()));
-//        }
-        
-        StubItem si = new StubItem(items.next());
-        
+        while(items.hasNext()){
+            al.add(new StubItem(items.next()));
+        }
+                
         try{
             items.close();
             context.abort();
@@ -223,7 +221,7 @@ public class ItemsResource extends BaseResource {
             log.log(Priority.INFO, e);
         }
         
-        return gson.toJson(si);   
+        return gson.toJson(al);   
     }
 
     @Put
