@@ -2,4 +2,4 @@ target/
 THIRD-PARTY.properties
 nb-configuration.xml
 .DS_Store
-src/main/webapp/WEB-INF/dspacevisual
+src/main/webapp/dspacevisual
