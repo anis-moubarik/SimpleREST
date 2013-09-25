@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import fi.helsinki.lib.simplerest.stubs.StubItem;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.dspace.content.WorkspaceItem;
@@ -206,18 +207,11 @@ public class ItemsResource extends BaseResource {
         }
         items = collection.getItems();
         Gson gson = new Gson();
-        int itemSize = 0;
-        while(items.hasNext()){
-            itemSize++;
-            items.next();
-        }
         
-        StubItem[] toJsonItems = new StubItem[itemSize];
+        ArrayList<StubItem> al = new ArrayList<StubItem>(10);
         
-        int i = 0;
         while(items.hasNext()){
-            toJsonItems[i] = new StubItem(items.next());
-            i++;
+            al.add(new StubItem(items.next()));
         }
         
         try{
@@ -227,7 +221,7 @@ public class ItemsResource extends BaseResource {
             log.log(Priority.INFO, e);
         }
         
-        return gson.toJson(toJsonItems);   
+        return gson.toJson(al);   
     }
 
     @Put
