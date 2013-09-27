@@ -52,6 +52,7 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 public class BundleResource extends BaseResource {
 
@@ -148,12 +149,21 @@ public class BundleResource extends BaseResource {
             c = new Context();
             bu = Bundle.find(c, bundleId);
         }catch(Exception e){
+            if(c != null)
+                c.abort();
             return errorInternal(c, e.toString()).getText();
+        }finally{
+            if(c != null)
+                c.abort();
         }
         
         Gson gson = new Gson();
         StubBundle s = new StubBundle(bu.getID(), bu.getName(), bu.getPrimaryBitstreamID(), bu.getBitstreams());
-        
+        try{
+           c.abort();
+        }catch(Exception e){
+            log.log(Priority.FATAL, e);
+        }
         return gson.toJson(s);
     }
 

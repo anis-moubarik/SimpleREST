@@ -146,6 +146,8 @@ public class MetadataFieldsResource extends BaseResource {
             fields = MetadataField.findAll(c);
         }catch(Exception e){
             return errorInternal(c, e.toString()).getText();
+        }finally{
+            c.abort();
         }
         
         Gson gson = new Gson();

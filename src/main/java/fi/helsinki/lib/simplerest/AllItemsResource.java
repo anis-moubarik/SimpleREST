@@ -66,6 +66,11 @@ public class AllItemsResource extends BaseResource{
                 toJsonItems.add(new StubItem(i.next()));
             }
         }
+        try{
+            this.context.abort();
+        }catch(NullPointerException e){
+            log.log(Priority.FATAL, e);
+        }
         return gson.toJson(toJsonItems);
     }
     

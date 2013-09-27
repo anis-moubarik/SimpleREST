@@ -52,6 +52,7 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Priority;
 
 public class CollectionsResource extends BaseResource {
 
@@ -171,7 +172,12 @@ public class CollectionsResource extends BaseResource {
             community = Community.find(c, communityId);
             collections = community.getCollections();
         }catch(Exception e){
+            if(c != null)
+                c.abort();
             return errorInternal(c, e.toString()).getText();
+        }finally{
+            if(c != null)
+                c.abort();
         }
         
         Gson gson = new Gson();
@@ -182,7 +188,6 @@ public class CollectionsResource extends BaseResource {
                     collections[i].getMetadata("introductory_text"), collections[i].getMetadata("provenance_description"), collections[i].getLicense(),
                     collections[i].getMetadata("copyright_text"), collections[i].getMetadata("side_bar_text"), collections[i].getLogo());
         }
-        
         return gson.toJson(toJsonCollections);
     }
 

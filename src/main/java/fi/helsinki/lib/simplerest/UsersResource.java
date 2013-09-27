@@ -102,6 +102,9 @@ public class UsersResource extends BaseResource {
             users = EPerson.findAll(c, 0);
         }catch(Exception e){
             return errorInternal(c, e.toString()).getText();
+        }finally{
+            if(c != null)
+                c.abort();
         }
         
         Gson gson = new Gson();

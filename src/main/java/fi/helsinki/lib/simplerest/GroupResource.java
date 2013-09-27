@@ -170,6 +170,8 @@ public class GroupResource extends BaseResource {
             this.group = Group.find(context, groupId);
         }catch(Exception ex){
             log.log(Priority.INFO, ex);
+        }finally{
+            context.abort();
         }
         
         StubGroup stub = new StubGroup(this.group);

@@ -165,6 +165,12 @@ public class RootCommunitiesResource extends BaseResource {
             toJsonCommunities[i] = new StubCommunity(communities[i].getID(), communities[i].getName(), communities[i].getMetadata("short_description"),
                     communities[i].getMetadata("introductory_text"), communities[i].getMetadata("copyright_text"), communities[i].getMetadata("side_bar_text"));
         }
+        
+        try{
+            context.abort();
+        }catch(Exception e){
+            log.log(Priority.FATAL, e);
+        }
                 
         return gson.toJson(toJsonCommunities);
     }

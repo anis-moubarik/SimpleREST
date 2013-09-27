@@ -197,15 +197,15 @@ public class CommunityResource extends BaseResource {
         try{
             comm = Community.find(context, this.communityId);
         }catch(Exception e){
+            if(context != null)
+                context.abort();
             log.log(Priority.INFO, e, e);
+        }finally{
+            if(context != null)
+                context.abort();
         }
         StubCommunity s = new StubCommunity(comm.getID(), comm.getName(), comm.getMetadata("short_description"),
                     comm.getMetadata("introductory_text"), comm.getMetadata("copyright_text"), comm.getMetadata("side_bar_text"));
-        try{
-            context.abort();
-        }catch(NullPointerException e){
-            log.log(Priority.INFO, e, e);
-        }
         return gson.toJson(s);
     }
 

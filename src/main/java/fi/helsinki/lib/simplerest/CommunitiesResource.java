@@ -51,6 +51,7 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Priority;
 
 public class CommunitiesResource extends BaseResource {
 
@@ -164,7 +165,12 @@ public class CommunitiesResource extends BaseResource {
             community = Community.find(c, communityId);
             communities = community.getSubcommunities();
         }catch(Exception e){
+            if(c != null)
+                c.abort();
             return errorInternal(c, e.toString()).getText();
+        }finally{
+            if(c != null)
+                c.abort();
         }
         
         /*Community class from DSpace-api won't work for Serialization to json,
@@ -176,7 +182,6 @@ public class CommunitiesResource extends BaseResource {
             toJsonCommunities[i] = new StubCommunity(communities[i].getID(), communities[i].getName(), communities[i].getMetadata("short_description"),
                     communities[i].getMetadata("introductory_text"), communities[i].getMetadata("copyright_text"), communities[i].getMetadata("side_bar_text"));
         }
-                
         return gson.toJson(toJsonCommunities);
     }
 

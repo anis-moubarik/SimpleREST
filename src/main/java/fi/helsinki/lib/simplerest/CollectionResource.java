@@ -47,6 +47,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 public class CollectionResource extends BaseResource {
 
@@ -169,13 +170,23 @@ public class CollectionResource extends BaseResource {
             c = new Context();
             co = Collection.find(c, collectionId);
         }catch(Exception e){
+            if(c != null)
+                c.abort();
             return errorInternal(c, e.toString()).getText();
+        }finally{
+            if(c != null)
+                c.abort();
         }
         
         Gson gson = new Gson();
         StubCollection s = new StubCollection(co.getID(), co.getName(), co.getMetadata("short_description"),
                 co.getMetadata("introductory_text"), co.getMetadata("provenance_description"),
                 co.getMetadata("license"), co.getMetadata("copyright_text"), co.getMetadata("side_bar_text"), co.getLogo());
+        try{
+            c.abort();
+        }catch(Exception e){
+            log.log(Priority.FATAL, e);
+        }
         return gson.toJson(s);
     }
 
