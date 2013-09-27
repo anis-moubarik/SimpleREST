@@ -254,9 +254,6 @@ public class ItemResource extends BaseResource {
             if(context != null)
                 context.abort();
             log.log(Priority.INFO, ex);
-        }finally{
-            if(context != null)
-                context.abort();
         }
         
         StubItem stub = null;
@@ -264,6 +261,11 @@ public class ItemResource extends BaseResource {
             stub = new StubItem(this.item);
         } catch (SQLException ex) {
             log.log(Priority.INFO, ex);
+        }
+        try{
+            context.abort();
+        }catch(NullPointerException e){
+            log.log(Priority.FATAL, e);
         }
         Gson gson = new Gson();
         return gson.toJson(stub);
