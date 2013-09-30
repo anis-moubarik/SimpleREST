@@ -32,7 +32,7 @@ import org.restlet.data.MediaType;
 public class SimpleRestApplication extends Application {
 
     private static Logger log = Logger.getLogger(SimpleRestApplication.class);
-
+    
     @Override
     public synchronized Restlet createInboundRoot() {
         Router router = new Router(getContext());
@@ -96,5 +96,9 @@ public class SimpleRestApplication extends Application {
         guard.setNext(router);
 
         return guard;
+    }
+
+    private Object getResponse() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
