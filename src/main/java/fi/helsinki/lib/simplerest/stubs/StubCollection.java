@@ -6,6 +6,7 @@ package fi.helsinki.lib.simplerest.stubs;
 
 import java.io.Serializable;
 import org.dspace.content.Bitstream;
+import org.dspace.content.Collection;
 import org.dspace.content.DCValue;
 
 /**
@@ -35,6 +36,18 @@ public class StubCollection implements Serializable{
         this.copyright_text = copyright_text;
         this.side_bar_text = side_bar_text;
         this.logo = logo;
+    }
+    
+    public StubCollection(Collection c){
+         this.id = c.getID();
+         this.collectionName = c.getName();
+         this.short_description = c.getMetadata("short_description");
+         this.introductory_text = c.getMetadata("introductory_text");
+         this.provenance_description = c.getMetadata("provenance_description");
+         this.license = c.getLicense();
+         this.copyright_text = c.getMetadata("copyright_text");
+         this.side_bar_text = c.getMetadata("side_bar_text");
+         this.logo = c.getLogo();
     }
 
     public int getId() {

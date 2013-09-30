@@ -39,6 +39,7 @@ public class SimpleRestApplication extends Application {
         getMetadataService().setDefaultMediaType(MediaType.TEXT_HTML);
         router.attach("", RootResource.class);
         router.attach("/rootcommunities", RootCommunitiesResource.class);
+        router.attach("/collections", AllCollectionsResource.class);
         router.attach("/items", AllItemsResource.class);
         router.attach("/community/{communityId}", CommunityResource.class);
         router.attach("/community/{communityId}/logo",
