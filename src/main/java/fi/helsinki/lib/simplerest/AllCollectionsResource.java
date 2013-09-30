@@ -36,7 +36,7 @@ public class AllCollectionsResource extends BaseResource{
         getResponse().getAttributes().put("org.restlet.http.headers", responseHeaders); 
     } 
     responseHeaders.add("Access-Control-Allow-Origin", "*"); 
-    responseHeaders.add("Access-Control-Allow-Methods", "POST,OPTIONS");
+    responseHeaders.add("Access-Control-Allow-Methods", "GET, OPTIONS");
     responseHeaders.add("Access-Control-Allow-Headers", "Content-Type"); 
     responseHeaders.add("Access-Control-Allow-Credentials", "false"); 
     responseHeaders.add("Access-Control-Max-Age", "60"); 
