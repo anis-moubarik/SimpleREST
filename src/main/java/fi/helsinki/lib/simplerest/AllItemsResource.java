@@ -13,7 +13,9 @@ import org.dspace.content.Community;
 import org.dspace.content.Item;
 import org.dspace.content.ItemIterator;
 import org.dspace.core.Context;
+import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
+import org.restlet.resource.Options;
 
 /**
  *
@@ -52,6 +54,11 @@ public class AllItemsResource extends BaseResource{
     
     static public String relativeUrl(int dummy){
         return "items";
+    }
+    
+    @Options
+    public void doOptions(Representation entity){
+        GetOptions.allowAccess(getResponse());
     }
     
     @Get("json")
