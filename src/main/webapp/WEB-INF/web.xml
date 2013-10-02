@@ -83,13 +83,12 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
-
-    <filter-mapping>
-        <filter-name>CORS</filter-name>
-        <servlet-name>RestletServlet</servlet-name>
-    </filter-mapping>
     <servlet-mapping>
         <servlet-name>RestletServlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    <filter-mapping>
+        <filter-name>CORS</filter-name>
+        <servlet-name>RestletServlet</servlet-name>
+    </filter-mapping>
 </web-app>
