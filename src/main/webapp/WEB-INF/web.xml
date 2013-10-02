@@ -86,7 +86,7 @@
 
     <filter-mapping>
         <filter-name>CORS</filter-name>
-        <url-pattern>/*</url-pattern>
+        <servlet-name>RestletServlet</servlet-name>
     </filter-mapping>
     <servlet-mapping>
         <servlet-name>RestletServlet</servlet-name>
