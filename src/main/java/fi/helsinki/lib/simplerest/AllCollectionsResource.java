@@ -65,6 +65,13 @@ public class AllCollectionsResource extends BaseResource{
     
     @Get("json")
     public String toJson() throws SQLException{
+        Series<Header> responseHeaders = (Series<Header>) getResponse().getAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
+        if (responseHeaders == null) {
+            responseHeaders = new Series(Header.class);
+            getResponse().getAttributes().put(HeaderConstants.ATTRIBUTE_HEADERS,
+                    responseHeaders);
+        }
+        responseHeaders.add(new Header("Access-Control-Allow-Origin", "*"));
         Gson gson = new Gson();
         ArrayList<StubCollection> toJsonCollections = new ArrayList<StubCollection>(25);
         for(Collection c : allCollections){

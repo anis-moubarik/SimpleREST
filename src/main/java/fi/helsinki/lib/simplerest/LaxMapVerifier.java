@@ -27,7 +27,7 @@ public class LaxMapVerifier extends MapVerifier {
 
     @Override
     public int verify(Request request, Response response) {
-        if (request.getMethod() == Method.GET) {
+        if (request.getMethod() == Method.GET || request.getMethod() == Method.OPTIONS) {
             return RESULT_VALID;
         }
         else {
