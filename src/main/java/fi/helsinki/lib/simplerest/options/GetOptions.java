@@ -15,6 +15,8 @@ import org.restlet.util.Series;
  */
 public abstract class GetOptions {
     public static void allowAccess(Response resp){
+        if(resp == null)
+            return;
         Series<Header> responseHeaders = (Series<Header>) resp.getAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
         if (responseHeaders == null) {
             responseHeaders = new Series(Header.class);
