@@ -2,6 +2,7 @@
 package fi.helsinki.lib.simplerest;
 
 import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.options.GetOptions;
 import fi.helsinki.lib.simplerest.stubs.StubItem;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class AllItemsResource extends BaseResource{
     
     @Get("json")
     public String toJson() throws SQLException{
+        GetOptions.allowAccess(getResponse());
         Gson gson = new Gson();
         ArrayList<StubItem> toJsonItems = new ArrayList<StubItem>(100);
         for(Collection c : allCollections){

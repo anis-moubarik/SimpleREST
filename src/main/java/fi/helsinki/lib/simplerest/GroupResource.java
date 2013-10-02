@@ -19,6 +19,7 @@
 package fi.helsinki.lib.simplerest;
 
 import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.options.GetOptions;
 import fi.helsinki.lib.simplerest.stubs.StubGroup;
 import java.sql.SQLException;
 import org.dspace.core.Context;
@@ -166,6 +167,7 @@ public class GroupResource extends BaseResource {
     
     @Get("json")
     public String toJson(){
+        GetOptions.allowAccess(getResponse());
         try{
             this.group = Group.find(context, groupId);
         }catch(Exception ex){

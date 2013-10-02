@@ -19,6 +19,7 @@
 package fi.helsinki.lib.simplerest;
 
 import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.options.GetOptions;
 import fi.helsinki.lib.simplerest.stubs.StubBitstream;
 import java.sql.SQLException;
 import java.io.InputStream;
@@ -211,6 +212,7 @@ public class BitstreamResource extends BaseResource {
     
     @Get("json")
     public String toJson(){
+        GetOptions.allowAccess(getResponse());
         try{
             bitstream = Bitstream.find(context, bitstreamId);
         }catch(Exception e){

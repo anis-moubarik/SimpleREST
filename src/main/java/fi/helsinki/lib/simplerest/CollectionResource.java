@@ -19,6 +19,7 @@
 package fi.helsinki.lib.simplerest;
 
 import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.options.GetOptions;
 import fi.helsinki.lib.simplerest.stubs.StubCollection;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -47,7 +48,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 public class CollectionResource extends BaseResource {
 
@@ -164,6 +164,7 @@ public class CollectionResource extends BaseResource {
     
     @Get("json")
     public String toJson(){
+        GetOptions.allowAccess(getResponse());
         Collection co = null;
         Context c = null;
         try{

@@ -19,6 +19,7 @@
 package fi.helsinki.lib.simplerest;
 
 import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.options.GetOptions;
 import fi.helsinki.lib.simplerest.stubs.StubUser;
 import java.sql.SQLException;
 import org.dspace.core.Context;
@@ -137,6 +138,7 @@ public class UserResource extends BaseResource {
     
     @Get("json")
     public String toJson(){
+        GetOptions.allowAccess(getResponse());
         Gson gson = new Gson();
         try{
             this.eperson = EPerson.find(context, userId);

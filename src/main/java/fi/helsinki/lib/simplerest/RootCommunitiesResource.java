@@ -20,6 +20,7 @@ package fi.helsinki.lib.simplerest;
 
 import fi.helsinki.lib.simplerest.stubs.StubCommunity;
 import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.options.GetOptions;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -156,6 +157,7 @@ public class RootCommunitiesResource extends BaseResource {
     
     @Get("json")
     public String toJson() {
+        GetOptions.allowAccess(getResponse());
         /*Community class from DSpace-api won't work for Serialization to json,
         so we use StubCommunity, and use a slow loop to create new StubCommunity array,
         which will be Serializable and converted to json. */

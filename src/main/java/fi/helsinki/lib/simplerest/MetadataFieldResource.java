@@ -19,6 +19,7 @@
 package fi.helsinki.lib.simplerest;
 
 import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.options.GetOptions;
 import fi.helsinki.lib.simplerest.stubs.StubMetadata;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -165,6 +166,7 @@ public class MetadataFieldResource extends BaseResource {
     
     @Get("json")
     public String toJson() throws SQLException{
+        GetOptions.allowAccess(getResponse());
         Gson gson = new Gson();
         //For testing purposes we check if the mfield or mschema variables are null
         if(mfield == null){

@@ -19,6 +19,7 @@
 package fi.helsinki.lib.simplerest;
 
 import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.options.GetOptions;
 import fi.helsinki.lib.simplerest.stubs.StubCommunity;
 import org.dspace.core.Context;
 import org.dspace.content.Community;
@@ -157,6 +158,7 @@ public class CommunitiesResource extends BaseResource {
     
     @Get("json")
     public String toJson() {
+        GetOptions.allowAccess(getResponse());
         Community[] communities;
         Context c = null;
         Community community = null;

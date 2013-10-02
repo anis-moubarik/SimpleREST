@@ -20,6 +20,7 @@ package fi.helsinki.lib.simplerest;
 
 import fi.helsinki.lib.simplerest.stubs.StubItem;
 import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.options.GetOptions;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
@@ -248,6 +249,7 @@ public class ItemResource extends BaseResource {
     
     @Get("json")
     public String toJson(){
+        GetOptions.allowAccess(getResponse());
         try {
             this.item = Item.find(context, this.itemId);
         } catch (Exception ex) {

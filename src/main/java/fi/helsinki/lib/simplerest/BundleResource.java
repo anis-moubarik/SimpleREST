@@ -19,6 +19,7 @@
 package fi.helsinki.lib.simplerest;
 
 import com.google.gson.Gson;
+import fi.helsinki.lib.simplerest.options.GetOptions;
 import fi.helsinki.lib.simplerest.stubs.StubBundle;
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -143,6 +144,7 @@ public class BundleResource extends BaseResource {
     
     @Get("json")
     public String toJson(){
+        GetOptions.allowAccess(getResponse());
         Bundle bu = null;
         Context c = null;
         try{
