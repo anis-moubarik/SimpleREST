@@ -11,9 +11,12 @@ import org.dspace.content.Collection;
 import org.dspace.content.Community;
 import org.dspace.core.Context;
 import org.restlet.data.Form;
+import org.restlet.engine.header.Header;
+import org.restlet.engine.header.HeaderConstants;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 import org.restlet.resource.Options;
+import org.restlet.util.Series;
 
 
 /**
@@ -29,14 +32,15 @@ public class AllCollectionsResource extends BaseResource{
     
     @Options
     public void doOptions(Representation entity) {
-    Form responseHeaders = (Form) getResponse().getAttributes().get("org.restlet.http.headers"); 
-    if (responseHeaders == null) { 
-        responseHeaders = new Form(); 
-        getResponse().getAttributes().put("org.restlet.http.headers", responseHeaders); 
-    } 
-    responseHeaders.add("Access-Control-Allow-Origin", "*"); 
-} 
-    
+        Series<Header> responseHeaders = (Series<Header>) getResponse().getAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
+        if (responseHeaders == null) {
+            responseHeaders = new Series(Header.class);
+            getResponse().getAttributes().put(HeaderConstants.ATTRIBUTE_HEADERS,
+                    responseHeaders);
+        }
+        responseHeaders.add(new Header("Access-Control-Allow-Origin", "*"));
+    }
+
     public AllCollectionsResource(Collection[] collections){
         this.allCollections = collections;
     }
