@@ -37,14 +37,12 @@ public class AllCollectionsResource extends BaseResource{
     responseHeaders.add("Access-Control-Allow-Origin", "*"); 
 } 
     
-    public AllCollectionsResource(Community[] communities, Collection[] collections){
+    public AllCollectionsResource(Collection[] collections){
         this.allCollections = collections;
-        this.allCommunities = communities;
     }
     
     public AllCollectionsResource(){
         this.allCollections = null;
-        this.allCommunities = null;
         try{
             this.context = new Context();
         }catch(SQLException e){
