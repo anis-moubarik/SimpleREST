@@ -24,7 +24,6 @@ public class AllCollectionsResource extends BaseResource{
     
     private static Logger log = Logger.getLogger(AllCollectionsResource.class);
     
-    private Community[] allCommunities;
     private Collection[] allCollections;
     private Context context;
     
@@ -36,10 +35,6 @@ public class AllCollectionsResource extends BaseResource{
         getResponse().getAttributes().put("org.restlet.http.headers", responseHeaders); 
     } 
     responseHeaders.add("Access-Control-Allow-Origin", "*"); 
-    responseHeaders.add("Access-Control-Allow-Methods", "GET, OPTIONS");
-    responseHeaders.add("Access-Control-Allow-Headers", "Content-Type"); 
-    responseHeaders.add("Access-Control-Allow-Credentials", "false"); 
-    responseHeaders.add("Access-Control-Max-Age", "60"); 
 } 
     
     public AllCollectionsResource(Community[] communities, Collection[] collections){
