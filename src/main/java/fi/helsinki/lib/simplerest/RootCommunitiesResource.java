@@ -1,5 +1,5 @@
 /**
- * A RESTful web service on top of DSpace. Copyright (C) 2010-2011 National
+ * A RESTful web service on top of DSpace. Copyright (C) 2010-2013 National
  * Library of Finland
  *
  * This library is free software; you can redistribute it and/or modify it under
