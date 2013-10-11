@@ -3,31 +3,34 @@ REQUIREMENTS
 
 1. Maven user settings required for this project:
 [C:\Documents and Settings\<username>\.m2\settings.xml]
+
 [/home/<username>/.m2/settings.xml]
 
-<settings ...>
- ...
- <profiles>
-  <profile>
-   <id>(your-profile)</id>
-   <properties>
-    ...
-    <mylogic.log.file>absolute path to ${project.artifactId}.log</mylogic.log.file>
-    <spring.log.file>absolute path to ${project.artifactId}-spring.log</spring.log.file>
-    <dspace.log.file>absolute path to ${project.artifactId}-dspace.log</dspace.log.file>
-    <dspace.rest.username>...</dspace.rest.username>
-    <dspace.rest.password>...</dspace.rest.password>
-    <dspace.eperson.id>...</dspace.eperson.id>
-    <dspace.config.file>absolute path to DSpace dspace.cfg file</dspace.config.file>
-    ...
-   </properties>
-  </profile>
- </profiles>
- ...
-<settings>
+  <settings ...>
+  ...
+  <profiles>
+    <profile>
+    <id>(your-profile)</id>
+    <properties>
+      ...
+      <mylogic.log.file>absolute path to ${project.artifactId}.log</mylogic.log.file>
+      <spring.log.file>absolute path to ${project.artifactId}-spring.log</spring.log.file>
+      <dspace.log.file>absolute path to ${project.artifactId}-dspace.log</dspace.log.file>
+      <dspace.rest.username>...</dspace.rest.username>
+      <dspace.rest.password>...</dspace.rest.password>
+      <dspace.eperson.id>...</dspace.eperson.id>
+      <dspace.config.file>absolute path to DSpace dspace.cfg file</dspace.config.file>
+      ...
+    </properties>
+    </profile>
+  </profiles>
+  ...
+  <settings>
 
 , where absolute path examples: 
+
 [D:\...\${project.artifactId}.log] [/var/.../${project.artifactId}.log]
+
 [D:\...\dspace.cfg] [/data/dspace/.../dspace.cfg]
 
 

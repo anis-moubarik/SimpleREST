@@ -1,5 +1,5 @@
-echo "We're moving simplerest.war to source-simplerest folder, type y to continue "
-read -p "We're moving simplerest.war to source-simplerest folder, type y to continue " -n 1 -r
+timeout 5 echo "We're moving simplerest.war to source-simplerest folder, type y to continue "
+read -p "We're moving simplerest.war to source-simplerest folder, type y to continue " -n 1 -r 
 echo
 
 if [[ $REPLY =~ ^[Yy]$ ]]
