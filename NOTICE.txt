@@ -46,3 +46,7 @@ The Apache Software License, Version 2.0 :
   * Commons IO (commons-io:commons-io:1.3.2 - http://jakarta.apache.org/commons/io/)
   * Apache Log4j (log4j:log4j:1.2.16 - http://logging.apache.org/log4j/1.2/)
   * maven-license-plugin (com.mycila.maven-license-plugin:maven-license-plugin:1.9.0 - http://code.google.com/p/maven-license-plugin/)
+  * Gson (com.google.code.gson - https://code.google.com/p/google-gson/)
+
+MIT License
+  * Mockito (org.mockito - https://code.google.com/p/mockito/)

@@ -6,7 +6,7 @@
  <groupId>fi.helsinki.lib</groupId>
  <artifactId>simplerest</artifactId>
  <packaging>war</packaging>
- <version>1.0-SNAPSHOT</version>
+ <version>2.0-SNAPSHOT</version>
  <name>Simple REST</name>
  <url>http://www.kansalliskirjasto.fi/</url>
  <description>A RESTful web service on top of DSpace.</description>
