@@ -5,7 +5,7 @@ REQUIREMENTS
 [C:\Documents and Settings\<username>\.m2\settings.xml]
 
 [/home/<username>/.m2/settings.xml]
-
+```
   <settings ...>
   ...
   <profiles>
@@ -26,7 +26,7 @@ REQUIREMENTS
   </profiles>
   ...
   <settings>
-
+´´´
 , where absolute path examples: 
 
 [D:\...\${project.artifactId}.log] [/var/.../${project.artifactId}.log]
