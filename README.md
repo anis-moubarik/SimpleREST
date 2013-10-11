@@ -26,7 +26,7 @@ REQUIREMENTS
   </profiles>
   ...
   <settings>
-´´´
+```
 , where absolute path examples: 
 
 [D:\...\${project.artifactId}.log] [/var/.../${project.artifactId}.log]
