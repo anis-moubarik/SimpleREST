@@ -64,7 +64,7 @@ file is:
 [5.0 You might need to restart the Tomcat]
 
 8. You can test the RESTful web service at:
-http://<dspace-hostname>/simplerest/rootcommunities
+http://\<dspace-hostname\>/simplerest/rootcommunities
 
 9. The log file(s) written where you said above.
 
