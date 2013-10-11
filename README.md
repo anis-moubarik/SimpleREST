@@ -2,9 +2,9 @@ REQUIREMENTS
 ------------
 
 1. Maven user settings required for this project:
-[C:\Documents and Settings\<username>\.m2\settings.xml]
+[C:\Documents and Settings\\\<username>\\.m2\settings.xml]
 
-[/home/<username>/.m2/settings.xml]
+[/home/\<username\>/.m2/settings.xml]
 ```
   <settings ...>
   ...
@@ -25,13 +25,13 @@ REQUIREMENTS
     </profile>
   </profiles>
   ...
-  <settings>
+  </settings>
 ```
 , where absolute path examples: 
 
-[D:\...\${project.artifactId}.log] [/var/.../${project.artifactId}.log]
+[D:\\...\${project.artifactId}.log] [/var/.../${project.artifactId}.log]
 
-[D:\...\dspace.cfg] [/data/dspace/.../dspace.cfg]
+[D:\\...\dspace.cfg] [/data/dspace/.../dspace.cfg]
 
 
 If you've already cloned SimpleREST, you can pull new changes from github git repo with the following command: git pull origin master
@@ -112,6 +112,6 @@ mvn com.mycila.maven-license-plugin:maven-license-plugin:remove
 mvn com.mycila.maven-license-plugin:maven-license-plugin:format
 
 ---
-[1] see includes, excludes in the pom.xml for 
-com.mycila.maven-license-plugin:maven-license-plugin
+[1] see includes, excludes in the pom.xml for com.mycila.maven-license-plugin:maven-license-plugin
+
 [2] src/main/config/HEADER.txt
