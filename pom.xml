@@ -212,61 +212,6 @@
     </configuration>
    </plugin>
    <plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>license-maven-plugin</artifactId>
-    <version>1.0-beta-1</version>
-    <executions>
-     <execution>
-      <id>add-third-party</id>
-      <goals>
-       <goal>add-third-party</goal>
-      </goals>
-      <configuration>
-       <generateBundle>false</generateBundle>
-       <groupByLicense>true</groupByLicense>
-       <includeTransitiveDependencies>false</includeTransitiveDependencies>
-       <licenseMerges>
-        <licenseMerge><![CDATA[Apache Software License, Version 2.0|Apache License, Version 2.0|Apache License version 2.0|The Apache Software License, Version 2.0]]></licenseMerge>
-        <licenseMerge><![CDATA[BSD-Style License|BSD License]]></licenseMerge>
-        <licenseMerge><![CDATA[Common Public License, Version 1.0|Common Public License Version 1.0]]></licenseMerge>
-        <licenseMerge><![CDATA[Common Development And Distribution License (CDDL), Version 1.0|COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0|CDDL license|CDDL 1.0 license]]></licenseMerge>
-        <licenseMerge><![CDATA[Eclipse Public License, Version 1.0|EPL 1.0 license]]></licenseMerge>
-        <licenseMerge><![CDATA[GNU General Lesser Public License (LGPL), Version 2.1|GNU General Lesser Public License (LGPL) version 2.1|LGPL 2.1|LGPL license|LGPL 2.1 license]]></licenseMerge>
-        <licenseMerge><![CDATA[GNU General Lesser Public License (LGPL), Version 3.0|LGPL 3.0 license|The GNU Lesser General Public License, Version 3.0]]></licenseMerge>
-       </licenseMerges>
-       <missingFile>src/main/config/THIRD-PARTY.properties</missingFile>
-       <useMissingFile>true</useMissingFile>
-      </configuration>
-     </execution>
-    </executions>
-   </plugin>
-   <plugin>
-    <groupId>com.mycila.maven-license-plugin</groupId>
-    <artifactId>maven-license-plugin</artifactId>
-    <version>1.9.0</version>
-    <configuration>
-     <header>src/main/config/HEADER.txt</header>
-     <excludes>
-      <exclude>**/log4j.dtd</exclude>
-      <exclude>**/THIRD-PARTY.properties</exclude>
-     </excludes>
-     <includes>
-      <include>**/*.java</include>
-      <include>**/*.xml</include>
-     </includes>
-     <useDefaultExcludes>true</useDefaultExcludes>
-     <useDefaultMapping>true</useDefaultMapping>
-     <properties>
-      <description>${project.description}</description>
-      <inceptionYear>${project.inceptionYear}</inceptionYear>
-      <currentYear>2011</currentYear>
-      <nameOfCopyrightOwner>${project.organization.name}</nameOfCopyrightOwner>
-     </properties>
-     <encoding>UTF-8</encoding>
-     <strictCheck>true</strictCheck>
-    </configuration>
-   </plugin>
-   <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-site-plugin</artifactId>
     <version>2.3</version>
