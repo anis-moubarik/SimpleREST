@@ -239,6 +239,11 @@
                         <exclude>**/readme*</exclude>
                         <exclude>**/.gitignore</exclude>
                         <exclude>**/build.properties*</exclude>
+                        <exclude>**/HEADER*</exclude>
+                        <exclude>**/THIRD-PARTY.properties</exclude>
+                        <exclude>**/log4j.dtd</exclude>
+                        <exclude>**/glassfish-web.xml</exclude>
+                        <exclude>**/log4j.xml</exclude>
                     </excludes>
                     <mapping> 
                         <!-- Custom DSpace file extensions which are not recognized by maven-release-plugin: 
