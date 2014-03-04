@@ -98,7 +98,11 @@ public class CommunityResource extends BaseResource {
         try{
             comm = Community.find(context, communityId);
         } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(CommunityResource.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Priority.FATAL, ex);
+        }
+        
+        if(comm == null){
+            return error(context, "Community was not found", Status.CLIENT_ERROR_NOT_FOUND);
         }
 
         try {
