@@ -41,9 +41,6 @@ USAGE
 
 A. Install the RESTful web service on top of your DSpace
 ========================================================
-ATTENTION! OBS! HUOM!
-Check your exec.sh before doing any installation
-
 1. Install git on to your system.
 
 2. Clone updated code from the repo: git clone
