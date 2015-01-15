@@ -255,6 +255,7 @@ public class ItemResource extends BaseResource {
         } catch (Exception ex) {
             if(context != null)
                 context.abort();
+                
             log.log(Priority.INFO, ex);
         }
         
@@ -496,6 +497,7 @@ public class ItemResource extends BaseResource {
         catch (Exception e) {
             log.log(Priority.INFO, e);
             if(context != null){
+                context.abort();
                 return errorInternal(context, e.toString());
             }
         }

@@ -243,14 +243,17 @@ public class ItemsResource extends BaseResource {
 	    addItemContext = getAuthenticatedContext();
 	    collection = Collection.find(addItemContext, this.collectionId);
 	    if (collection == null) {
+                addItemContext.abort();
 		return errorNotFound(addItemContext, "Could not find the collection.");
 	    }
 	}
 	catch (SQLException e) {
+            log.log(Priority.FATAL, e);
 	    return errorInternal(addItemContext, "SQLException");
 	}
         catch(NullPointerException e){
-            log.log(Priority.INFO, e);
+            log.log(Priority.FATAL, e);
+            return errorInternal(addItemContext, "NullPointerException");
         }
 	String title = null;
 	String lang = null;
@@ -290,6 +293,7 @@ public class ItemsResource extends BaseResource {
 	    return errorInternal(addItemContext, e.toString());
 	}catch(NullPointerException e){
             log.log(Priority.INFO, e);
+            return errorInternal(context, e.toString());
         }catch(IOException e){
             return errorInternal(context, e.toString());
         }
@@ -316,12 +320,6 @@ public class ItemsResource extends BaseResource {
         }catch(IOException e){
             log.log(Priority.FATAL, e, e);
 	    return errorInternal(addItemContext, e.toString());
-        }
-        
-        try{
-            addItemContext.abort();
-        }catch(NullPointerException e){
-            log.log(Priority.INFO, e, e);
         }
 
 	return successCreated("Created a new item.",
