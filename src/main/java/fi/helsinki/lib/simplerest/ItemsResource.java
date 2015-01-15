@@ -199,11 +199,13 @@ public class ItemsResource extends BaseResource {
             context = new Context();
         }catch(Exception ex){
             log.log(Priority.FATAL, ex);
+            return errorInternal(context, ex.toString()).getText();
         }
         try{
             collection = Collection.find(context, collectionId);
-        }catch(Exception e){
-            return errorInternal(context, e.toString()).getText();
+        }catch(Exception ex){
+            log.log(Priority.FATAL, ex);
+            return errorInternal(context, ex.toString()).getText();
         }
         items = collection.getItems();
         Gson gson = new Gson();
