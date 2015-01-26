@@ -219,8 +219,9 @@ public class ItemsResource extends BaseResource {
         try{
             items.close();
             context.abort();
-        }catch(NullPointerException e){
-            log.log(Priority.INFO, e);
+        }catch(NullPointerException ex){
+            log.log(Priority.INFO, ex);
+            return errorInternal(context, ex.toString()).getText();
         }
         
         return gson.toJson(al);   
@@ -242,6 +243,7 @@ public class ItemsResource extends BaseResource {
 	Collection collection = null;
         Context addItemContext = null;
 	try {
+            //Get Context and make sure the user has the rights to add items.
 	    addItemContext = getAuthenticatedContext();
 	    collection = Collection.find(addItemContext, this.collectionId);
 	    if (collection == null) {

@@ -508,7 +508,7 @@ public class ItemResource extends BaseResource {
     }
 
     // NOTE: This removes the item from all the collections it's belong to, so
-    // NOTE: it's a real delete!!!
+    // it's a real delete!!!
     @Delete
     public Representation deleteItem() {
         try {
