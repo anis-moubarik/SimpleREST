@@ -29,6 +29,7 @@ import org.dspace.content.Collection;
 import org.dspace.content.Item;
 import org.dspace.content.Bundle;
 import org.dspace.content.DCValue;
+import org.dspace.authorize.AuthorizeManager;
 
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.Representation;
@@ -50,6 +51,7 @@ import org.w3c.dom.NamedNodeMap;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.dspace.eperson.Group;
 
 public class ItemResource extends BaseResource {
 
@@ -239,11 +241,13 @@ public class ItemResource extends BaseResource {
         body.appendChild(form);
         
         try{
-            context.abort(); // Same as c.complete() because we didn't modify the db.
-        }catch(Exception e){
-            log.log(Priority.INFO, e);
+            if(context != null){
+                context.complete();
+            }
+        }catch(SQLException e){
+            log.log(Priority.ERROR, e);
         }
-
+        
         return representation;
     }
     
@@ -253,9 +257,9 @@ public class ItemResource extends BaseResource {
         try {
             this.item = Item.find(context, this.itemId);
         } catch (Exception ex) {
-            if(context != null)
+            if(context != null){
                 context.abort();
-                
+            }    
             log.log(Priority.INFO, ex);
         }
         
@@ -266,9 +270,11 @@ public class ItemResource extends BaseResource {
             log.log(Priority.INFO, ex);
         }
         try{
-            context.abort();
-        }catch(NullPointerException e){
-            log.log(Priority.FATAL, e);
+            if(context != null){
+                context.complete();
+            }
+        }catch(SQLException e){
+            log.log(Priority.ERROR, e);
         }
         Gson gson = new Gson();
         return gson.toJson(stub);
@@ -459,8 +465,12 @@ public class ItemResource extends BaseResource {
         }
 
         try {
-            item.update();
-            context.complete();
+            if(item != null){
+                item.update();
+            }
+            if(context != null){
+                context.complete();
+            }
         }
         catch (Exception e) {
             log.log(Priority.FATAL, e);
@@ -468,7 +478,6 @@ public class ItemResource extends BaseResource {
                 return errorInternal(context, e.toString());
             }
         }
-	
         return successOk("Item updated.");
     }
 
@@ -482,7 +491,11 @@ public class ItemResource extends BaseResource {
                 return error(context, "Could not find the item.",
                              Status.CLIENT_ERROR_NOT_FOUND);
             }
-
+            
+            if(!AuthorizeManager.authorizeActionBoolean(context, item, org.dspace.core.Constants.WRITE)){
+                
+            }
+            
             Form form = new Form(rep);
             String name = form.getFirstValue("name");
         
@@ -497,7 +510,6 @@ public class ItemResource extends BaseResource {
         catch (Exception e) {
             log.log(Priority.INFO, e);
             if(context != null){
-                context.abort();
                 return errorInternal(context, e.toString());
             }
         }

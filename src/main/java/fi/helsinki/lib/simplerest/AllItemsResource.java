@@ -65,6 +65,7 @@ public class AllItemsResource extends BaseResource{
         try{
             this.allCollections = Collection.findAll(context);
         }catch(Exception e){
+            context.abort();
             log.log(Priority.INFO, e);
         }
     }
@@ -90,7 +91,13 @@ public class AllItemsResource extends BaseResource{
             }
         }
         try{
-            this.context.abort();
+            if(context != null){
+                try{
+                    context.complete();
+                }catch(SQLException e){
+                    log.log(Priority.ERROR, e);
+                }
+            }
         }catch(NullPointerException e){
             log.log(Priority.FATAL, e);
         }

@@ -56,9 +56,7 @@ import org.apache.log4j.Priority;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.core.Context;
 import org.dspace.identifier.IdentifierException;
-import org.dspace.identifier.IdentifierService;
-import org.dspace.servicemanager.DSpaceKernelInit;
-import org.dspace.utils.DSpace;
+
 
 public class ItemsResource extends BaseResource {
 
@@ -83,7 +81,7 @@ public class ItemsResource extends BaseResource {
         try{
             this.context = new Context();
         }catch(SQLException e){
-            log.log(Priority.FATAL, e);
+            log.log(Priority.ERROR, e);
         }
     }
     
@@ -181,10 +179,10 @@ public class ItemsResource extends BaseResource {
         body.appendChild(form);
 
         try{
-        context.abort(); /* We did not make any changes to the database, so we could
-                      call context.complete() instead (only it can potentially raise
-                      SQLexception). */
-        }catch(NullPointerException e){
+            if(context != null){
+                context.complete();
+            }
+        }catch(SQLException e){
             log.log(Priority.INFO, e);
         }
 
@@ -218,9 +216,11 @@ public class ItemsResource extends BaseResource {
                 
         try{
             items.close();
-            context.abort();
-        }catch(NullPointerException ex){
-            log.log(Priority.INFO, ex);
+            if(context != null){
+                context.complete();
+            }
+        }catch(SQLException ex){
+            log.log(Priority.ERROR, ex);
             return errorInternal(context, ex.toString()).getText();
         }
         
@@ -252,11 +252,11 @@ public class ItemsResource extends BaseResource {
 	    }
 	}
 	catch (SQLException e) {
-            log.log(Priority.FATAL, e);
+            log.log(Priority.ERROR, e);
 	    return errorInternal(addItemContext, "SQLException");
 	}
         catch(NullPointerException e){
-            log.log(Priority.FATAL, e);
+            log.log(Priority.ERROR, e);
             return errorInternal(addItemContext, "NullPointerException");
         }
 	String title = null;
@@ -313,7 +313,6 @@ public class ItemsResource extends BaseResource {
             item = InstallItem.installItem(addItemContext, wsi);
 	    item.addMetadata("dc", "title", null, lang, title);
             item.update();
-	    addItemContext.complete();
 	}
 	catch (AuthorizeException e) {
             log.log(Priority.FATAL, e, e);
@@ -324,6 +323,10 @@ public class ItemsResource extends BaseResource {
         }catch(IOException e){
             log.log(Priority.FATAL, e, e);
 	    return errorInternal(addItemContext, e.toString());
+        }finally{
+            if(addItemContext != null){
+                addItemContext.complete();
+            }
         }
 
 	return successCreated("Created a new item.",

@@ -65,15 +65,23 @@ public class AllCollectionsResource extends BaseResource{
         this.allCollections = null;
         try{
             this.context = new Context();
+            
         }catch(SQLException e){
             log.log(Priority.INFO, e);
         }
         try{
             this.allCollections = Collection.findAll(context);
         }catch(Exception e){
+            context.abort();
             log.log(Priority.INFO, e);
         }finally{
-            context.abort();
+            if(context != null){
+                try{
+                    context.complete();
+                }catch(SQLException e){
+                    log.log(Priority.ERROR, e);
+                }
+            }
         }
     }
     
@@ -91,9 +99,11 @@ public class AllCollectionsResource extends BaseResource{
         }
         
         try{
-            context.abort();
+            context.complete();
         }catch(NullPointerException e){
             log.log(Priority.INFO, e);
+        }catch(SQLException e){
+            log.log(Priority.ERROR, e);
         }
         
         return gson.toJson(toJsonCollections);
