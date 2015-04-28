@@ -71,8 +71,11 @@ public class AllCollectionsResource extends BaseResource{
         }
         try{
             this.allCollections = Collection.findAll(context);
-        }catch(Exception e){
-            context.abort();
+        }catch(Exception e){            
+            if(context != null){
+                context.abort();
+            }
+            
             log.log(Priority.INFO, e);
         }finally{
             if(context != null){

@@ -29,7 +29,6 @@ import org.dspace.content.Collection;
 import org.dspace.content.Item;
 import org.dspace.content.Bundle;
 import org.dspace.content.DCValue;
-import org.dspace.authorize.AuthorizeManager;
 
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.Representation;
@@ -51,7 +50,6 @@ import org.w3c.dom.NamedNodeMap;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
-import org.dspace.eperson.Group;
 
 public class ItemResource extends BaseResource {
 
@@ -490,10 +488,6 @@ public class ItemResource extends BaseResource {
             if (item == null) {
                 return error(context, "Could not find the item.",
                              Status.CLIENT_ERROR_NOT_FOUND);
-            }
-            
-            if(!AuthorizeManager.authorizeActionBoolean(context, item, org.dspace.core.Constants.WRITE)){
-                
             }
             
             Form form = new Form(rep);
