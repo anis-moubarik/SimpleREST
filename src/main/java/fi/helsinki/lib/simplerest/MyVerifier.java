@@ -15,6 +15,7 @@ public class MyVerifier extends SecretVerifier {
 
     private static Logger log = Logger.getLogger(MyVerifier.class);
 
+        private Context context;
     @Override
     public int verify(String identifier, char[] secret) {
         /* Uses the DSpace AuthenticationManager to check for valid credentials,
@@ -22,7 +23,7 @@ public class MyVerifier extends SecretVerifier {
          list of parameters to be used by getAuthenticatedContext() in
          BaseResource */
 
-        Context context;
+        //Context context;
         int status;
 
         try {
@@ -32,6 +33,9 @@ public class MyVerifier extends SecretVerifier {
                     "Authentication for SimpleRest", null);
         } catch (SQLException e) {
             log.log(Level.INFO, e.getMessage());
+            if(context != null){
+                context.abort();
+            }
             return RESULT_INVALID;
         }
 
@@ -46,9 +50,12 @@ public class MyVerifier extends SecretVerifier {
             if (method != Method.GET) {
                 log.log(Level.INFO, user.getIdentifier() + ": " + method.toString() + " " + request.getResourceRef().getRemainingPart());
             }
-
+            context.abort();
             return RESULT_VALID;
         } else {
+            if(context != null){
+                context.abort();
+            }
             return RESULT_INVALID;
         }
     }
