@@ -48,6 +48,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.apache.log4j.Logger;
+import org.dspace.authorize.AuthorizeException;
 
 public class CollectionResource extends BaseResource {
 
@@ -257,6 +258,8 @@ public class CollectionResource extends BaseResource {
         try {
             collection.update();
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());
@@ -298,6 +301,8 @@ public class CollectionResource extends BaseResource {
                 community.removeCollection(collection);
             }
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());

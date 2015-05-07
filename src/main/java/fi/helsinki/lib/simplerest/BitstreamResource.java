@@ -49,6 +49,7 @@ import org.w3c.dom.NodeList;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.dspace.authorize.AuthorizeException;
 
 public class BitstreamResource extends BaseResource {
 
@@ -346,6 +347,8 @@ public class BitstreamResource extends BaseResource {
 
             bitstream.update();
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());
@@ -398,6 +401,8 @@ public class BitstreamResource extends BaseResource {
                 // FIXME: bitstream only from some of the bundles. :-(
             }
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());

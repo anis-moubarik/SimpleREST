@@ -21,38 +21,40 @@
 -->
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
- debug="false">
- <appender name="MyLogic" class="org.apache.log4j.FileAppender">
-  <param name="File" value="${mylogic.log.file}" />
-  <param name="Append" value="true" />
-  <layout class="org.apache.log4j.PatternLayout">
-   <param name="ConversionPattern" value="%-5p [%t] %c{1}.%M : %m%n" />
-  </layout>
- </appender>
- <appender name="Spring" class="org.apache.log4j.FileAppender">
-  <param name="File" value="${spring.log.file}" />
-  <param name="Append" value="false" />
-  <layout class="org.apache.log4j.PatternLayout">
-   <param name="ConversionPattern" value="%-5p [%t] %c{1}.%M : %m%n" />
-  </layout>
- </appender>
- <appender name="DSpace" class="org.apache.log4j.FileAppender">
-  <param name="File" value="${dspace.log.file}" />
-  <param name="Append" value="false" />
-  <layout class="org.apache.log4j.PatternLayout">
-   <param name="ConversionPattern" value="%-5p [%t] %c{1}.%M : %m%n" />
-  </layout>
- </appender>
- <logger name="fi.helsinki.lib.simplerest">
-  <level value="debug" />
-  <appender-ref ref="MyLogic" />
- </logger>
- <logger name="org.springframework">
-  <level value="debug" />
-  <appender-ref ref="Spring" />
- </logger>
- <logger name="org.dspace">
-  <level value="debug" />
-  <appender-ref ref="DSpace" />
- </logger>
+                     debug="true">
+    <appender name="MyLogic" class="org.apache.log4j.FileAppender">
+        <param name="File" value="${mylogic.log.file}" />
+        <param name="Append" value="true" />
+        <layout class="org.apache.log4j.PatternLayout">
+            
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+           
+        </layout>
+    </appender>
+    <appender name="Spring" class="org.apache.log4j.FileAppender">
+        <param name="File" value="${spring.log.file}" />
+        <param name="Append" value="false" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </layout>
+    </appender>
+    <appender name="DSpace" class="org.apache.log4j.FileAppender">
+        <param name="File" value="${dspace.log.file}" />
+        <param name="Append" value="false" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </layout>
+    </appender>
+    <logger name="fi.helsinki.lib.simplerest">
+        <level value="all" />
+        <appender-ref ref="MyLogic" />
+    </logger>
+    <logger name="org.springframework">
+        <level value="all" />
+        <appender-ref ref="Spring" />
+    </logger>
+    <logger name="org.dspace">
+        <level value="all" />
+        <appender-ref ref="DSpace" />
+    </logger>
 </log4j:configuration>
