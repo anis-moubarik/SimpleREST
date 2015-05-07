@@ -148,12 +148,16 @@ abstract class BaseResource extends ServerResource {
             // As long as we call baseUrl() from a class that has a correctly
             // defined relatiUrl(int) method we should not get any exceptions..
         }
-
-        String url = getRequest().getResourceRef().getIdentifier();
-        int n = relUrl.split("/").length;
-        while (n-- > 0) {
-            url = url.substring(0, url.lastIndexOf('/'));
+        try {
+            String url = getRequest().getResourceRef().getIdentifier();
+            int n = relUrl.split("/").length;
+            while (n-- > 0) {
+                url = url.substring(0, url.lastIndexOf('/'));
+            }
+            return url + "/";
+        } catch (Exception e) {
+            
+            return "/";
         }
-        return url + "/";
     }
 }

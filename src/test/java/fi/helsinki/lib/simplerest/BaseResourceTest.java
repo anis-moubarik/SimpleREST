@@ -1,19 +1,18 @@
 /**
- * A RESTful web service on top of DSpace.
- * Copyright (C) 2010-2014 National Library of Finland
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * A RESTful web service on top of DSpace. Copyright (C) 2010-2014 National
+ * Library of Finland This program is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 /*
  * @(#)BaseResourceTest.java
@@ -45,7 +44,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * <li>http://www.junit.org/</li>
  * <li>http://junit.sourceforge.net/doc/faq/faq.htm</li>
  * </ul>
- * Testing the methods of <code>BaseResource</code> class.
+ * Testing the methods of
+ * <code>BaseResource</code> class.
+ *
  * @author Markos Mevorah
  * @version %I%, %G%
  * @see fi.helsinki.lib.simplerest.BaseResource
@@ -81,8 +82,9 @@ public class BaseResourceTest {
     }
 
     /**
-     * JUnit method annotated with {@link org.junit.Before}.
-     * Initializing the test resources.
+     * JUnit method annotated with {@link org.junit.Before}. Initializing the
+     * test resources.
+     *
      * @throws Exception
      */
     @Before
@@ -97,8 +99,8 @@ public class BaseResourceTest {
     }
 
     /**
-     * JUnit method annotated with {@link org.junit.After}.
-     * Releasing the test resources.
+     * JUnit method annotated with {@link org.junit.After}. Releasing the test
+     * resources.
      */
     @After
     public void tearDown() {
@@ -120,6 +122,7 @@ public class BaseResourceTest {
 
     /**
      * Test of makeInputRow method, of class BaseResource.
+     *
      * @throws Exception
      */
     @Test
@@ -153,20 +156,22 @@ public class BaseResourceTest {
 
     /**
      * Test of setAttribute method, of class BaseResource.
+     *
      * @throws Exception
      */
     @Test
     public void testSetAttribute() throws Exception {
         this.baseResource.setAttribute(this.testElement,
-                                       this.testString, this.testString);
+                this.testString, this.testString);
         NamedNodeMap testElementAttributes = this.testElement.getAttributes();
         assertEquals(1, testElementAttributes.getLength());
         assertEquals(this.testString,
-                     this.testElement.getAttribute(this.testString));
+                this.testElement.getAttribute(this.testString));
     }
 
     /**
      * Test of setClass method, of class BaseResource.
+     *
      * @throws Exception
      */
     @Test
@@ -179,6 +184,7 @@ public class BaseResourceTest {
 
     /**
      * Test of setId method, of class BaseResource.
+     *
      * @throws Exception
      */
     @Test
@@ -191,12 +197,13 @@ public class BaseResourceTest {
 
     /**
      * Test of addDtDd method, of class BaseResource.
+     *
      * @throws Exception
      */
     @Test
     public void testAddDtDd() throws Exception {
         this.baseResource.addDtDd(this.document, this.testElement,
-                                  this.testString, this.testString);
+                this.testString, this.testString);
         NodeList testFormChildNodes = this.testElement.getChildNodes();
         assertEquals(2, testFormChildNodes.getLength());
         Element dt = (Element) this.testElement.getFirstChild();
@@ -219,7 +226,7 @@ public class BaseResourceTest {
     @Test
     public void testSuccessOk() {
         StringRepresentation representation =
-                             this.baseResource.successOk(this.testString);
+                this.baseResource.successOk(this.testString);
         assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
         assertEquals("test", representation.getText());
     }
@@ -230,8 +237,8 @@ public class BaseResourceTest {
     @Test
     public void testSuccessCreated() {
         StringRepresentation representation =
-                             this.baseResource.successCreated(this.testString,
-                                                              this.testString);
+                this.baseResource.successCreated(this.testString,
+                this.testString);
         assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
         assertEquals(this.testString, representation.getText());
     }
@@ -242,8 +249,8 @@ public class BaseResourceTest {
     @Test
     public void testErrorInternal() {
         StringRepresentation representation =
-                             this.baseResource.errorInternal(null,
-                                                             this.testString);
+                this.baseResource.errorInternal(null,
+                this.testString);
         assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
         assertEquals(this.testString, representation.getText());
     }
@@ -254,8 +261,8 @@ public class BaseResourceTest {
     @Test
     public void testErrorNotFound() {
         StringRepresentation representation =
-                             this.baseResource.errorNotFound(null,
-                                                             this.testString);
+                this.baseResource.errorNotFound(null,
+                this.testString);
         assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
         assertEquals(this.testString, representation.getText());
     }
@@ -266,9 +273,9 @@ public class BaseResourceTest {
     @Test
     public void testError() {
         StringRepresentation representation =
-                             this.baseResource.error(null,
-                                                     this.testString,
-                                                     Status.SUCCESS_OK);
+                this.baseResource.error(null,
+                this.testString,
+                Status.SUCCESS_OK);
         assertEquals(MediaType.TEXT_PLAIN, representation.getMediaType());
         assertEquals(this.testString, representation.getText());
     }
@@ -276,8 +283,8 @@ public class BaseResourceTest {
     /**
      * Test of baseUrl method, of class BaseResource.
      */
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testBaseUrl() {
-        String actualUrl = this.baseResource.baseUrl();
+        this.baseResource.baseUrl().equals("/");
     }
 }
