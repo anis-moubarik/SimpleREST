@@ -55,6 +55,8 @@ public class SimpleRestApplication extends Application {
         router.attach("/collection/{collectionId}/items", ItemsResource.class);
 
         router.attach("/item/{itemId}", ItemResource.class);
+        
+        router.attach("/item/{handle}", ItemResource.class);
 
         router.attach("/bundle/{bundleId}", BundleResource.class);
 

@@ -50,12 +50,14 @@ import org.w3c.dom.NamedNodeMap;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.dspace.content.ItemIterator;
 
 public class ItemResource extends BaseResource {
 
     private static Logger log = Logger.getLogger(ItemResource.class);
     
-    private int itemId;
+    private int itemId = -1;
+    private String handle = null;
     private Item item;
     private Context context;
     
@@ -84,6 +86,8 @@ public class ItemResource extends BaseResource {
         try {
             String s = (String)getRequest().getAttributes().get("itemId");
             this.itemId = Integer.parseInt(s);
+            s = (String)getRequest().getAttributes().get("handle");
+            this.handle = s;
         }
         catch (NumberFormatException e) {
             ResourceException resourceException =
@@ -103,7 +107,11 @@ public class ItemResource extends BaseResource {
         try {
             representation = new DomRepresentation(MediaType.TEXT_HTML);  
             d = representation.getDocument();
-            item = Item.find(context, this.itemId);
+            if(this.itemId != -1){
+                item = Item.find(context, this.itemId);
+            }else if(this.handle != null){
+                 item = Item.findByMetadataField(context, "dc", "identifier", "uri", "http://fennougrica.kansalliskirjasto.fi/handle/"+handle).next();
+            }
             if (item == null) {
                 return errorNotFound(context,
                                      "Could not find the item with given ID.");
