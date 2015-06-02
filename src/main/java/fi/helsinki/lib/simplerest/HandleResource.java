@@ -60,7 +60,7 @@ public class HandleResource extends BaseResource{
             if(it.hasNext()){
                 this.item = it.next();
             }else{
-                return "{\"error\": \"Item not found\"}";
+                return "{\"error\": \"Item not found\", \"status\": 404 }";
             }
         }catch(SQLException e){
             if(context != null){
