@@ -3,3 +3,7 @@ THIRD-PARTY.properties
 nb-configuration.xml
 .DS_Store
 src/main/webapp/dspacevisual
+.idea/
+simplerest.iml
+src/main/main.iml
+src/test/test.iml
