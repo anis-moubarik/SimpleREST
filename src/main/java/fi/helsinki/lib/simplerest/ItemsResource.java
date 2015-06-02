@@ -314,10 +314,9 @@ public class ItemsResource extends BaseResource {
 	    item.addMetadata("dc", "title", null, lang, title);
             item.update();
 	}
-	catch (AuthorizeException e) {
-            log.log(Priority.FATAL, e, e);
-	    return errorInternal(addItemContext, e.toString());
-	}catch(SQLException e){
+	 catch (AuthorizeException ae) {
+          return error(addItemContext, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
+        } catch(SQLException e){
             log.log(Priority.FATAL, e, e);
 	    return errorInternal(addItemContext, e.toString());
         }catch(IOException e){

@@ -42,6 +42,7 @@ import org.apache.log4j.Logger;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.dspace.authorize.AuthorizeException;
 
 public class CommunityLogoResource extends BaseResource {
 
@@ -136,6 +137,8 @@ public class CommunityLogoResource extends BaseResource {
                 }
             }
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());
@@ -170,6 +173,8 @@ public class CommunityLogoResource extends BaseResource {
             community.setLogo(null);
             community.update();
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());

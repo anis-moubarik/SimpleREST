@@ -47,6 +47,7 @@ import org.w3c.dom.NodeList;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.dspace.authorize.AuthorizeException;
 
 public class MetadataSchemaResource extends BaseResource {
 
@@ -110,12 +111,9 @@ public class MetadataSchemaResource extends BaseResource {
                         break;
                     }
                 }
-            }
-            catch (Exception e) {
-                if (mschema == null) {
-                    return errorNotFound(context, "Could not find the metadata schema.");
-                }
+            } catch (Exception e) {
                 log.log(Priority.INFO, e);
+                return errorNotFound(context, "Could not find the metadata schema.");
             }
         }
         
@@ -259,7 +257,9 @@ public class MetadataSchemaResource extends BaseResource {
         catch (NonUniqueMetadataException e) {
             return error(c, "Name and namespace must be unique.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
-        }
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
+        } 
         catch (Exception e) {
             return errorInternal(c, e.toString());
         }
@@ -294,6 +294,8 @@ public class MetadataSchemaResource extends BaseResource {
 
             metadataSchema.delete(c);
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());

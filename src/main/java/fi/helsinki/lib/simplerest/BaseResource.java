@@ -1,21 +1,19 @@
 /**
- * A RESTful web service on top of DSpace.
- * Copyright (C) 2010-2014 National Library of Finland
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * A RESTful web service on top of DSpace. Copyright (C) 2010-2014 National
+ * Library of Finland This program is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
  */
-
 package fi.helsinki.lib.simplerest;
 
 import java.sql.SQLException;
@@ -33,35 +31,41 @@ import org.w3c.dom.Element;
 import org.w3c.dom.DOMException;
 
 import java.lang.reflect.Method;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 abstract class BaseResource extends ServerResource {
 
+    private static Logger log = Logger.getLogger(BaseResource.class);
+
     protected Context getAuthenticatedContext() throws SQLException {
-        int adminId = -1; // just some (invalid) value to keep a compiler happy
+        /* Fetches the user ID from the attributes put there by the verifier
+         and returns a Context with an EPerson associated with that ID.
+         Authorization is handled by individual requests by catching
+         AuthorizeException */
         try {
+            // Removing this breaks tests
             String s = getContext().getParameters().getFirstValue("adminID");
-            adminId = Integer.parseInt(s);
-        }
-        catch (NumberFormatException e) {
-            // Let's trust that the configutation contains an integer...
+        } catch (NumberFormatException e) {
         }
 
         Context context = new Context();
-        EPerson ePerson = EPerson.find(context, adminId);
+        Integer id = (Integer) getRequest().getAttributes().get("currentId");
+        EPerson ePerson = EPerson.find(context, id);
         context.setCurrentUser(ePerson);
         return context;
     }
 
     protected void makeInputRow(Document d, Element form,
-                                String fieldName,
-                                String printableName) {
+            String fieldName,
+            String printableName) {
         makeInputRow(d, form, fieldName, printableName, "text");
     }
 
     protected void makeInputRow(Document d, Element form,
-                                String fieldName,
-                                String printableName,
-                                String type) {
+            String fieldName,
+            String printableName,
+            String type) {
         Element label = d.createElement("label");
         label.setAttribute("for", fieldName);
         label.appendChild(d.createTextNode(printableName));
@@ -79,8 +83,7 @@ abstract class BaseResource extends ServerResource {
     protected void setAttribute(Element el, String attribute, String value) {
         try {
             el.setAttribute(attribute, value);
-        }
-        catch (DOMException e) {
+        } catch (DOMException e) {
             // We trust that this never happens...
         }
     }
@@ -97,7 +100,7 @@ abstract class BaseResource extends ServerResource {
         Element dt = d.createElement("dt");
         dt.appendChild(d.createTextNode(key));
         dl.appendChild(dt);
-        
+
         Element dd = d.createElement("dd");
         dd.appendChild(d.createTextNode(value != null ? value : ""));
         dl.appendChild(dd);
@@ -109,7 +112,7 @@ abstract class BaseResource extends ServerResource {
     }
 
     protected StringRepresentation successCreated(String message,
-                                                   String locationUri) {
+            String locationUri) {
         setStatus(Status.SUCCESS_CREATED);
         setLocationRef(locationUri);
         return new StringRepresentation(message, MediaType.TEXT_PLAIN);
@@ -124,7 +127,7 @@ abstract class BaseResource extends ServerResource {
     }
 
     protected StringRepresentation error(Context c, String message,
-                                         Status status) {
+            Status status) {
         if (c != null) {
             c.abort();
         }
@@ -139,20 +142,22 @@ abstract class BaseResource extends ServerResource {
         String relUrl = null;
         try {
             Method method = this.getClass().getDeclaredMethod("relativeUrl",
-                                                              Integer.TYPE);
+                    Integer.TYPE);
             relUrl = (String) method.invoke(this, 1337);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // As long as we call baseUrl() from a class that has a correctly
             // defined relatiUrl(int) method we should not get any exceptions..
         }
-
-        String url = getRequest().getResourceRef().getIdentifier();
-        int n = relUrl.split("/").length;
-        while ( n-- > 0) {
-            url = url.substring(0, url.lastIndexOf('/'));
+        try {
+            String url = getRequest().getResourceRef().getIdentifier();
+            int n = relUrl.split("/").length;
+            while (n-- > 0) {
+                url = url.substring(0, url.lastIndexOf('/'));
+            }
+            return url + "/";
+        } catch (Exception e) {
+            
+            return "/";
         }
-        return url + "/";
     }
-
 }

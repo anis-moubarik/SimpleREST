@@ -48,6 +48,7 @@ import org.w3c.dom.NodeList;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.dspace.authorize.AuthorizeException;
 
 public class CommunityResource extends BaseResource {
 
@@ -284,6 +285,8 @@ public class CommunityResource extends BaseResource {
         }
         catch(NullPointerException e){
             log.log(Priority.INFO, e);
+        } catch (AuthorizeException ae) {
+          return error(context, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(context, e.toString());
@@ -317,6 +320,8 @@ public class CommunityResource extends BaseResource {
 
             community.delete();
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());
