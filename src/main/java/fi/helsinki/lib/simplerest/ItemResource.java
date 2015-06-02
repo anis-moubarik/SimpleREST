@@ -87,7 +87,9 @@ public class ItemResource extends BaseResource {
             String s = (String)getRequest().getAttributes().get("itemId");
             this.itemId = Integer.parseInt(s);
             s = (String)getRequest().getAttributes().get("handle");
-            s = s.replaceAll("+", "/");
+            if(s != null){
+                s = s.replaceAll("+", "/");
+            }
             this.handle = s;
         }
         catch (NumberFormatException e) {
