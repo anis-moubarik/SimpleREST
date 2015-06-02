@@ -57,7 +57,6 @@ public class ItemResource extends BaseResource {
     private static Logger log = Logger.getLogger(ItemResource.class);
     
     private int itemId = -1;
-    private String handle = "";
     private Item item;
     private Context context;
     
@@ -86,11 +85,6 @@ public class ItemResource extends BaseResource {
         try {
             String s = (String)getRequest().getAttributes().get("itemId");
             this.itemId = Integer.parseInt(s);
-            s = (String)getRequest().getAttributes().get("handle");
-            if(s != null){
-                s = s.replaceAll("+", "/");
-            }
-            this.handle = s;
         }
         catch (NumberFormatException e) {
             ResourceException resourceException =
@@ -112,8 +106,6 @@ public class ItemResource extends BaseResource {
             d = representation.getDocument();
             if(this.itemId != -1){
                 item = Item.find(context, this.itemId);
-            }else if(!this.handle.equalsIgnoreCase("")){
-                 item = Item.findByMetadataField(context, "dc", "identifier", "uri", "http://fennougrica.kansalliskirjasto.fi/handle/"+handle).next();
             }
             if (item == null) {
                 return errorNotFound(context,
