@@ -57,7 +57,7 @@ public class ItemResource extends BaseResource {
     private static Logger log = Logger.getLogger(ItemResource.class);
     
     private int itemId = -1;
-    private String handle = null;
+    private String handle = "";
     private Item item;
     private Context context;
     
@@ -110,7 +110,7 @@ public class ItemResource extends BaseResource {
             d = representation.getDocument();
             if(this.itemId != -1){
                 item = Item.find(context, this.itemId);
-            }else if(this.handle != null){
+            }else if(!this.handle.equalsIgnoreCase("")){
                  item = Item.findByMetadataField(context, "dc", "identifier", "uri", "http://fennougrica.kansalliskirjasto.fi/handle/"+handle).next();
             }
             if (item == null) {
