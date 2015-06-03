@@ -4,9 +4,9 @@
                      http://maven.apache.org/maven-v4_0_0.xsd">
  <modelVersion>4.0.0</modelVersion>
  <groupId>org.dspace</groupId>
- <artifactId>simplerest</artifactId>
+ <artifactId>simplerest-fu</artifactId>
  <packaging>war</packaging>
- <version>4.0-SNAPSHOT</version>
+ <version>4.0-SNAPSHOT-FennoUgrica</version>
  <name>SimpleREST</name>
  <url>http://www.kansalliskirjasto.fi/</url>
  <description>A RESTful web service on top of DSpace.</description>
