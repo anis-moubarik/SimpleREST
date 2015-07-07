@@ -41,7 +41,7 @@ public class HandleResource extends BaseResource{
     protected void doInit() throws ResourceException {
         String s = (String)getRequest().getAttributes().get("handle");
         this.handle = s;
-        this.handle = this.handle.replaceAll("+", "/");
+        this.handle = this.handle.replaceAll("\\+", "/");
     }
 
     @Get
