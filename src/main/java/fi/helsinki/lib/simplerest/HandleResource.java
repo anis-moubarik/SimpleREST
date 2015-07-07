@@ -41,6 +41,7 @@ public class HandleResource extends BaseResource{
     protected void doInit() throws ResourceException {
         String s = (String)getRequest().getAttributes().get("handle");
         this.handle = s;
+        this.handle = this.handle.replaceAll("+", "/");
     }
 
     @Get
@@ -48,7 +49,7 @@ public class HandleResource extends BaseResource{
         GetOptions.allowAccess(getResponse());
         ItemIterator it = null;
         try{
-            it = Item.findByMetadataField(context, "dc", "identifier", "urn", handle);
+            it = Item.findByMetadataField(context, "dc", "identifier", "uri", "http://fennougrica.kansalliskirjasto.fi/handle/"+this.handle);
         }catch(Exception e){
             if(context != null){
                 context.abort();
