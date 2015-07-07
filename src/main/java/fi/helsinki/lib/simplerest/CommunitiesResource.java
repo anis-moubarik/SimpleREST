@@ -53,6 +53,7 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Priority;
+import org.dspace.authorize.AuthorizeException;
 
 public class CommunitiesResource extends BaseResource {
 
@@ -318,6 +319,8 @@ public class CommunitiesResource extends BaseResource {
 	    }
 	    url += CommunityResource.relativeUrl(subCommunity.getID());
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());

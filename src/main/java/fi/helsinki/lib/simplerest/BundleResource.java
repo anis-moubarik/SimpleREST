@@ -54,6 +54,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.dspace.authorize.AuthorizeException;
 
 public class BundleResource extends BaseResource {
 
@@ -266,6 +267,8 @@ public class BundleResource extends BaseResource {
         try {
             bundle.update();
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());
@@ -335,6 +338,8 @@ public class BundleResource extends BaseResource {
                                // sequence ID of the bitstream.
 
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());
@@ -369,6 +374,8 @@ public class BundleResource extends BaseResource {
                 item.removeBundle(bundle);
             }
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());

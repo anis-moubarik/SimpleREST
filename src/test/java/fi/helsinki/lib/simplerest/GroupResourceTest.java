@@ -19,7 +19,11 @@
 
 package fi.helsinki.lib.simplerest;
 
+import com.google.gson.Gson;
 import fi.helsinki.lib.simplerest.TestServlets.GroupServlet;
+import fi.helsinki.lib.simplerest.stubs.StubGroup;
+import java.io.IOException;
+import org.eclipse.jetty.testing.HttpTester;
 import org.eclipse.jetty.testing.ServletTester;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -37,18 +41,49 @@ public class GroupResourceTest {
     public void setUp() throws Exception{
         tester = new ServletTester();
         tester.setContextPath("/");
-        tester.addServlet(GroupServlet.class, "/groups/*");
+        tester.addServlet(GroupServlet.class, "/group/*");
         tester.start();
     }
     
     @Test
-    public void testGetXml(){
-        assertEquals(true, true);
+    public void testRelativeUrl() {
+        String actualUrl = GroupResource.relativeUrl(11);
+        assertEquals("group/11", actualUrl);
     }
     
     @Test
-    public void testGetJson(){
+    public void testGetXml() throws IOException, Exception{    
         
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/group/xml");
+        resp.parse(tester.getResponses(req.generate()));
+        System.out.println("");
+        System.out.println(resp.getContent());
+        System.out.println("");
+        assertEquals(200, resp.getStatus());
+        /*String[] attributes = { "name"};        
+        for(String attribute : attributes){
+            assertEquals(resp.getContent().contains(attribute), true);
+        }*/
+        //assertEquals(true, true);
+    }
+   
+    @Test
+    public void testGetJson() throws IOException, Exception{
+        HttpTester req = new HttpTester();
+        HttpTester resp = new HttpTester();
+        
+        req.setMethod("GET");
+        req.setHeader("HOST", "tester");
+        req.setURI("/group/json");
+        resp.parse(tester.getResponses(req.generate()));
+        Gson gson = new Gson();
+        System.out.println(resp.getContent());
+        StubGroup sg = gson.fromJson(resp.getContent(), StubGroup.class);
     }
     
 }

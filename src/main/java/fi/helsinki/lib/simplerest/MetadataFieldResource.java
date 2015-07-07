@@ -49,12 +49,13 @@ import org.w3c.dom.NodeList;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.dspace.authorize.AuthorizeException;
 
 public class MetadataFieldResource extends BaseResource {
 
     private static Logger log = Logger.getLogger(MetadataFieldResource.class);
     private int metadataFieldId;
-    private Context context;
+    private Context c;
     private MetadataField mfield;
     private MetadataSchema mschema;
     
@@ -69,7 +70,7 @@ public class MetadataFieldResource extends BaseResource {
         this.mfield = null;
         this.mschema = null;
         try{
-            this.context = new Context();
+            this.c = new Context();
         }catch(SQLException e){
             log.log(Priority.FATAL, e);
         }
@@ -100,21 +101,19 @@ public class MetadataFieldResource extends BaseResource {
         Document d = null;
         if(mfield == null){
             try {
-                mfield = MetadataField.find(context, this.metadataFieldId);
+                mfield = MetadataField.find(c, this.metadataFieldId);
             }
             catch (Exception e) {
-                if (mfield == null) {
-                    return errorNotFound(context, "Could not find the metadataField.");
-                }
                 log.log(Priority.INFO, e);
+                return errorNotFound(c, "Could not find the metadataField.");
             }
         }
         
         try{
-            representation = new DomRepresentation(MediaType.TEXT_HTML);  
+            representation = new DomRepresentation(MediaType.TEXT_HTML);
             d = representation.getDocument();
         }catch(Exception e){
-            errorInternal(context, e.toString());
+            errorInternal(c, e.toString());
         }
 
         Element html = d.createElement("html");  
@@ -126,7 +125,7 @@ public class MetadataFieldResource extends BaseResource {
         if(mschema == null){
             try {
                 mschema =
-                    MetadataSchema.find(context, mfield.getSchemaID());
+                    MetadataSchema.find(c, mfield.getSchemaID());
             }
             catch (SQLException e) {
                 log.log(Priority.INFO, e);
@@ -156,7 +155,7 @@ public class MetadataFieldResource extends BaseResource {
         addDtDd(d, dl, "scopenote", mfield.getScopeNote());
         
         try{
-            context.abort(); // Same as c.complete() because we didn't modify the db.
+            c.abort(); // Same as c.complete() because we didn't modify the db.
         }catch(NullPointerException e){
             log.log(Priority.INFO, e);
         }
@@ -171,7 +170,7 @@ public class MetadataFieldResource extends BaseResource {
         //For testing purposes we check if the mfield or mschema variables are null
         if(mfield == null){
             try{
-                mfield = MetadataField.find(context, metadataFieldId);
+                mfield = MetadataField.find(c, metadataFieldId);
             }catch(Exception e){
                 log.log(Priority.INFO, e);
             }
@@ -179,7 +178,7 @@ public class MetadataFieldResource extends BaseResource {
         
         if(mschema == null){
             try{
-                mschema = MetadataSchema.find(context, mfield.getSchemaID());
+                mschema = MetadataSchema.find(c, mfield.getSchemaID());
             }catch(SQLException e){
                 log.log(Priority.INFO, e);
             }
@@ -188,7 +187,7 @@ public class MetadataFieldResource extends BaseResource {
         StubMetadata sm = new StubMetadata(metadataFieldId, mschema.getName(), mfield.getElement(), mfield.getQualifier(), mfield.getScopeNote());
         
         try{
-            context.abort();
+            c.abort();
         }catch(NullPointerException e){
             log.log(Priority.INFO, e);
         }
@@ -199,10 +198,10 @@ public class MetadataFieldResource extends BaseResource {
     @Put
     public Representation edit(InputRepresentation rep) {
         try {
-            context = getAuthenticatedContext();
-            mfield = MetadataField.find(context, this.metadataFieldId);
+            c = getAuthenticatedContext();
+            mfield = MetadataField.find(c, this.metadataFieldId);
             if (mfield == null) {
-                return errorNotFound(context, "Could not find the metadata field.");
+                return errorNotFound(c, "Could not find the metadata field.");
             }
         }
         catch (SQLException e) {
@@ -213,7 +212,7 @@ public class MetadataFieldResource extends BaseResource {
 
         Node attributesNode = dom.getNode("//dl[@id='attributes']");
         if (attributesNode == null) {
-            return error(context, "Did not find dl tag with an id 'attributes'.",
+            return error(c, "Did not find dl tag with an id 'attributes'.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
         }
 	
@@ -239,7 +238,7 @@ public class MetadataFieldResource extends BaseResource {
             }
         }
         if (dtList.size() != ddList.size()) {
-            return error(context, "The number of <dt> and <dd> elements do not match.",
+            return error(c, "The number of <dt> and <dd> elements do not match.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
         }
 
@@ -253,24 +252,24 @@ public class MetadataFieldResource extends BaseResource {
             else if (dt.equals("qualifier")) { qualifier = dd; }
             else if (dt.equals("scopenote")) { scopeNote = dd; }
             else {
-                return error(context, "Unexpected data in attributes: " + dt,
+                return error(c, "Unexpected data in attributes: " + dt,
                              Status.CLIENT_ERROR_BAD_REQUEST);
             }
         }
 
         if (schema == null || element == null) {
-            return error(context, "At least schema and element must be given.",
+            return error(c, "At least schema and element must be given.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
         }
 
         try {
-            mschema = MetadataSchema.find(context, schema);
+            mschema = MetadataSchema.find(c, schema);
         }
         catch (SQLException e) {
             log.log(Priority.INFO, e);
         }
         if (mschema == null) {
-            return error(context, "The schema " + schema + " does not exist.",
+            return error(c, "The schema " + schema + " does not exist.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
         }
 
@@ -280,18 +279,20 @@ public class MetadataFieldResource extends BaseResource {
         mfield.setScopeNote(scopeNote);
         
         try {
-            mfield.update(context);
-            context.complete();
+            mfield.update(c);
+            c.complete();
         }
         catch (NonUniqueMetadataException e) {
-            return error(context, "Non unique metadata field.",
+            return error(c, "Non unique metadata field.",
                          Status.CLIENT_ERROR_BAD_REQUEST);
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (NullPointerException e) {
             log.log(Priority.INFO, e);
         }
         catch(Exception e){
-            return errorInternal(context, e.toString());
+            return errorInternal(c, e.toString());
         }
 
         return successOk("Metadata field updated.");
@@ -322,6 +323,8 @@ public class MetadataFieldResource extends BaseResource {
 
             metadataField.delete(c);
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());

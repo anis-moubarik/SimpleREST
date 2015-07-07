@@ -43,6 +43,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import org.apache.log4j.Logger;
+import org.dspace.authorize.AuthorizeException;
 
 public class MetadataFieldsResource extends BaseResource {
 
@@ -221,6 +222,8 @@ public class MetadataFieldsResource extends BaseResource {
                                               element, qualifier, scopeNote);
             metadataField.create(c);
             c.complete();
+        } catch (AuthorizeException ae) {
+          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());

@@ -50,7 +50,8 @@ import org.w3c.dom.NamedNodeMap;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
-import org.dspace.content.ItemIterator;
+
+import org.dspace.authorize.AuthorizeException;
 
 public class ItemResource extends BaseResource {
 
@@ -466,12 +467,10 @@ public class ItemResource extends BaseResource {
         }
 
         try {
-            if(item != null){
-                item.update();
-            }
-            if(context != null){
-                context.complete();
-            }
+            item.update();
+            context.complete();
+        } catch (AuthorizeException ae) {
+          return error(context, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             log.log(Priority.FATAL, e);
@@ -503,6 +502,8 @@ public class ItemResource extends BaseResource {
 
             bundle = item.createBundle(name);
             context.complete();
+        } catch (AuthorizeException ae) {
+          return error(context, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             log.log(Priority.INFO, e);
@@ -539,6 +540,8 @@ public class ItemResource extends BaseResource {
                 collection.removeItem(item);
             }
             context.complete();
+        } catch (AuthorizeException ae) {
+          return error(context, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             log.log(Priority.INFO, e);

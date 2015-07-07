@@ -79,6 +79,11 @@
    <artifactId>org.restlet.ext.xml</artifactId>
    <version>2.1.4</version>
   </dependency>
+    <dependency>
+   <groupId>org.restlet.jee</groupId>
+   <artifactId>org.restlet.ext.crypto</artifactId>
+   <version>2.1.7</version>
+  </dependency>
   <dependency>
    <groupId>org.restlet.jee</groupId>
    <artifactId>org.restlet.ext.fileupload</artifactId>
@@ -120,6 +125,9 @@
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   <jdk.version>1.6</jdk.version>
   <root.basedir>${basedir}/..</root.basedir>
+  
+    <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
+
  </properties>
  <build>
   <defaultGoal>package</defaultGoal>

@@ -7,3 +7,6 @@ src/main/webapp/dspacevisual
 simplerest.iml
 src/main/main.iml
 src/test/test.iml
+.classpath
+.project
+.settings/
