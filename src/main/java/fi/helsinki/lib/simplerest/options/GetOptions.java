@@ -22,6 +22,7 @@ package fi.helsinki.lib.simplerest.options;
 import org.restlet.Response;
 import org.restlet.engine.header.Header;
 import org.restlet.engine.header.HeaderConstants;
+import org.restlet.engine.util.DateUtils;
 import org.restlet.util.Series;
 
 import java.util.Date;
@@ -52,6 +53,6 @@ public abstract class GetOptions {
             resp.getAttributes().put(HeaderConstants.ATTRIBUTE_HEADERS,
                     responseHeaders);
         }
-        responseHeaders.add(new Header("Last-Modified", lastModified.toString()));
+        responseHeaders.add(new Header("Last-Modified", DateUtils.format(lastModified)));
     }
 }
