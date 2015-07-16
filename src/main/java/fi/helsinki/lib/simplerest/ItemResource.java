@@ -48,6 +48,7 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.data.Form;
 
+import org.restlet.util.Series;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -102,7 +103,7 @@ public class ItemResource extends BaseResource {
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "EEE, dd MMM yyyy HH:mm:ss z");
-        Form headers = (Form)getRequestAttributes().get("org.restlet.http.headers");
+        Series headers = (Series)getRequestAttributes().get("org.restlet.http.headers");
         String date = headers.getFirstValue("If-Modified-Since");
         try{
             if(date != null) {
