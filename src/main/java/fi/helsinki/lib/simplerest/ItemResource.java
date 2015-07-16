@@ -256,7 +256,6 @@ public class ItemResource extends BaseResource {
     @Get("json")
     public String toJson(){
         GetOptions.allowAccess(getResponse());
-        GetOptions.lastModified(getResponse(), this.item.getLastModified());
         try {
             this.item = Item.find(context, this.itemId);
         } catch (Exception ex) {
@@ -265,6 +264,8 @@ public class ItemResource extends BaseResource {
             }    
             log.log(Priority.INFO, ex);
         }
+
+        GetOptions.lastModified(getResponse(), this.item.getLastModified());
         
         StubItem stub = null;
         try {
