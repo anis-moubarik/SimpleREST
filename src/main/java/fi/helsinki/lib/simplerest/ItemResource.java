@@ -102,7 +102,7 @@ public class ItemResource extends BaseResource {
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "EEE, dd MMM yyyy HH:mm:ss z");
-        Form headers = (Form) getRequest().getAttributes().get("org.restlet.http.headers");
+        Form headers = (Form)getRequestAttributes().get("org.restlet.http.headers");
         String date = headers.getFirstValue("If-Modified-Since");
         try{
             if(date != null) {
