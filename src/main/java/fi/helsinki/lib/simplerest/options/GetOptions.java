@@ -52,6 +52,6 @@ public abstract class GetOptions {
             resp.getAttributes().put(HeaderConstants.ATTRIBUTE_HEADERS,
                     responseHeaders);
         }
-        responseHeaders.add(new Header("Last-Modified", lastModified.toString()));
+        responseHeaders.add(new Header("Last-Modified", "asd"));
     }
 }

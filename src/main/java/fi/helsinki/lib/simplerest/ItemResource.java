@@ -22,6 +22,9 @@ import fi.helsinki.lib.simplerest.stubs.StubItem;
 import com.google.gson.Gson;
 import fi.helsinki.lib.simplerest.options.GetOptions;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 
 import org.dspace.core.Context;
@@ -31,8 +34,10 @@ import org.dspace.content.Bundle;
 import org.dspace.content.DCValue;
 
 import org.restlet.ext.xml.DomRepresentation;
+import org.restlet.representation.EmptyRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.InputRepresentation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.Put; 
 import org.restlet.resource.Post;
@@ -60,6 +65,7 @@ public class ItemResource extends BaseResource {
     private int itemId = -1;
     private Item item;
     private Context context;
+    private Date ifModifiedSince = new Date();
     
     public ItemResource(Item i, int itemId){
         this.item = i;
@@ -92,6 +98,17 @@ public class ItemResource extends BaseResource {
                 new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,
                                       "Item ID must be a number.");
             throw resourceException;
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "EEE, dd MMM yyyy HH:mm:ss z");
+        String date = (String) getRequest().getAttributes().get("If-Modified-Since");
+        try{
+            if(!date.isEmpty()) {
+                this.ifModifiedSince = dateFormat.parse(date);
+            }
+        }catch(ParseException e){
+            ResourceException resourceException =
+                    new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, "If-Modified-Since must be date");
         }
     }
 
@@ -254,8 +271,9 @@ public class ItemResource extends BaseResource {
     }
     
     @Get("json")
-    public String toJson(){
+    public Representation toJson(){
         GetOptions.allowAccess(getResponse());
+
         try {
             this.item = Item.find(context, this.itemId);
         } catch (Exception ex) {
@@ -266,10 +284,14 @@ public class ItemResource extends BaseResource {
         }
 
         GetOptions.lastModified(getResponse(), this.item.getLastModified());
-        
+
         StubItem stub = null;
         try {
             stub = new StubItem(this.item);
+            if(this.ifModifiedSince.after(stub.getLastModified())){
+                getResponse().setStatus(Status.REDIRECTION_NOT_MODIFIED);
+                return new EmptyRepresentation();
+            }
         } catch (SQLException ex) {
             log.log(Priority.INFO, ex);
         }
@@ -281,7 +303,7 @@ public class ItemResource extends BaseResource {
             log.log(Priority.ERROR, e);
         }
         Gson gson = new Gson();
-        return gson.toJson(stub);
+        return new StringRepresentation(gson.toJson(stub), MediaType.APPLICATION_JSON);
     }
 
     /* Input to this a little bit more complicated than to other PUT methods:

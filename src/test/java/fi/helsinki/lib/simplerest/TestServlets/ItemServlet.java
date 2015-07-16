@@ -23,6 +23,7 @@ import fi.helsinki.lib.simplerest.ItemResource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Date;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -54,6 +55,8 @@ public class ItemServlet extends HttpServlet{
         when(mockedItem.isArchived()).thenReturn(true);
         when(mockedItem.isWithdrawn()).thenReturn(false);
         when(mockedItem.isDiscoverable()).thenReturn(true);
+        Date d = new Date();
+        when(mockedItem.getLastModified()).thenReturn(d);
         
         DCValue[] value = new DCValue[2];
         value[0] = new DCValue(); value[1] = new DCValue();
@@ -83,7 +86,8 @@ public class ItemServlet extends HttpServlet{
 
     private void jsonTest(HttpServletResponse resp) throws IOException {
         PrintWriter out = resp.getWriter();
-        out.write(ir.toJson());
+        Representation rep = ir.toJson();
+        out.write(rep.getText());
     }
     
     @Override

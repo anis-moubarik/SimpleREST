@@ -21,6 +21,8 @@ package fi.helsinki.lib.simplerest.stubs;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.Date;
+
 import org.dspace.content.DCValue;
 import org.dspace.content.Item;
 
@@ -35,6 +37,7 @@ public class StubItem implements Serializable{
     private boolean in_archive;
     private boolean withdrawn;
     private DCValue[] metadata;
+    private Date lastModified;
     private int Id;
     
     public StubItem(Item i) throws SQLException{
@@ -57,6 +60,7 @@ public class StubItem implements Serializable{
         this.in_archive = i.isArchived();
         this.withdrawn = i.isWithdrawn();
         this.metadata = i.getMetadata(Item.ANY, Item.ANY, Item.ANY, Item.ANY);
+        this.lastModified = i.getLastModified();
     }
     
     public int getOwningCollectionID(){
@@ -86,6 +90,8 @@ public class StubItem implements Serializable{
     public void setOwningCollectionId(int owningCollectionId) {
         this.owningCollectionId = owningCollectionId;
     }
+
+    public Date getLastModified() { return lastModified; }
 
     public boolean isIn_archive() {
         return in_archive;
