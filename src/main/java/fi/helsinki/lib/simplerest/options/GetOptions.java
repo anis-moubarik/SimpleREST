@@ -24,6 +24,8 @@ import org.restlet.engine.header.Header;
 import org.restlet.engine.header.HeaderConstants;
 import org.restlet.util.Series;
 
+import java.util.Date;
+
 /**
  *
  * @author moubarik
@@ -39,5 +41,17 @@ public abstract class GetOptions {
                     responseHeaders);
         }
         responseHeaders.add(new Header("Access-Control-Allow-Origin", "*"));
+    }
+
+    public static void lastModified(Response resp, Date lastModified){
+        if(resp == null)
+            return;
+        Series<Header> responseHeaders = (Series<Header>) resp.getAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
+        if (responseHeaders == null) {
+            responseHeaders = new Series(Header.class);
+            resp.getAttributes().put(HeaderConstants.ATTRIBUTE_HEADERS,
+                    responseHeaders);
+        }
+        responseHeaders.add(new Header("Last-Modified", lastModified.toString()));
     }
 }
