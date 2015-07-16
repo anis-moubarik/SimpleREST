@@ -8,10 +8,19 @@ import org.dspace.core.Context;
 import org.dspace.content.Item;
 
 import java.sql.SQLException;
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.restlet.data.MediaType;
+import org.restlet.data.Status;
+import org.restlet.engine.util.DateUtils;
+import org.restlet.representation.EmptyRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ResourceException;
+import org.restlet.util.Series;
 
 /**
  * Created by moubarik on 2.6.15.
@@ -24,6 +33,7 @@ public class HandleResource extends BaseResource{
     private String handle;
     private Item item;
     private Context context;
+    private Date ifModifiedSince;
 
     public HandleResource(){
         this.handle = "";
@@ -42,10 +52,16 @@ public class HandleResource extends BaseResource{
         String s = (String)getRequest().getAttributes().get("handle");
         this.handle = s;
         this.handle = this.handle.replaceAll("\\+", "/");
+
+        Series headers = (Series)getRequestAttributes().get("org.restlet.http.headers");
+        String date = headers.getFirstValue("If-Modified-Since");
+        if(date != null) {
+            this.ifModifiedSince = DateUtils.parse(date);
+        }
     }
 
     @Get
-    public String toJson(){
+    public Representation toJson(){
         GetOptions.allowAccess(getResponse());
         ItemIterator it = null;
         try{
@@ -61,7 +77,7 @@ public class HandleResource extends BaseResource{
             if(it.hasNext()){
                 this.item = it.next();
             }else{
-                return "{\"error\": \"Item not found\", \"status\": 404 }";
+                return new StringRepresentation("{\"error\": \"Item not found\", \"status\": 404 }", MediaType.APPLICATION_JSON);
             }
         }catch(SQLException e){
             if(context != null){
@@ -70,10 +86,19 @@ public class HandleResource extends BaseResource{
             log.log(Priority.INFO, e);
         }
 
+        GetOptions.lastModified(getResponse(), this.item.getLastModified());
+
 
         StubItem stub = null;
         try{
             stub = new StubItem(this.item);
+
+            if(this.ifModifiedSince != null) {
+                if (this.ifModifiedSince.after(stub.getLastModified())) {
+                    getResponse().setStatus(Status.REDIRECTION_NOT_MODIFIED);
+                    return new EmptyRepresentation();
+                }
+            }
         }catch(SQLException e){
             if(context != null){
                 context.abort();
@@ -91,7 +116,7 @@ public class HandleResource extends BaseResource{
 
         Gson gson = new Gson();
 
-        return gson.toJson(stub);
+        return new StringRepresentation(gson.toJson(stub), MediaType.APPLICATION_JSON);
 
     }
 
