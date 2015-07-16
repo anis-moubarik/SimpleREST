@@ -68,7 +68,7 @@ public class ItemResource extends BaseResource {
     private int itemId = -1;
     private Item item;
     private Context context;
-    private Date ifModifiedSince = new Date();
+    private Date ifModifiedSince;
     
     public ItemResource(Item i, int itemId){
         this.item = i;
@@ -286,9 +286,11 @@ public class ItemResource extends BaseResource {
         StubItem stub = null;
         try {
             stub = new StubItem(this.item);
-            if(this.ifModifiedSince.after(stub.getLastModified())){
-                getResponse().setStatus(Status.REDIRECTION_NOT_MODIFIED);
-                return new EmptyRepresentation();
+            if(this.ifModifiedSince != null) {
+                if (this.ifModifiedSince.after(stub.getLastModified())) {
+                    getResponse().setStatus(Status.REDIRECTION_NOT_MODIFIED);
+                    return new EmptyRepresentation();
+                }
             }
         } catch (SQLException ex) {
             log.log(Priority.INFO, ex);
