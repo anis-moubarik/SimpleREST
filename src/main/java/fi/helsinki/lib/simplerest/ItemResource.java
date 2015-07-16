@@ -34,6 +34,7 @@ import org.dspace.content.Item;
 import org.dspace.content.Bundle;
 import org.dspace.content.DCValue;
 
+import org.restlet.engine.util.DateUtils;
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.EmptyRepresentation;
 import org.restlet.representation.Representation;
@@ -101,17 +102,11 @@ public class ItemResource extends BaseResource {
                                       "Item ID must be a number.");
             throw resourceException;
         }
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "EEE, dd MMM yyyy HH:mm:ss z");
+
         Series headers = (Series)getRequestAttributes().get("org.restlet.http.headers");
         String date = headers.getFirstValue("If-Modified-Since");
-        try{
-            if(date != null) {
-                this.ifModifiedSince = dateFormat.parse(date);
-            }
-        }catch(ParseException e){
-            ResourceException resourceException =
-                    new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, "If-Modified-Since must be date");
+        if(date != null) {
+            this.ifModifiedSince = DateUtils.parse(date);
         }
     }
 
