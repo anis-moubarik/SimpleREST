@@ -22,6 +22,7 @@ import fi.helsinki.lib.simplerest.stubs.StubItem;
 import com.google.gson.Gson;
 import fi.helsinki.lib.simplerest.options.GetOptions;
 import java.sql.SQLException;
+import java.text.Normalizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -101,9 +102,10 @@ public class ItemResource extends BaseResource {
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "EEE, dd MMM yyyy HH:mm:ss z");
-        String date = (String) getRequest().getAttributes().get("If-Modified-Since");
+        Form headers = (Form) getRequest().getAttributes().get("org.restlet.http.headers");
+        String date = headers.getFirstValue("If-Modified-Since");
         try{
-            if(!date.isEmpty()) {
+            if(date != null) {
                 this.ifModifiedSince = dateFormat.parse(date);
             }
         }catch(ParseException e){
