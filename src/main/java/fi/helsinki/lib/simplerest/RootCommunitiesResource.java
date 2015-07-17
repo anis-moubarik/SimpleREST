@@ -149,7 +149,9 @@ public class RootCommunitiesResource extends BaseResource {
         body.appendChild(form);
 
         try{
-            context.abort();
+            if(context != null) {
+                context.abort();
+            }
         }catch(NullPointerException e){
             log.log(Priority.INFO, e, e);
         }
