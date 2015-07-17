@@ -88,7 +88,6 @@ public class HandleResource extends BaseResource{
 
         GetOptions.lastModified(getResponse(), this.item.getLastModified());
 
-
         StubItem stub = null;
         try{
             stub = new StubItem(this.item);
