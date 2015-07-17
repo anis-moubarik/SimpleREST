@@ -43,8 +43,6 @@ public abstract class GetOptions {
                     responseHeaders);
         }
         responseHeaders.add(new Header("Access-Control-Allow-Origin", "*"));
-        responseHeaders.add(new Header("Connection", "Keep-Alive"));
-        responseHeaders.add(new Header("Keep-Alive", "timeout=10000"));
     }
 
     public static void lastModified(Response resp, Date lastModified){
