@@ -291,7 +291,7 @@ public class ItemResource extends BaseResource {
                 if (this.ifModifiedSince.after(stub.getLastModified())) {
                     getResponse().setStatus(Status.REDIRECTION_NOT_MODIFIED);
                     System.out.println(getResponse().getAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS).toString());
-                    return new EmptyRepresentation();
+                    return new StringRepresentation("", MediaType.ALL);
                 }
             }
         } catch (SQLException ex) {
