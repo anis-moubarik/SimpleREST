@@ -290,8 +290,8 @@ public class ItemResource extends BaseResource {
             if(this.ifModifiedSince != null) {
                 if (this.ifModifiedSince.after(stub.getLastModified())) {
                     getResponse().setStatus(Status.REDIRECTION_NOT_MODIFIED);
-                    System.out.println(getResponse().getAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS).toString());
-                    return new StringRepresentation("", MediaType.ALL);
+                    GetOptions.lastModified(getResponse(), this.item.getLastModified());
+                    return new EmptyRepresentation();
                 }
             }
         } catch (SQLException ex) {
@@ -305,7 +305,6 @@ public class ItemResource extends BaseResource {
             log.log(Priority.ERROR, e);
         }
         Gson gson = new Gson();
-        System.out.println(getResponse().getAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS).toString());
         return new StringRepresentation(gson.toJson(stub), MediaType.APPLICATION_JSON);
     }
 
