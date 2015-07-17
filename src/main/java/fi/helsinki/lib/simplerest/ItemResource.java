@@ -289,7 +289,7 @@ public class ItemResource extends BaseResource {
             stub = new StubItem(this.item);
             if(this.ifModifiedSince != null) {
                 if (this.ifModifiedSince.after(stub.getLastModified())) {
-                    //GetOptions.lastModified(getResponse(), this.item.getLastModified(), Status.REDIRECTION_NOT_MODIFIED);
+                    getResponse().setStatus(Status.REDIRECTION_NOT_MODIFIED);
                     return new EmptyRepresentation();
                 }
             }

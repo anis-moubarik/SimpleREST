@@ -56,17 +56,4 @@ public abstract class GetOptions {
         }
         responseHeaders.add(new Header("Last-Modified", DateUtils.format(lastModified)));
     }
-
-    public static void lastModified(Response resp, Date lastModified, Status status){
-        if(resp == null)
-            return;
-        Series<Header> responseHeaders = (Series<Header>) resp.getAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
-        if (responseHeaders == null) {
-            responseHeaders = new Series(Header.class);
-            resp.getAttributes().put(HeaderConstants.ATTRIBUTE_HEADERS,
-                    responseHeaders);
-        }
-        responseHeaders.add(new Header("Last-Modified", DateUtils.format(lastModified)));
-        resp.setStatus(status);
-    }
 }
