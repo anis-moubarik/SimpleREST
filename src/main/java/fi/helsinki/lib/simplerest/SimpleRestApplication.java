@@ -37,6 +37,7 @@ public class SimpleRestApplication extends Application {
     @Override
     public synchronized Restlet createInboundRoot() {
         Router router = new Router(getContext());
+        System.setProperty("http.keepAlive", "true");
         getMetadataService().setDefaultMediaType(MediaType.TEXT_HTML);
         router.attach("", RootResource.class);
         router.attach("/rootcommunities", RootCommunitiesResource.class);
