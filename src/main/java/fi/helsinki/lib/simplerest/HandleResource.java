@@ -96,6 +96,9 @@ public class HandleResource extends BaseResource{
             if(this.ifModifiedSince != null) {
                 if (this.ifModifiedSince.after(stub.getLastModified())) {
                     getResponse().setStatus(Status.REDIRECTION_NOT_MODIFIED);
+                    if(context!= null){
+                        context.complete();
+                    }
                     return new EmptyRepresentation();
                 }
             }
