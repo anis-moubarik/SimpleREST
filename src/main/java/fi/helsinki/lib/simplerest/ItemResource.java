@@ -34,6 +34,7 @@ import org.dspace.content.Item;
 import org.dspace.content.Bundle;
 import org.dspace.content.DCValue;
 
+import org.restlet.engine.header.HeaderConstants;
 import org.restlet.engine.util.DateUtils;
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.EmptyRepresentation;
@@ -289,6 +290,7 @@ public class ItemResource extends BaseResource {
             if(this.ifModifiedSince != null) {
                 if (this.ifModifiedSince.after(stub.getLastModified())) {
                     getResponse().setStatus(Status.REDIRECTION_NOT_MODIFIED);
+                    System.out.println(getResponse().getAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS).toString());
                     return new EmptyRepresentation();
                 }
             }
@@ -303,6 +305,7 @@ public class ItemResource extends BaseResource {
             log.log(Priority.ERROR, e);
         }
         Gson gson = new Gson();
+        System.out.println(getResponse().getAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS).toString());
         return new StringRepresentation(gson.toJson(stub), MediaType.APPLICATION_JSON);
     }
 
