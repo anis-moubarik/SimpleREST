@@ -55,7 +55,5 @@ public abstract class GetOptions {
                     responseHeaders);
         }
         responseHeaders.add(new Header("Last-Modified", DateUtils.format(lastModified)));
-        responseHeaders.add(new Header("Connection", "Keep-Alive"));
-        responseHeaders.add(new Header("Keep-Alive", "timeout=10000"));
     }
 }
