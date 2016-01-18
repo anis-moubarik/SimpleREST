@@ -55,8 +55,8 @@ public class HandleResource extends BaseResource{
         host = (String)getRequest().getResourceRef().getHostIdentifier();
         String s = (String)getRequest().getAttributes().get("handle");
         //DEBUG
-        if (s.equals("https://ds-am2-kktest.lib.helsinki.fi")){
-            s = "http://localhost:8080";
+        if (host.equals("https://ds-am2-kktest.lib.helsinki.fi")){
+            host = "http://localhost:8080";
         }
         this.handle = s;
         this.handle = this.handle.replaceAll("\\+", "/");
