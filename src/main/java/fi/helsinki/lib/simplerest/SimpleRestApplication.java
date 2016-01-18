@@ -39,7 +39,6 @@ public class SimpleRestApplication extends Application {
         Router router = new Router(getContext());
         System.setProperty("http.keepAlive", "true");
         getMetadataService().setDefaultMediaType(MediaType.TEXT_HTML);
-        router.attach("", RootResource.class);
         router.attach("/rootcommunities", RootCommunitiesResource.class);
         router.attach("/collections", AllCollectionsResource.class);
         router.attach("/items", AllItemsResource.class);
@@ -92,6 +91,7 @@ public class SimpleRestApplication extends Application {
         Verifier verifier = new MyVerifier();
         authenticator.setVerifier(verifier);
         authenticator.setNext(router);
+        router.attach("", RootResource.class);
         router.attach("/handle/{handle}", HandleResource.class);
 
         return authenticator;
