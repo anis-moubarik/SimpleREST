@@ -13,6 +13,7 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.restlet.data.MediaType;
+import org.restlet.data.Parameter;
 import org.restlet.data.Status;
 import org.restlet.engine.util.DateUtils;
 import org.restlet.representation.EmptyRepresentation;
@@ -34,6 +35,7 @@ public class HandleResource extends BaseResource{
     private Item item;
     private Context context;
     private Date ifModifiedSince;
+    private String host;
 
     public HandleResource(){
         this.handle = "";
@@ -49,6 +51,8 @@ public class HandleResource extends BaseResource{
 
     @Override
     protected void doInit() throws ResourceException {
+
+        host = (String)getRequest().getResourceRef().getHostIdentifier();
         String s = (String)getRequest().getAttributes().get("handle");
         this.handle = s;
         this.handle = this.handle.replaceAll("\\+", "/");
@@ -65,7 +69,7 @@ public class HandleResource extends BaseResource{
         GetOptions.allowAccess(getResponse());
         ItemIterator it = null;
         try{
-            it = Item.findByMetadataField(context, "dc", "identifier", "uri", "http://fennougrica.kansalliskirjasto.fi/handle/"+this.handle);
+            it = Item.findByMetadataField(context, "dc", "identifier", "uri", host+"handle/"+this.handle);
         }catch(Exception e){
             if(context != null){
                 context.abort();
