@@ -81,7 +81,7 @@ public class HandleResource extends BaseResource{
             if(it.hasNext()){
                 this.item = it.next();
             }else{
-                return new StringRepresentation("{\"error\": \"Item not found\", \"status\": 404, \"url\": \""+host+"\handle/"+this.handle+"\" }", MediaType.APPLICATION_JSON);
+                return new StringRepresentation("{\"error\": \"Item not found\", \"status\": 404, \"url\": \""+host+"handle/"+this.handle+"\" }", MediaType.APPLICATION_JSON);
             }
         }catch(SQLException e){
             if(context != null){
