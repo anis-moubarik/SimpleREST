@@ -57,7 +57,6 @@ public class SimpleRestApplication extends Application {
         router.attach("/collection/{collectionId}/items", ItemsResource.class);
 
         router.attach("/item/{itemId}", ItemResource.class);
-        router.attach("/handle/{handle}", HandleResource.class);
 
         router.attach("/bundle/{bundleId}", BundleResource.class);
 
@@ -93,6 +92,7 @@ public class SimpleRestApplication extends Application {
         Verifier verifier = new MyVerifier();
         authenticator.setVerifier(verifier);
         authenticator.setNext(router);
+        router.attach("/handle/{handle}", HandleResource.class);
 
         return authenticator;
     }
