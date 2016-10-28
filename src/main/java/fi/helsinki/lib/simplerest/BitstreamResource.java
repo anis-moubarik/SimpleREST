@@ -437,6 +437,31 @@ public class BitstreamResource extends BaseResource {
                 log.error("Error retrieving bitstream");
                 return "null";
             }
+            Bundle[] bn = bs.getBundles();
+            String handle = null;
+            if (bn.length > 0) {
+                Item i[] = bn[0].getItems();
+                if (i.length > 0) {
+                    handle = i[0].getHandle();
+                }
+            }
+
+            if (handle != null) {
+                log.log(Priority.INFO, "Found handle for bitstream url");
+                return ConfigurationManager.getProperty("dspace.url")
+                        + "/bitstream/"
+                        + handle
+                        + "/"
+                        + String.valueOf(bitstream.getSequenceID())
+                        + "/"
+                        + URLEncoder.encode(bitstream.getName(), "UTF-8");
+            }
+            else {
+                log.log(Priority.INFO, "Handle not found for bitstream url");
+                return ConfigurationManager.getProperty("dspace.url")
+                        + "/retrieve/"
+                        + String.valueOf(bitstream.getID());
+            }
         }catch(SQLException e){
             log.error("Error retrieving bitstream: ", e);
             return "SQLException";
@@ -445,31 +470,7 @@ public class BitstreamResource extends BaseResource {
                 c.abort();
             }
         }
-        Bundle[] bn = bs.getBundles();
-        String handle = null;
-        if (bn.length > 0) {
-            Item i[] = bn[0].getItems();
-            if (i.length > 0) {
-                handle = i[0].getHandle();
-            }
-        }
 
-        if (handle != null) {
-            log.log(Priority.INFO, "Found handle for bitstream url");
-            return ConfigurationManager.getProperty("dspace.url")
-                    + "/bitstream/"
-                    + handle
-                    + "/"
-                    + String.valueOf(bitstream.getSequenceID())
-                    + "/"
-                    + URLEncoder.encode(bitstream.getName(), "UTF-8");
-        }
-        else {
-            log.log(Priority.INFO, "Handle not found for bitstream url");
-            return ConfigurationManager.getProperty("dspace.url")
-                    + "/retrieve/"
-                    + String.valueOf(bitstream.getID());
-        }
     }
 
 }
