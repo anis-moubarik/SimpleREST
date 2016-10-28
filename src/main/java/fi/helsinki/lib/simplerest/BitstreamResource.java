@@ -246,8 +246,7 @@ public class BitstreamResource extends BaseResource {
         try {
             bitstreamurl = makeBitstreamUrl();
         }catch(Exception e){
-            log.log(Priority.ERROR, e.getStackTrace());
-            log.log(Priority.INFO, e.getMessage());
+            log.error("BitstreamURL Error: ", e);
         }
         StubBitstream s = new StubBitstream(bitstreamId, bitstream.getName(), mime, bitstream.getDescription(),
                 bitstream.getUserFormatDescription(), bitstream.getSequenceID(), bitstream.getSize(), bitstreamurl);
