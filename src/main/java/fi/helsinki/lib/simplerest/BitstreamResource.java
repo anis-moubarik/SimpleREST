@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashSet;
 
+import org.dspace.content.Item;
 import org.dspace.content.packager.AbstractMETSDisseminator;
 import org.dspace.core.Context;
 import org.dspace.content.Bundle;
@@ -424,14 +425,28 @@ public class BitstreamResource extends BaseResource {
         return successOk("Bitstream deleted.");
     }
 
-    private String makeBitstreamUrl() throws UnsupportedEncodingException{
-        return ConfigurationManager.getProperty("dspace.url")
-                + "/bitstream/"
-                + bitstream.getHandle()
-                + "/"
-                + String.valueOf(bitstream.getSequenceID())
-                + "/"
-                + URLEncoder.encode(bitstream.getName(), "UTF-8");
+    private String makeBitstreamUrl() throws UnsupportedEncodingException, SQLException {
+        Bundle[] bn = bitstream.getBundles();
+        String handle = null;
+        if (bn.length > 0) {
+            Item i[] = bn[0].getItems();
+            if (i.length > 0) {
+                handle = i[0].getHandle();
+            }
+        }
+
+        if (handle != null) {
+            return String.format("%s/bitstream/%s/%s/%s",
+                    ConfigurationManager.getProperty("dspace.url"),
+                    handle,
+                    String.valueOf(bitstream.getSequenceID()),
+                    URLEncoder.encode(bitstream.getName(), "UTF-8"));
+        }
+        else {
+            return String.format("%s/retrieve/%s",
+                    ConfigurationManager.getProperty("dspace.url"),
+                    String.valueOf(bitstream.getID()));
+        }
     }
 
 }
