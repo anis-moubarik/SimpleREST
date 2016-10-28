@@ -436,6 +436,7 @@ public class BitstreamResource extends BaseResource {
         }
 
         if (handle != null) {
+            log.log(Priority.INFO, "Found handle for bitstream url");
             return ConfigurationManager.getProperty("dspace.url")
                     + "/bitstream/"
                     + handle
@@ -445,9 +446,10 @@ public class BitstreamResource extends BaseResource {
                     + URLEncoder.encode(bitstream.getName(), "UTF-8");
         }
         else {
-            return String.format("%s/retrieve/%s",
-                    ConfigurationManager.getProperty("dspace.url"),
-                    String.valueOf(bitstream.getID()));
+            log.log(Priority.INFO, "Handle not found for bitstream url");
+            return ConfigurationManager.getProperty("dspace.url")
+                    + "/retrieve/"
+                    + String.valueOf(bitstream.getID());
         }
     }
 
