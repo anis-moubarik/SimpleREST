@@ -436,11 +436,13 @@ public class BitstreamResource extends BaseResource {
         }
 
         if (handle != null) {
-            return String.format("%s/bitstream/%s/%s/%s",
-                    ConfigurationManager.getProperty("dspace.url"),
-                    handle,
-                    String.valueOf(bitstream.getSequenceID()),
-                    URLEncoder.encode(bitstream.getName(), "UTF-8"));
+            return ConfigurationManager.getProperty("dspace.url")
+                    + "/bitstream/"
+                    + handle
+                    + "/"
+                    + String.valueOf(bitstream.getSequenceID())
+                    + "/"
+                    + URLEncoder.encode(bitstream.getName(), "UTF-8");
         }
         else {
             return String.format("%s/retrieve/%s",
