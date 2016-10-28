@@ -243,7 +243,7 @@ public class BitstreamResource extends BaseResource {
         }
         String bitstreamurl = "";
         try {
-            bitstreamurl = makeBitstreamUrl(bitstream);
+            bitstreamurl = makeBitstreamUrl();
         }catch(Exception e){
             log.log(Priority.ERROR, e);
         }
@@ -424,10 +424,10 @@ public class BitstreamResource extends BaseResource {
         return successOk("Bitstream deleted.");
     }
 
-    private String makeBitstreamUrl(Bitstream b) throws UnsupportedEncodingException{
+    private String makeBitstreamUrl() throws UnsupportedEncodingException{
         return ConfigurationManager.getProperty("dspace.url")
                 + "/bitstream/"
-                + b.getHandle()
+                + bitstream.getHandle()
                 + "/"
                 + String.valueOf(bitstream.getSequenceID())
                 + "/"
