@@ -1,3 +1,7 @@
+![master](https://travis-ci.org/anis-moubarik/SimpleREST.svg?branch=master)
+
+![fenno-ugrica](https://travis-ci.org/anis-moubarik/SimpleREST.svg?branch=fenno-ugrica)
+
 REQUIREMENTS
 ------------
 
