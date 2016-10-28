@@ -432,6 +432,7 @@ public class BitstreamResource extends BaseResource {
             c = getAuthenticatedContext();
             bs = Bitstream.find(c, this.bitstreamId);
             log.info("Bitstream: " + bs.getID());
+            log.info("Bitstream budnles: " + bs.getBundles());
             if(bitstream == null){
                 log.error("Error retrieving bitstream");
                 return "null";
