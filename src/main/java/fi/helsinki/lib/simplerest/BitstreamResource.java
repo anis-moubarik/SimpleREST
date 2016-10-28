@@ -21,21 +21,28 @@ package fi.helsinki.lib.simplerest;
 import com.google.gson.Gson;
 import fi.helsinki.lib.simplerest.options.GetOptions;
 import fi.helsinki.lib.simplerest.stubs.StubBitstream;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashSet;
 
+import org.dspace.content.packager.AbstractMETSDisseminator;
 import org.dspace.core.Context;
 import org.dspace.content.Bundle;
 import org.dspace.content.Bitstream;
 import org.dspace.content.BitstreamFormat;
+import org.dspace.core.ConfigurationManager;
+
+
 
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
-import org.restlet.resource.Put; 
-import org.restlet.resource.Post; 
+import org.restlet.resource.Put;
+import org.restlet.resource.Post;
 import org.restlet.resource.Delete;
 import org.restlet.resource.ResourceException;
 import org.restlet.data.MediaType;
@@ -54,7 +61,7 @@ import org.dspace.authorize.AuthorizeException;
 public class BitstreamResource extends BaseResource {
 
     private static Logger log = Logger.getLogger(BitstreamResource.class);
-    
+
     private int bitstreamId;
     private Bitstream bitstream;
     private Context context;
@@ -63,12 +70,12 @@ public class BitstreamResource extends BaseResource {
     static public String relativeUrl(int bitstreamId) {
         return "bitstream/" + bitstreamId;
     }
-    
+
     public BitstreamResource(Bitstream b, int bitstreamId){
         this.bitstream = b;
         this.bitstreamId = bitstreamId;
     }
-    
+
     public BitstreamResource(){
         this.bitstreamId = 0;
         this.bitstream = null;
@@ -78,12 +85,12 @@ public class BitstreamResource extends BaseResource {
             log.log(Priority.FATAL, e);
         }
     }
-    
+
     @Override
     protected void doInit() throws ResourceException {
         try {
             String s = (String)
-                getRequest().getAttributes().get("bitstreamIdDotFormat");
+                    getRequest().getAttributes().get("bitstreamIdDotFormat");
             if (s.endsWith(".bin")) {
                 this.isBinary = true;
                 s = s.substring(0, s.length()-4);
@@ -98,7 +105,7 @@ public class BitstreamResource extends BaseResource {
             throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, err);
         }
     }
-    
+
     @Get("xml")
     public Representation get() {
         try {
@@ -121,11 +128,11 @@ public class BitstreamResource extends BaseResource {
         // if that fails, we assume that bitstream does not exist anymore.
         // FIXME: *Maybe* we should do a similar check in other
         // FIXME: methods beside GET.
-        
+
         log.log(Priority.INFO, bitstream.getType());
         log.log(Priority.INFO, bitstream.getSource());
         log.log(Priority.INFO, bitstream.isRegisteredBitstream());
-        
+
         InputStream inputStream = null;
         try {
             inputStream = bitstream.retrieve();
@@ -135,7 +142,7 @@ public class BitstreamResource extends BaseResource {
         }
 
         Representation r =
-            (this.isBinary) ? getBinary(bitstream) : getXml(bitstream);
+                (this.isBinary) ? getBinary(bitstream) : getXml(bitstream);
         try{
             context.abort();
         }catch(NullPointerException e){
@@ -154,8 +161,8 @@ public class BitstreamResource extends BaseResource {
             return errorInternal(null, e.toString());
         }
 
-        MediaType mediaType = 
-            MediaType.valueOf(bitstream.getFormat().getMIMEType());
+        MediaType mediaType =
+                MediaType.valueOf(bitstream.getFormat().getMIMEType());
         return new BinaryRepresentation(mediaType, inputStream);
     }
 
@@ -164,14 +171,14 @@ public class BitstreamResource extends BaseResource {
         DomRepresentation representation;
         Document d;
         try {
-            representation = new DomRepresentation(MediaType.TEXT_HTML);  
-            d = representation.getDocument();  
+            representation = new DomRepresentation(MediaType.TEXT_HTML);
+            d = representation.getDocument();
         }
         catch(IOException e) {
             return errorInternal(null, "IOException");
         }
 
-        Element html = d.createElement("html");  
+        Element html = d.createElement("html");
         d.appendChild(html);
 
         Element head = d.createElement("head");
@@ -187,14 +194,14 @@ public class BitstreamResource extends BaseResource {
         Element dlAttributes = d.createElement("dl");
         setId(dlAttributes, "attributes");
         body.appendChild(dlAttributes);
-	
+
         addDtDd(d, dlAttributes, "name", bitstream.getName());
-        
+
         //We have to enclose this in a try statement as Mockito wont mock final methods (getMIMEType)
         //and we really want to test the rest of this method. We're using incorrect mimetype delibaretely for testing.
         String mime = "application/pdfs";
         try{
-                mime = bitstream.getFormat().getMIMEType();
+            mime = bitstream.getFormat().getMIMEType();
         }catch(NullPointerException e){
             log.log(Priority.INFO, e);
         }
@@ -207,10 +214,10 @@ public class BitstreamResource extends BaseResource {
                 Integer.toString(bitstream.getSequenceID()));
         addDtDd(d, dlAttributes, "sizebytes",
                 Long.toString(bitstream.getSize()));
-        
+
         return representation;
     }
-    
+
     @Get("json")
     public String toJson(){
         GetOptions.allowAccess(getResponse());
@@ -224,7 +231,7 @@ public class BitstreamResource extends BaseResource {
             if(context != null)
                 context.abort();
         }
-        
+
         Gson gson = new Gson();
         //We have to enclose this in a try statement as Mockito wont mock final methods (getMIMEType)
         //and we really want to test the rest of this method. We're using incorrect mimetype deliberately for testing.
@@ -234,8 +241,14 @@ public class BitstreamResource extends BaseResource {
         }catch(NullPointerException e){
             log.log(Priority.INFO, e);
         }
+        String bitstreamurl = "";
+        try {
+            bitstreamurl = makeBitstreamUrl(bitstream);
+        }catch(Exception e){
+            log.log(Priority.ERROR, e);
+        }
         StubBitstream s = new StubBitstream(bitstreamId, bitstream.getName(), mime, bitstream.getDescription(),
-                bitstream.getUserFormatDescription(), bitstream.getSequenceID(), bitstream.getSize(), bitstream.getSource());
+                bitstream.getUserFormatDescription(), bitstream.getSequenceID(), bitstream.getSize(), bitstreamurl);
         return gson.toJson(s);
     }
 
@@ -252,7 +265,7 @@ public class BitstreamResource extends BaseResource {
         allowed.add(Method.DELETE);
         setAllowedMethods(allowed);
         return error(null, "Bitstream binary data can not be edited.",
-                     Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+                Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
     }
 
     private Representation putXml(Representation bitstreamRepresentation) {
@@ -273,7 +286,7 @@ public class BitstreamResource extends BaseResource {
         Node attributesNode = dom.getNode("//dl[@id='attributes']");
         if (attributesNode == null) {
             return error(c, "Did not find dl tag with id 'attributes'.",
-                         Status.CLIENT_ERROR_BAD_REQUEST);
+                    Status.CLIENT_ERROR_BAD_REQUEST);
         }
 
         bitstream.setName(null);
@@ -304,12 +317,12 @@ public class BitstreamResource extends BaseResource {
                         // TODO: Maybe we should create a new bitstream format
                         // TODO: instead of just returning an error?
                         return error(c, "Could not find the bitstream format",
-                                     Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY);
+                                Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY);
                     }
                 }
                 catch (SQLException e) {
                     return errorInternal(c, "SQLException while trying to " +
-                                         "the bitstream format.");
+                            "the bitstream format.");
                 }
             } else if (dt.equals("description")) {
                 bitstream.setDescription(dd);
@@ -323,13 +336,13 @@ public class BitstreamResource extends BaseResource {
                 }
                 catch (NumberFormatException e) {
                     return error(c, "Sequence ID must be an integer.",
-                                 Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY);
+                            Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY);
                 }
             } else if (dt.equals("sizebytes")) {
                 // Do nothing!
             } else {
                 return error(c, "Unexpected data in attributes: " + dt,
-                             Status.CLIENT_ERROR_BAD_REQUEST);
+                        Status.CLIENT_ERROR_BAD_REQUEST);
             }
         }
 
@@ -348,7 +361,7 @@ public class BitstreamResource extends BaseResource {
             bitstream.update();
             c.complete();
         } catch (AuthorizeException ae) {
-          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
+            return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());
@@ -367,7 +380,7 @@ public class BitstreamResource extends BaseResource {
         }
         setAllowedMethods(allowed);
         return error(null, "Bitstream resource does not allow POST method.",
-                     Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+                Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
     }
 
     // NOTE: Deletes the bitstream permanently, even if it belongs to several
@@ -402,7 +415,7 @@ public class BitstreamResource extends BaseResource {
             }
             c.complete();
         } catch (AuthorizeException ae) {
-          return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
+            return error(c, "Unauthorized", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catch (Exception e) {
             return errorInternal(c, e.toString());
@@ -410,5 +423,15 @@ public class BitstreamResource extends BaseResource {
 
         return successOk("Bitstream deleted.");
     }
-    
+
+    private String makeBitstreamUrl(Bitstream b) throws UnsupportedEncodingException{
+        return ConfigurationManager.getProperty("dspace.url")
+                + "/bitstream/"
+                + b.getHandle()
+                + "/"
+                + String.valueOf(bitstream.getSequenceID())
+                + "/"
+                + URLEncoder.encode(bitstream.getName(), "UTF-8");
+    }
+
 }

@@ -31,11 +31,11 @@ public class StubBitstream implements Serializable{
     private String mimetype;
     private String description;
     private String userformatdescription;
-    private String source;
+    private String bitstreamurl;
     private int sequenceid;
     private Long sizebytes;
 
-    public StubBitstream(int id, String name, String mimetype, String description, String userformatdescription, int sequenceid, Long sizebytes, String source) {
+    public StubBitstream(int id, String name, String mimetype, String description, String userformatdescription, int sequenceid, Long sizebytes, String bitstreamurl) {
         this.id = id;
         this.name = name;
         this.mimetype = mimetype;
@@ -43,7 +43,7 @@ public class StubBitstream implements Serializable{
         this.userformatdescription = userformatdescription;
         this.sequenceid = sequenceid;
         this.sizebytes = sizebytes;
-        this.source = source;
+        this.bitstreamurl = bitstreamurl;
     }
 
     public int getId() {
