@@ -426,8 +426,24 @@ public class BitstreamResource extends BaseResource {
     }
 
     private String makeBitstreamUrl() throws UnsupportedEncodingException, SQLException {
-        Bundle[] bn = bitstream.getBundles();
-        log.log(Priority.INFO, bn);
+        Context c = null;
+        Bitstream bs = null;
+        try{
+            c = getAuthenticatedContext();
+            bs = Bitstream.find(c, this.bitstreamId);
+            if(bitstream == null){
+                log.error("Error retrieving bitstream");
+                return "null";
+            }
+        }catch(SQLException e){
+            log.error("Error retrieving bitstream: ", e);
+            return "SQLException";
+        }finally {
+            if(c != null){
+                c.abort();
+            }
+        }
+        Bundle[] bn = bs.getBundles();
         String handle = null;
         if (bn.length > 0) {
             Item i[] = bn[0].getItems();
