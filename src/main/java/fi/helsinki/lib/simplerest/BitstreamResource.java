@@ -235,7 +235,7 @@ public class BitstreamResource extends BaseResource {
             log.log(Priority.INFO, e);
         }
         StubBitstream s = new StubBitstream(bitstreamId, bitstream.getName(), mime, bitstream.getDescription(),
-                bitstream.getUserFormatDescription(), bitstream.getSequenceID(), bitstream.getSize());
+                bitstream.getUserFormatDescription(), bitstream.getSequenceID(), bitstream.getSize(), bitstream.getSource());
         return gson.toJson(s);
     }
 
