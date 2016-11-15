@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Date;
 
+import org.dspace.content.Bundle;
 import org.dspace.content.DCValue;
 import org.dspace.content.Item;
 
@@ -33,7 +34,7 @@ import org.dspace.content.Item;
 public class StubItem implements Serializable{
     private int owningCollectionId;
     private String[] collections;
-    private String[] bundles;
+    private StubBundle[] bundles;
     private boolean in_archive;
     private boolean withdrawn;
     private DCValue[] metadata;
@@ -43,9 +44,9 @@ public class StubItem implements Serializable{
     public StubItem(Item i) throws SQLException{
         this.Id = i.getID();
         if(i.getBundles() != null){
-            this.bundles = new String[i.getBundles().length];
+            this.bundles = new StubBundle[i.getBundles().length];
             for(int j = 0; j < this.bundles.length; j++){
-                this.bundles[j] = i.getBundles()[j].getName();
+                this.bundles[j] = new StubBundle(i.getBundles()[j]);
             }
         }
         if(i.getCollections() != null){
@@ -71,7 +72,7 @@ public class StubItem implements Serializable{
         return collections;
     }
     
-    public String[] getBundles(){
+    public StubBundle[] getBundles(){
         return bundles;
     }
     

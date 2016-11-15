@@ -16,8 +16,15 @@
  */
 package fi.helsinki.lib.simplerest;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 
+import org.apache.log4j.Priority;
+import org.dspace.content.Bitstream;
+import org.dspace.content.Bundle;
+import org.dspace.content.Item;
+import org.dspace.core.ConfigurationManager;
 import org.dspace.core.Context;
 import org.dspace.eperson.EPerson;
 
@@ -54,6 +61,46 @@ abstract class BaseResource extends ServerResource {
         EPerson ePerson = EPerson.find(context, id);
         context.setCurrentUser(ePerson);
         return context;
+    }
+
+    protected String makeBitstreamUrl(Bitstream bs) throws UnsupportedEncodingException, SQLException{
+        Context c = null;
+        try{
+            c = getAuthenticatedContext();
+            log.info("Bitstream: " + bs.getID());
+        }catch(SQLException e){
+            log.error("Error retrieving bitstream: ", e);
+            return "SQLException";
+        }finally {
+            if(c != null){
+                c.abort();
+            }
+        }
+        Bundle[] bn = bs.getBundles();
+        String handle = null;
+        if (bn.length > 0) {
+            Item i[] = bn[0].getItems();
+            if (i.length > 0) {
+                handle = i[0].getHandle();
+            }
+        }
+
+        if (handle != null) {
+            log.log(Priority.INFO, "Found handle for bitstream url");
+            return ConfigurationManager.getProperty("dspace.url")
+                    + "/bitstream/"
+                    + handle
+                    + "/"
+                    + String.valueOf(bs.getSequenceID())
+                    + "/"
+                    + URLEncoder.encode(bs.getName(), "UTF-8");
+        }
+        else {
+            log.log(Priority.INFO, "Handle not found for bitstream url");
+            return ConfigurationManager.getProperty("dspace.url")
+                    + "/retrieve/"
+                    + String.valueOf(bs.getID());
+        }
     }
 
     protected void makeInputRow(Document d, Element form,
