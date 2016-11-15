@@ -22,6 +22,7 @@ package fi.helsinki.lib.simplerest.stubs;
 import java.io.Serializable;
 import org.dspace.content.Bitstream;
 import org.dspace.content.Bundle;
+import org.dspace.core.ConfigurationManager;
 
 /**
  *
@@ -39,7 +40,7 @@ public class StubBundle implements Serializable{
         this.primarybitstreamid = primarybitstreamid;
         bitstreamUrls = new String[bitstreams.length];
         for(int i = 0; i < bitstreams.length; i++){
-            bitstreamUrls[i] = "bitstream/" + bitstreams[i].getID();
+            bitstreamUrls[i] = "siimplerest/bitstream/" + bitstreams[i].getID()+"?media=json";
         }
     }
 
@@ -50,7 +51,7 @@ public class StubBundle implements Serializable{
         Bitstream[] bitstreams = b.getBitstreams();
         bitstreamUrls = new String[bitstreams.length];
         for(int i = 0; i < bitstreams.length; i++){
-            bitstreamUrls[i] = "bitstream/" + bitstreams[i].getID();
+            bitstreamUrls[i] = ConfigurationManager.getProperty("dspace.url")+"/simplerest/bitstream/" + bitstreams[i].getID()+"?media=json";
         }
     }
 
