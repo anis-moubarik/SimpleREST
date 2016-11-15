@@ -82,13 +82,17 @@ abstract class BaseResource extends ServerResource {
                 c.abort();
             }
         }
-        Bundle[] bn = bs.getBundles();
-        String handle = null;
-        if (bn.length > 0) {
-            Item i[] = bn[0].getItems();
-            if (i.length > 0) {
-                handle = i[0].getHandle();
+        try {
+            Bundle[] bn = bs.getBundles();
+            String handle = null;
+            if (bn.length > 0) {
+                Item i[] = bn[0].getItems();
+                if (i.length > 0) {
+                    handle = i[0].getHandle();
+                }
             }
+        }catch(NullPointerException e){
+            log.error(e);
         }
 
         if (handle != null) {
