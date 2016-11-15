@@ -63,36 +63,19 @@ abstract class BaseResource extends ServerResource {
         return context;
     }
 
-    protected String makeBitstreamUrl(int id) throws UnsupportedEncodingException, SQLException{
-        Context c = null;
-        Bitstream bs = null;
-        try{
-            c = getAuthenticatedContext();
-            bs = Bitstream.find(c, id);
-            log.info("Bitstream: " + bs.getID());
-            if(bs == null){
-                log.error("Error retrieveing bitstream");
-                return null;
-            }
-        }catch(SQLException e){
-            log.error("Error retrieving bitstream: ", e);
-            return "SQLException";
-        }finally {
-            if(c != null){
-                c.abort();
-            }
+    protected String makeBitstreamUrl(Bitstream bitstream) throws UnsupportedEncodingException, SQLException{
+        log.info("Bitstream: " + bitstream.getID());
+        if(bitstream == null){
+            log.error("Error retrieveing bitstream");
+            return null;
         }
-        try {
-            Bundle[] bn = bs.getBundles();
-            String handle = null;
-            if (bn.length > 0) {
-                Item i[] = bn[0].getItems();
-                if (i.length > 0) {
-                    handle = i[0].getHandle();
-                }
+        Bundle[] bn = bitstream.getBundles();
+        String handle = null;
+        if (bn.length > 0) {
+            Item i[] = bn[0].getItems();
+            if (i.length > 0) {
+                handle = i[0].getHandle();
             }
-        }catch(NullPointerException e){
-            log.error(e);
         }
 
         if (handle != null) {
@@ -101,15 +84,15 @@ abstract class BaseResource extends ServerResource {
                     + "/bitstream/"
                     + handle
                     + "/"
-                    + String.valueOf(bs.getSequenceID())
+                    + String.valueOf(bitstream.getSequenceID())
                     + "/"
-                    + URLEncoder.encode(bs.getName(), "UTF-8");
+                    + URLEncoder.encode(bitstream.getName(), "UTF-8");
         }
         else {
             log.log(Priority.INFO, "Handle not found for bitstream url");
             return ConfigurationManager.getProperty("dspace.url")
                     + "/retrieve/"
-                    + String.valueOf(bs.getID());
+                    + String.valueOf(bitstream.getID());
         }
     }
 

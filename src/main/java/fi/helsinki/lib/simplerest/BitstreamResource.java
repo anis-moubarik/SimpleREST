@@ -244,7 +244,9 @@ public class BitstreamResource extends BaseResource {
         }
         String bitstreamurl = "";
         try {
-            bitstreamurl = makeBitstreamUrl(this.bitstreamId);
+            Context c = getAuthenticatedContext();
+            Bitstream bs = Bitstream.find(c, this.bitstreamId);
+            bitstreamurl = makeBitstreamUrl(bs);
         }catch(Exception e){
             log.error("BitstreamURL Error: ", e);
         }
