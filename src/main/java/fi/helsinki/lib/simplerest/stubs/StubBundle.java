@@ -50,8 +50,10 @@ public class StubBundle implements Serializable{
         this.primarybitstreamid = b.getPrimaryBitstreamID();
         Bitstream[] bitstreams = b.getBitstreams();
         bitstreamUrls = new String[bitstreams.length];
+        //Hack for Fenno-Ugrica, replace http to https
+        String url = ConfigurationManager.getProperty("dspace.url").replaceAll("http", "https");
         for(int i = 0; i < bitstreams.length; i++){
-            bitstreamUrls[i] = ConfigurationManager.getProperty("dspace.url")+"/simplerest/bitstream/" + bitstreams[i].getID()+"?media=json";
+            bitstreamUrls[i] = url+"/simplerest/bitstream/" + bitstreams[i].getID()+"?media=json";
         }
     }
 
