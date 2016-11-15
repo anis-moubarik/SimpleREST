@@ -63,11 +63,17 @@ abstract class BaseResource extends ServerResource {
         return context;
     }
 
-    protected String makeBitstreamUrl(Bitstream bs) throws UnsupportedEncodingException, SQLException{
+    protected String makeBitstreamUrl(int id) throws UnsupportedEncodingException, SQLException{
         Context c = null;
+        Bitstream bs = null;
         try{
             c = getAuthenticatedContext();
+            bs = Bitstream.find(c, id);
             log.info("Bitstream: " + bs.getID());
+            if(bs == null){
+                log.error("Error retrieveing bitstream");
+                return null;
+            }
         }catch(SQLException e){
             log.error("Error retrieving bitstream: ", e);
             return "SQLException";
